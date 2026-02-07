@@ -451,17 +451,10 @@ function resetScan() {
 }
 
 async function analyzeMenu() {
-  // Check for API key
-  let apiKey = localStorage.getItem('hedonicum_api_key') || '';
-  if(!apiKey) {
-    apiKey = prompt('Enter your Anthropic API key (stored locally, never sent elsewhere):');
-    if(!apiKey) return;
-    localStorage.setItem('hedonicum_api_key', apiKey);
-  }
+  const apiKey = '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';
   scanState = 'scanning';
   render();
   try {
-    // Send image to Claude API for OCR
     const base64 = scanImage.split(',')[1];
     const mediaType = scanImage.split(';')[0].split(':')[1];
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -473,7 +466,7 @@ async function analyzeMenu() {
         'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 2000,
         messages: [{
           role: 'user',
@@ -485,7 +478,6 @@ async function analyzeMenu() {
       })
     });
     if(!response.ok) {
-      if(response.status === 401) { localStorage.removeItem('hedonicum_api_key'); throw new Error('401'); }
       throw new Error('API error: ' + response.status);
     }
     const data = await response.json();
@@ -503,12 +495,7 @@ async function analyzeMenu() {
     scanState = 'results';
   } catch(e) {
     console.error('Scan error:', e);
-    if(e.message?.includes('401') || e.message?.includes('auth')) {
-      localStorage.removeItem('hedonicum_api_key');
-      alert('Invalid API key. Please try again.');
-    } else {
-      alert('Error scanning menu. Check your connection.');
-    }
+    alert('Error scanning menu. Check your connection.');
     scanState = 'preview';
   }
   render();
