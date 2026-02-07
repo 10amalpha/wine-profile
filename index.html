@@ -26,6 +26,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .scan-card-icon{font-size:2.2rem;flex-shrink:0}
 .scan-card-text h3{font-size:1rem;font-weight:700;color:#e2e8f0;margin-bottom:3px}
 .scan-card-text p{font-size:0.8rem;color:#64748b;line-height:1.4}
+/* Taste fingerprint */
+.taste-card{margin-top:20px;background:rgba(15,25,45,0.6);border:1px solid rgba(45,212,191,0.08);border-radius:16px;padding:18px 16px;position:relative;overflow:hidden}
+.taste-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#2dd4bf,transparent)}
+.taste-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.taste-title{font-size:0.8rem;font-weight:700;color:#2dd4bf;text-transform:uppercase;letter-spacing:0.5px}
+.taste-subtitle{font-size:0.7rem;color:#334155}
+.taste-stats{display:flex;justify-content:space-between;margin-bottom:14px}
+.taste-stat{text-align:center;flex:1}
+.ts-num{font-size:1.3rem;font-weight:800;color:#e2e8f0;line-height:1}
+.ts-label{font-size:0.6rem;color:#475569;text-transform:uppercase;letter-spacing:0.3px;margin-top:2px}
+.taste-tags{display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap}
+.taste-tag-label{font-size:0.6rem;color:#334155;text-transform:uppercase;letter-spacing:0.3px;min-width:65px}
+.taste-tag{font-size:0.7rem;color:#64748b;background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.1);padding:3px 10px;border-radius:10px}
 input[type="file"]{display:none}
 .pairing-section{margin-top:20px}
 .pairing-section label{display:block;font-size:0.75rem;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
@@ -162,6 +175,19 @@ async function loadWines(){
 function renderScanHome(){
   const el=document.getElementById('scan-content');
   if(menuPhotos.length===0&&menuResults.length===0){
+    // Taste fingerprint
+    const n=wines.length;
+    const avg=n?(wines.reduce((s,w)=>s+Number(w.rating),0)/n).toFixed(1):'–';
+    const top5=wines.filter(w=>Number(w.rating)>=5).length;
+    const countries=new Set(wines.map(w=>w.country).filter(Boolean)).size;
+    const regions=new Set(wines.map(w=>w.region).filter(Boolean)).size;
+    // Top 3 grapes
+    const gm={};wines.forEach(w=>{const g=w.grape;if(g){if(!gm[g])gm[g]=0;gm[g]++;}});
+    const topGrapes=Object.entries(gm).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
+    // Top 3 regions
+    const rm={};wines.forEach(w=>{const r=w.region;if(r){if(!rm[r])rm[r]=0;rm[r]++;}});
+    const topRegions=Object.entries(rm).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
+
     el.innerHTML=`<div class="scan-cards">
       <div class="scan-card" onclick="document.getElementById('menu-photo').click()">
         <div class="scan-card-icon">📋</div>
@@ -172,7 +198,20 @@ function renderScanHome(){
         <div class="scan-card-text"><h3>Add a Bottle</h3><p>Snap the label to save it to your collection</p></div>
       </div>
     </div>
-    <div style="text-align:center;margin-top:24px;color:#334155;font-size:0.75rem">${wines.length} wines in your collection</div>`;
+    ${n>0?`<div class="taste-card">
+      <div class="taste-header">
+        <div class="taste-title">Taste Profile</div>
+        <div class="taste-subtitle">@Holdmybirra</div>
+      </div>
+      <div class="taste-stats">
+        <div class="taste-stat"><div class="ts-num">${n}</div><div class="ts-label">wines</div></div>
+        <div class="taste-stat"><div class="ts-num">${avg}</div><div class="ts-label">avg</div></div>
+        <div class="taste-stat"><div class="ts-num">${top5}</div><div class="ts-label">5★</div></div>
+        <div class="taste-stat"><div class="ts-num">${countries}</div><div class="ts-label">countries</div></div>
+      </div>
+      ${topGrapes.length?`<div class="taste-tags"><span class="taste-tag-label">Top grapes</span>${topGrapes.map(g=>`<span class="taste-tag">${g}</span>`).join('')}</div>`:''}
+      ${topRegions.length?`<div class="taste-tags"><span class="taste-tag-label">Top regions</span>${topRegions.map(r=>`<span class="taste-tag">${r}</span>`).join('')}</div>`:''}
+    </div>`:''}`; 
   } else if(menuResults.length>0){renderScanResults(el);}
   else{renderScanPreview(el);}
 }
