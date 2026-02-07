@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Holdmybirra - Wine Taste Profile</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo } = React;
+
+    const WineProfile = () => {
+      const [activeTab, setActiveTab] = useState('wines');
+      const [sortBy, setSortBy] = useState('rating');
+      const [searchTerm, setSearchTerm] = useState('');
+      const [filterRating, setFilterRating] = useState('all');
+
+      const wines = [
+        { name: "Ramón Bilbao Reserva 2018", region: "Rioja, Spain", myRating: 4, avgRating: null, notes: "Smooth & balanced. Would reorder." },
+        { name: "El Enemigo Gran Enemigo Single Vineyard Chacayes Cabernet Franc", region: "Tunuyán, Argentina", myRating: 5.0, avgRating: null },
+        { name: "Mateus The Original Rosé", region: "Douro, Portugal", myRating: 5.0, avgRating: null },
+        { name: "La Crema Sonoma Coast Pinot Noir", region: "Sonoma Coast, United States", myRating: 5.0, avgRating: null },
+        { name: "Bodegas Frontaura Crianza", region: "Toro, Spain", myRating: 5.0, avgRating: null },
+        { name: "Hacienda Grimon Finca la Oracion", region: "Rioja, Spain", myRating: 5.0, avgRating: null },
+        { name: "Ramón Bilbao The Journey Collection Reserva Especial", region: "Rioja, Spain", myRating: 5.0, avgRating: null },
+        { name: "Viña Vik Winery Milla Cala", region: "Cachapoal Valley, Chile", myRating: 5.0, avgRating: null },
+        { name: "Marques de Vargas Reserva Privada Rioja", region: "Rioja, Spain", myRating: 5.0, avgRating: null },
+        { name: "Alonso del Yerro María Ribera del Duero", region: "Ribera del Duero, Spain", myRating: 5.0, avgRating: null },
+        { name: "Pago de Carraovejas Tinto", region: "Ribera del Duero, Spain", myRating: 5.0, avgRating: null },
+        { name: "Matarromera Ribera del Duero Reserva", region: "Ribera del Duero, Spain", myRating: 5.0, avgRating: null },
+        { name: "Imperial Rioja Reserva", region: "Rioja, Spain", myRating: 5.0, avgRating: null },
+        { name: "Remelluri Rioja Reserva", region: "Rioja, Spain", myRating: 5.0, avgRating: null },
+        { name: "La Rioja Alta Viña Ardanza Reserva", region: "Rioja, Spain", myRating: 5.0, avgRating: null },
+        { name: "Les Cailloux Bordeaux Blanc", region: "Bordeaux, France", myRating: 5.0, avgRating: null },
+        { name: "Relic Ritual", region: "Napa Valley, United States", myRating: 5.0, avgRating: null },
+        { name: "Cordella Brunello di Montalcino", region: "Brunello di Montalcino, Italy", myRating: 5.0, avgRating: null },
+        { name: "Caymus Vineyards Cabernet Sauvignon", region: "Napa Valley, United States", myRating: 5.0, avgRating: null },
+        { name: "Varda Vineyards Pinot Noir", region: "Sonoma County, United States", myRating: 5.0, avgRating: null },
+        { name: "Miraval Côtes de Provence Rosé", region: "Côtes de Provence, France", myRating: 5.0, avgRating: null },
+        { name: "Siete Fincas Malbec", region: "Mendoza, Argentina", myRating: 5.0, avgRating: null },
+        { name: "Château Moulin de la Grangère Saint-Émilion Grand Cru", region: "Saint-Émilion Grand Cru, France", myRating: 5.0, avgRating: null },
+        { name: "Bogle Old Vine Zinfandel", region: "California, United States", myRating: 5.0, avgRating: null },
+        { name: "Bodegas Alvia Ribeira Sacra Mencia", region: "Ribeira Sacra, Spain", myRating: 5.0, avgRating: null },
+        { name: "Niepoort Douro Vertente Tinto", region: "Douro, Portugal", myRating: 5.0, avgRating: null },
+        { name: "Muga Selección Especial Reserva", region: "Rioja, Spain", myRating: 5.0, avgRating: null },
+        { name: "Italo Cescon Pinot Noir Il Tralcetto", region: "Veneto, Italy", myRating: 5.0, avgRating: null },
+        { name: "Mer Soleil Reserve Pinot Noir", region: "Santa Lucia Highlands, United States", myRating: 5.0, avgRating: null },
+        { name: "Hess Las Fincas Rosado", region: "Rioja, Spain", myRating: 5.0, avgRating: null },
+        { name: "Mateus Dry Rosé Seco Sec", region: "Douro, Portugal", myRating: 5.0, avgRating: null },
+        { name: "Marqués de Cáceres Ollamendi Crianza", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Bodegas Príncipe de Viana Vendimia Seleccionada Crianza", region: "Navarra, Spain", myRating: 4.0, avgRating: null },
+        { name: "Quinta do Vallado Tinto", region: "Douro, Portugal", myRating: 4.0, avgRating: null },
+        { name: "Ruffino Riserva Ducale Chianti Classico", region: "Chianti Classico, Italy", myRating: 4.0, avgRating: null },
+        { name: "Antinori Tenuta Tignanello Chianti Classico Riserva", region: "Chianti Classico, Italy", myRating: 4.0, avgRating: null },
+        { name: "unknown La Piazza Rosso Veronese", region: "Rosso Veronese, Italy", myRating: 4.0, avgRating: null },
+        { name: "Hacienda Monasterio Reserva Especial", region: "Ribera del Duero, Spain", myRating: 4.0, avgRating: null },
+        { name: "Bodegas Luzón Antigua Fontana Cabernet Sauvignon", region: "Jumilla, Spain", myRating: 4.0, avgRating: null },
+        { name: "Dominio do Bibei Lapola", region: "Ribeira Sacra, Spain", myRating: 4.0, avgRating: null },
+        { name: "Bodegas Carrau Edición Limitada Tannat Reserva", region: "Montevideo, Uruguay", myRating: 4.0, avgRating: null },
+        { name: "unknown Il Gabai Valpolicella Ripasso", region: "Valpolicella Ripasso, Italy", myRating: 4.0, avgRating: null },
+        { name: "R. López de Heredia Viña Tondonia Reserva", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Flaherty Red Blend", region: "Aconcagua Valley, Chile", myRating: 4.0, avgRating: null },
+        { name: "Bodegas y Viñedos Pintia Pintia", region: "Toro, Spain", myRating: 4.0, avgRating: null },
+        { name: "Marqués de Riscal Reserva", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Poggio le Volpi Baccarossa", region: "Lazio, Italy", myRating: 4.0, avgRating: null },
+        { name: "Bicicletas y Peces Tempranillo Rosé", region: "Somontano, Spain", myRating: 4.0, avgRating: null },
+        { name: "Bodegas Carrau Juan Carrau Gran Reserva Tannat-Cabernet", region: "Montevideo, Uruguay", myRating: 4.5, avgRating: null },
+        { name: "Bouza Tempranillo-Tannat", region: "Montevideo, Uruguay", myRating: 4.5, avgRating: null },
+        { name: "Corte Sant'Alda Campi Magri Valpolicella Ripasso", region: "Valpolicella Ripasso, Italy", myRating: 4.5, avgRating: null },
+        { name: "Azienda San Martino Siir Aglianico del Vulture", region: "Aglianico del Vulture, Italy", myRating: 4.5, avgRating: null },
+        { name: "Prackfol Südtiroler Blauburgunder", region: "Trentino-Alto Adige, Italy", myRating: 4.5, avgRating: null },
+        { name: "Agricola Armònja Corte Sant'Elia Primitivo", region: "Gioia del Colle, Italy", myRating: 4.5, avgRating: null },
+        { name: "Cantina Bozen Lagrein Prestige Riserva", region: "Südtirol-Alto Adige, Italy", myRating: 4.5, avgRating: null },
+        { name: "Louis Latour Meursault Rouge", region: "Meursault, France", myRating: 4.5, avgRating: null },
+        { name: "Hacienda Grimon Reserva", region: "Rioja, Spain", myRating: 4.5, avgRating: null },
+        { name: "Luis Cañas Reserva Selección de la Familia", region: "Rioja, Spain", myRating: 4.5, avgRating: null },
+        { name: "Dominio de Pingus PSI", region: "Ribera del Duero, Spain", myRating: 4.5, avgRating: null },
+        { name: "Angélica Zapata Chardonnay Alta", region: "Mendoza, Argentina", myRating: 4.5, avgRating: null },
+        { name: "Montecillo Fuenmayor", region: "Rioja, Spain", myRating: 4.5, avgRating: null },
+        { name: "Zorzal Terroir Único Pinot Noir", region: "Tupungato, Argentina", myRating: 4.5, avgRating: null },
+        { name: "Château Moncets Lalande de Pomerol", region: "Lalande-de-Pomerol, France", myRating: 4.5, avgRating: null },
+        { name: "Bodegas Peñafiel Miros de Ribera Crianza", region: "Ribera del Duero, Spain", myRating: 4.5, avgRating: null },
+        { name: "Casa Ferreirinha Callabriga Douro", region: "Douro, Portugal", myRating: 4.5, avgRating: null },
+        { name: "Madirazza Grande Riserva Polozaj Dingač", region: "Dingač, Croatia", myRating: 4.5, avgRating: null },
+        { name: "Podrum Vujnović Ivan Dolac", region: "Ivan Dolac, Croatia", myRating: 4.5, avgRating: null },
+        { name: "Castillo de Cuzcurrita Señorío de Cuzcurrita", region: "Rioja, Spain", myRating: 4.5, avgRating: null },
+        { name: "Jean Fournier Marsannay Clos du Roy", region: "Marsannay, France", myRating: 4.5, avgRating: null },
+        { name: "Monteraponi Chianti Classico", region: "Chianti Classico, Italy", myRating: 4.5, avgRating: null },
+        { name: "Bodega Ca'n Verdura Supernova Mantonegro", region: "Binissalem-Mallorca, Spain", myRating: 4.5, avgRating: null },
+        { name: "Carmelo Rodero Crianza", region: "Ribera del Duero, Spain", myRating: 4.5, avgRating: null },
+        { name: "Famille Perrin Châteauneuf-du-Pape Les Sinards", region: "Châteauneuf-du-Pape, France", myRating: 4.5, avgRating: null },
+        { name: "Santa Margherita Chianti Classico Riserva", region: "Chianti Classico, Italy", myRating: 4.5, avgRating: null },
+        { name: "Izarbe Reserva Vendimia Seleccionada", region: "Rioja, Spain", myRating: 4.5, avgRating: null },
+        { name: "Tinto Pesquera Crianza", region: "Ribera del Duero, Spain", myRating: 4.5, avgRating: null },
+        { name: "Los Aguilares Pago El Espino", region: "Sierras de Málaga, Spain", myRating: 4.5, avgRating: null },
+        { name: "Poderi dal Nespoli Prugneto Sangiovese di Romagna", region: "Romagna, Italy", myRating: 4.5, avgRating: null },
+        { name: "Scheiblhofer Big John Cuvée Reserve", region: "Burgenland, Austria", myRating: 4.5, avgRating: null },
+        { name: "Masca del Tacco Li Filitti Riserva Primitivo di Manduria", region: "Primitivo di Manduria, Italy", myRating: 4.5, avgRating: null },
+        { name: "Bruno Murciano L'Alegria Bobal Arcilla", region: "Utiel-Requena, Spain", myRating: 4.5, avgRating: null },
+        { name: "Reguta Giuseppe e Luigi Pinot Bianco", region: "Friuli, Italy", myRating: 4.5, avgRating: null },
+        { name: "Tenuta Ferrata Cimè Rosato", region: "Etna, Italy", myRating: 4.5, avgRating: null },
+        { name: "Vantorosso Valpolicella Ripasso Classico Superiore", region: "Valpolicella Ripasso, Italy", myRating: 4.5, avgRating: null },
+        { name: "L'Arco Arcum Rosso Veronese", region: "Rosso Veronese, Italy", myRating: 4.5, avgRating: null },
+        { name: "Contini I Giganti", region: "Valle del Tirso, Italy", myRating: 4.0, avgRating: null },
+        { name: "Li Veli Orion Primitivo", region: "Salento, Italy", myRating: 4.0, avgRating: null },
+        { name: "Sasso di Sole Brunello di Montalcino", region: "Brunello di Montalcino, Italy", myRating: 4.0, avgRating: null },
+        { name: "Cottanera Etna Calderara Bianco", region: "Etna, Italy", myRating: 4.0, avgRating: null },
+        { name: "Quinta do Vale Meão Meandro Douro Tinto", region: "Douro, Portugal", myRating: 4.0, avgRating: null },
+        { name: "Beringer Knights Valley Cabernet Sauvignon", region: "Knights Valley, United States", myRating: 4.0, avgRating: null },
+        { name: "Bodegas Marqués de Cáceres Gran Reserva", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Domaine Marcel Lapierre Cuvée Marcel Morgon", region: "Morgon, France", myRating: 4.0, avgRating: null },
+        { name: "Luis Cañas Crianza", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Pasqua PassioneSentimento Rosso", region: "Veneto, Italy", myRating: 4.0, avgRating: null },
+        { name: "Austin Hope Cabernet Sauvignon", region: "Paso Robles, United States", myRating: 4.0, avgRating: null },
+        { name: "Cousiño-Macul Antiguas Reservas Cabernet Sauvignon", region: "Maipo Valley, Chile", myRating: 4.0, avgRating: null },
+        { name: "Rodney Strong Sonoma Vineyards Red Blend", region: "Sonoma County, United States", myRating: 4.0, avgRating: null },
+        { name: "Lafken Single Vineyard Carménère", region: "Maipo Valley, Chile", myRating: 4.0, avgRating: null },
+        { name: "Bodegas Frontaura Nexus One", region: "Ribera del Duero, Spain", myRating: 4.0, avgRating: null },
+        { name: "Terrazas de los Andes Reserva Malbec", region: "Mendoza, Argentina", myRating: 4.0, avgRating: null },
+        { name: "Marqués de Cáceres Reserva", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Cono Sur 20 Barrels Pinot Noir", region: "Casablanca Valley, Chile", myRating: 4.0, avgRating: null },
+        { name: "Finca Sobreno Crianza", region: "Toro, Spain", myRating: 4.0, avgRating: null },
+        { name: "Tormaresca Neprica Primitivo", region: "Puglia, Italy", myRating: 4.0, avgRating: null },
+        { name: "Francis Ford Coppola Director's Cut Pinot Noir", region: "Sonoma Coast, United States", myRating: 4.0, avgRating: null },
+        { name: "Palacios Remondo La Montesa", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Starmont Pinot Noir", region: "Carneros, United States", myRating: 4.0, avgRating: null },
+        { name: "Villa Antinori Toscana", region: "Toscana, Italy", myRating: 4.0, avgRating: null },
+        { name: "Hess Select Pinot Noir", region: "Monterey, United States", myRating: 4.0, avgRating: null },
+        { name: "Columbia Crest Reserve Cabernet Sauvignon", region: "Columbia Valley, United States", myRating: 4.0, avgRating: null },
+        { name: "Benziger Pinot Noir", region: "Sonoma Coast, United States", myRating: 4.0, avgRating: null },
+        { name: "Santa Julia Malbec Reserva", region: "Mendoza, Argentina", myRating: 4.0, avgRating: null },
+        { name: "Altos de Rioja Crianza", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Altos de Rioja Reserva", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Viña Alberdi Reserva", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Bodegas Manzanos Finca Manzanos Reserva", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Torre de Oña Reserva", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Marqués de Cáceres Crianza", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Antica Enotria Falanghina", region: "Puglia, Italy", myRating: 4.0, avgRating: null },
+        { name: "Cantele Teresamanara Negroamaro", region: "Salento, Italy", myRating: 4.0, avgRating: null },
+        { name: "Colli Della Murgia Tufjano", region: "Puglia, Italy", myRating: 4.0, avgRating: null },
+        { name: "Jean Foillard Morgon", region: "Morgon, France", myRating: 4.0, avgRating: null },
+        { name: "Carmelo Rodero Ribera del Duero TSM", region: "Ribera del Duero, Spain", myRating: 4.0, avgRating: null },
+        { name: "Cantine San Marzano Talo Primitivo di Manduria", region: "Primitivo di Manduria, Italy", myRating: 4.0, avgRating: null },
+        { name: "Muga Reserva", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Telmo Rodríguez Pegaso Barrancos de Pizarra", region: "Sierra de Gredos, Spain", myRating: 4.0, avgRating: null },
+        { name: "Bodegas LAN D-12", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Cune Imperial Gran Reserva", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Finca Allende Rioja", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Viña Real Gran Reserva", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Aalto Ribera del Duero", region: "Ribera del Duero, Spain", myRating: 4.0, avgRating: null },
+        { name: "Feudi di San Gregorio Rubrato Aglianico", region: "Irpinia, Italy", myRating: 4.0, avgRating: null },
+        { name: "Il Poggione Brunello di Montalcino", region: "Brunello di Montalcino, Italy", myRating: 4.0, avgRating: null },
+        { name: "Podere Poggio Scalette Il Carbonaione", region: "Toscana, Italy", myRating: 4.0, avgRating: null },
+        { name: "Tenute Filippi Enea Nero Buono", region: "Lazio, Italy", myRating: 4.0, avgRating: null },
+        { name: "Cotarella Ferentano Lazio", region: "Lazio, Italy", myRating: 4.0, avgRating: null },
+        { name: "Callejo Flores de Callejo", region: "Ribera del Duero, Spain", myRating: 4.0, avgRating: null },
+        { name: "Aldegheri I Lastari Valpolicella Classico Superiore", region: "Valpolicella Classico, Italy", myRating: 4.0, avgRating: null },
+        { name: "Cusumano Alta Mora Guardiola Etna Rosso", region: "Etna, Italy", myRating: 4.0, avgRating: null },
+        { name: "Cusumano Alta Mora Etna Bianco", region: "Etna, Italy", myRating: 4.0, avgRating: null },
+        { name: "Cantine Astroni Vigna Astroni Piedirosso", region: "Campi Flegrei, Italy", myRating: 4.0, avgRating: null },
+        { name: "Rivera Il Falcone Castel del Monte Riserva", region: "Castel del Monte, Italy", myRating: 4.0, avgRating: null },
+        { name: "Firriato Harmonium Nero d'Avola", region: "Sicilia, Italy", myRating: 4.0, avgRating: null },
+        { name: "Benanti Etna Rosso", region: "Etna, Italy", myRating: 4.0, avgRating: null },
+        { name: "Feudi di San Gregorio Falanghina", region: "Falanghina del Sannio, Italy", myRating: 4.0, avgRating: null },
+        { name: "San Salvatore Pian di Stio Fiano", region: "Paestum, Italy", myRating: 4.0, avgRating: null },
+        { name: "Terredora di Paolo Falanghina", region: "Irpinia, Italy", myRating: 4.0, avgRating: null },
+        { name: "Librandi Gravello", region: "Val di Neto, Italy", myRating: 4.0, avgRating: null },
+        { name: "Masseria Borgo dei Trulli Primitivo di Manduria", region: "Primitivo di Manduria, Italy", myRating: 4.0, avgRating: null },
+        { name: "Tormaresca Bocca di Lupo Aglianico", region: "Castel del Monte, Italy", myRating: 4.0, avgRating: null },
+        { name: "Mastroberardino Radici Taurasi", region: "Taurasi, Italy", myRating: 4.0, avgRating: null },
+        { name: "Tasca d'Almerita Regaleali Nero d'Avola", region: "Sicilia, Italy", myRating: 4.0, avgRating: null },
+        { name: "Tasca d'Almerita Regaleali Rosato", region: "Terre Siciliane, Italy", myRating: 4.0, avgRating: null },
+        { name: "Gimenez Mendez Alta Reserva Tannat", region: "Canelones, Uruguay", myRating: 4.0, avgRating: null },
+        { name: "Finca Sobreno Pago Lencia Crianza", region: "Toro, Spain", myRating: 4.0, avgRating: null },
+        { name: "Comenge Biberius", region: "Ribera del Duero, Spain", myRating: 4.0, avgRating: null },
+        { name: "Otronia 45 Rugientes Pinot Noir", region: "Patagonia, Argentina", myRating: 4.0, avgRating: null },
+        { name: "Narbona Pinot Noir", region: "Carmelo, Uruguay", myRating: 4.0, avgRating: null },
+        { name: "Viñedo de los Vientos Alcyone Tannat", region: "Atlántida, Uruguay", myRating: 4.0, avgRating: null },
+        { name: "Pisano RPF Tannat", region: "Progreso, Uruguay", myRating: 4.0, avgRating: null },
+        { name: "Garzón Tannat Reserva", region: "Maldonado, Uruguay", myRating: 4.0, avgRating: null },
+        { name: "Bouza Tannat", region: "Montevideo, Uruguay", myRating: 4.0, avgRating: null },
+        { name: "H. Stagnari Tannat Viejo", region: "Canelones, Uruguay", myRating: 4.0, avgRating: null },
+        { name: "Bodegas Carrau Amat Tannat", region: "Rivera, Uruguay", myRating: 4.0, avgRating: null },
+        { name: "Marichal Tannat Reserva", region: "Canelones, Uruguay", myRating: 4.0, avgRating: null },
+        { name: "Juanicó Don Pascual Tannat Reserva", region: "Canelones, Uruguay", myRating: 4.0, avgRating: null },
+        { name: "Familia Irurtia Posada del Virrey Tannat", region: "Carmelo, Uruguay", myRating: 4.0, avgRating: null },
+        { name: "Bodega Garzón Single Vineyard Tannat", region: "Maldonado, Uruguay", myRating: 4.0, avgRating: null },
+        { name: "Artesana Tannat", region: "Canelones, Uruguay", myRating: 4.0, avgRating: null },
+        { name: "Bodega Garzón Reserva Marselan", region: "Maldonado, Uruguay", myRating: 4.0, avgRating: null },
+        { name: "Viña Pomal Terruño Centenario Reserva", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Zlatan Otok Crljenak", region: "Hvar, Croatia", myRating: 4.0, avgRating: null },
+        { name: "Rodney Strong Reserve Pinot Noir", region: "Russian River Valley, United States", myRating: 4.0, avgRating: null },
+        { name: "Hess Allomi Cabernet Sauvignon", region: "Napa Valley, United States", myRating: 4.0, avgRating: null },
+        { name: "Terra Noble Gran Reserva Carmenère", region: "Colchagua Valley, Chile", myRating: 4.0, avgRating: null },
+        { name: "Borsao Tres Picos Garnacha", region: "Campo de Borja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Matarromera Ribera del Duero Crianza", region: "Ribera del Duero, Spain", myRating: 4.0, avgRating: null },
+        { name: "Muga Prado Enea Gran Reserva", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Azienda Agraria Carini Tegolaro", region: "Umbria, Italy", myRating: 4.0, avgRating: null },
+        { name: "Finca del Castillo Tempranillo", region: "La Mancha, Spain", myRating: 4.0, avgRating: null },
+        { name: "Larchago Crianza", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Jean-Paul Thévenet Vieilles Vignes Morgon", region: "Morgon, France", myRating: 4.0, avgRating: null },
+        { name: "Manzoni Home Vineyard Pinot Noir", region: "Santa Lucia Highlands, United States", myRating: 4.0, avgRating: null },
+        { name: "Annabella Pinot Noir Special Selection", region: "Los Carneros, United States", myRating: 4.0, avgRating: null },
+        { name: "Protos Tinto Fino", region: "Ribera del Duero, Spain", myRating: 4.0, avgRating: null },
+        { name: "Famille Berrouet Château Samion Lalande de Pomerol", region: "Lalande-de-Pomerol, France", myRating: 4.0, avgRating: null },
+        { name: "Ménage à Trois Bourbon Barrel Cabernet Sauvignon", region: "California, United States", myRating: 4.0, avgRating: null },
+        { name: "Juggernaut Hillside Cabernet Sauvignon", region: "California, United States", myRating: 4.0, avgRating: null },
+        { name: "Bloodroot Cellars Pinot Noir", region: "Sonoma County, United States", myRating: 4.0, avgRating: null },
+        { name: "Mendel Malbec", region: "Mendoza, Argentina", myRating: 4.0, avgRating: null },
+        { name: "Verveine Pinot Noir", region: "Anderson Valley, United States", myRating: 4.0, avgRating: null },
+        { name: "Palacios Remondo Rioja Alfaro R", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Allende Rioja", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Campo Viejo Reserva", region: "Rioja, Spain", myRating: 4.0, avgRating: null },
+        { name: "Phelps Creek Pinot Noir", region: "Columbia Gorge, United States", myRating: 4.0, avgRating: null },
+        { name: "Clos de Fous Pour Ma Gueule Pinot Noir", region: "Aconcagua Valley, Chile", myRating: 4.0, avgRating: null },
+        { name: "Terrunyo Carmenère", region: "Cachapoal Valley, Chile", myRating: 4.0, avgRating: null },
+        { name: "Santa Ema Gran Reserva Carmenère", region: "Cachapoal Valley, Chile", myRating: 4.0, avgRating: null },
+        { name: "Emiliana Coyam", region: "Colchagua Valley, Chile", myRating: 4.0, avgRating: null },
+        { name: "Lapostolle Cuvée Alexandre Carmenère", region: "Colchagua Valley, Chile", myRating: 4.0, avgRating: null },
+        { name: "Rabasco Cancelli Rosso", region: "Abruzzo, Italy", myRating: 4.0, avgRating: null },
+        { name: "Michel Laurent Muscadet-Sèvre et Maine", region: "Muscadet, France", myRating: 4.0, avgRating: null },
+        { name: "Domaine des Ouled Thaleb Tandem Syrah du Maroc", region: "Zenatta, Morocco", myRating: 4.0, avgRating: null },
+        { name: "Mar de Frades Albariño Atlantico", region: "Rías Baixas, Spain", myRating: 4.0, avgRating: null },
+        { name: "Carmelo Rodero Ribiera del Duero Crianza", region: "Ribera del Duero, Spain", myRating: 4.0, avgRating: null },
+        { name: "Pasqua 11 Minutes Rosé", region: "Trevenezie, Italy", myRating: 4.0, avgRating: null },
+        { name: "Frescobaldi Nipozzano Chianti Rufina Riserva", region: "Chianti Rufina, Italy", myRating: 4.0, avgRating: null },
+        { name: "Castello di Volpaia Chianti Classico", region: "Chianti Classico, Italy", myRating: 4.0, avgRating: null },
+        { name: "San Felice Il Grigio Chianti Classico Riserva", region: "Chianti Classico, Italy", myRating: 4.0, avgRating: null },
+        { name: "Vietti Barbera d'Asti La Crena", region: "Barbera d'Asti, Italy", myRating: 4.0, avgRating: null },
+        { name: "Banfi Brunello di Montalcino", region: "Brunello di Montalcino, Italy", myRating: 4.0, avgRating: null },
+        { name: "Planeta Plumbago Nero d'Avola", region: "Sicilia, Italy", myRating: 4.0, avgRating: null },
+        { name: "Donnafugata Mille e una Notte", region: "Sicilia, Italy", myRating: 4.0, avgRating: null },
+        { name: "Hess Select Cabernet Sauvignon", region: "North Coast, United States", myRating: 3.5, avgRating: null },
+        { name: "Sensi Collezione Chianti", region: "Chianti, Italy", myRating: 3.5, avgRating: null },
+        { name: "Ramón Bilbao Crianza Rioja", region: "Rioja, Spain", myRating: 3.5, avgRating: null },
+        { name: "Tarapacá Gran Reserva Carmenère", region: "Maipo Valley, Chile", myRating: 3.0, avgRating: null },
+        { name: "Kavaklıdere Ancyra Kalecik Karasi", region: "Ankara, Turkey", myRating: 3.0, avgRating: null },
+        { name: "Cantina Ferracci Ave Petrus", region: "Lazio, Italy", myRating: 3.0, avgRating: null },
+        { name: "Veralda Rosé Xtrian", region: "Istria, Croatia", myRating: 3.0, avgRating: null },
+        { name: "Le Ginestre Chianti Classico", region: "Chianti Classico, Italy", myRating: 3.0, avgRating: null },
+        { name: "Protocolo Tinto", region: "Castilla-La Mancha, Spain", myRating: 3.0, avgRating: null },
+        { name: "Los Morros Pinot Noir", region: "Central Valley, Chile", myRating: 3.0, avgRating: null },
+        { name: "Cantaburros Roble", region: "Ribera del Duero, Spain", myRating: 3.0, avgRating: null },
+        { name: "Teutonic Bellpine Vineyards Pinot Noir", region: "Willamette Valley, United States", myRating: 3.0, avgRating: null },
+        { name: "Quinta Las Cabras Carmenère", region: "Cachapoal Valley, Chile", myRating: 3.0, avgRating: null },
+      ];
+
+      const regions = [
+        { region: "Spanish Rioja Red", count: 49, avg: 4.3, tier: "top" },
+        { region: "Spanish Ribera Del Duero Red", count: 25, avg: 4.3, tier: "top" },
+        { region: "Southern Italy Red", count: 13, avg: 4.3, tier: "top" },
+        { region: "French White", count: 5, avg: 4.3, tier: "top" },
+        { region: "Spanish Red (all)", count: 98, avg: 4.2, tier: "top" },
+        { region: "Italian White", count: 13, avg: 4.2, tier: "top" },
+        { region: "Southern Italy White", count: 8, avg: 4.2, tier: "top" },
+        { region: "Portugal Red", count: 6, avg: 4.2, tier: "top" },
+        { region: "Uruguayan Tannat", count: 15, avg: 4.1, tier: "top" },
+        { region: "Italian Chianti Classico", count: 18, avg: 4.1, tier: "solid" },
+        { region: "Californian Cabernet Sauvignon", count: 7, avg: 4.1, tier: "solid" },
+        { region: "Argentinian Mendoza", count: 5, avg: 4.1, tier: "solid" },
+        { region: "Italian Red (all)", count: 78, avg: 4.0, tier: "solid" },
+        { region: "Central Italy Red", count: 43, avg: 4.0, tier: "solid" },
+        { region: "Tuscan Red", count: 29, avg: 4.0, tier: "solid" },
+        { region: "French Red", count: 25, avg: 3.9, tier: "meh" },
+        { region: "USA Red", count: 24, avg: 3.9, tier: "meh" },
+        { region: "Chilean Red", count: 12, avg: 3.9, tier: "meh" },
+        { region: "Argentinian Red", count: 11, avg: 3.9, tier: "meh" },
+      ];
+
+      const countries = useMemo(() => {
+        const c = {};
+        wines.forEach(w => {
+          const country = w.region.split(', ').pop();
+          if (!c[country]) c[country] = { count: 0, totalRating: 0 };
+          c[country].count++;
+          c[country].totalRating += w.myRating;
+        });
+        return Object.entries(c)
+          .map(([name, data]) => ({ name, count: data.count, avg: (data.totalRating / data.count).toFixed(1) }))
+          .sort((a, b) => b.count - a.count);
+      }, []);
+
+      const fiveStarWines = wines.filter(w => w.myRating === 5);
+      const avgRating = (wines.reduce((s, w) => s + w.myRating, 0) / wines.length).toFixed(1);
+
+      const filteredWines = useMemo(() => {
+        let result = [...wines];
+        if (filterRating !== 'all') result = result.filter(w => w.myRating === parseFloat(filterRating));
+        if (searchTerm) result = result.filter(w => w.name.toLowerCase().includes(searchTerm.toLowerCase()) || w.region.toLowerCase().includes(searchTerm.toLowerCase()));
+        if (sortBy === 'rating') result.sort((a, b) => b.myRating - a.myRating);
+        else if (sortBy === 'name') result.sort((a, b) => a.name.localeCompare(b.name));
+        return result;
+      }, [filterRating, searchTerm, sortBy]);
+
+      const renderStars = (rating) => {
+        const full = Math.floor(rating);
+        const half = rating % 1 >= 0.25;
+        return (
+          <span style={{ color: '#d4a017', letterSpacing: '1px', fontSize: '15px' }}>
+            {'★'.repeat(full)}{half ? '½' : ''}{'☆'.repeat(5 - full - (half ? 1 : 0))}
+          </span>
+        );
+      };
+
+      const tierColors = { top: { bg: '#f0fdf4', border: '#86efac', text: '#166534' }, solid: { bg: '#eff6ff', border: '#93c5fd', text: '#1e40af' }, meh: { bg: '#f9fafb', border: '#d1d5db', text: '#6b7280' } };
+
+      return (
+        <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #1a0a2e 0%, #2d1341 25%, #44174a 50%, #5c1a3e 75%, #2d1341 100%)', fontFamily: "'Georgia', serif", color: '#1f2937', padding: '24px 16px' }}>
+          <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+            <div style={{ background: 'rgba(255,255,255,0.95)', borderRadius: '16px', padding: '28px 32px', marginBottom: '20px', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <h1 style={{ fontSize: '28px', fontWeight: 'bold', margin: 0, color: '#1a0a2e' }}>🍷 Holdmybirra</h1>
+                  <p style={{ color: '#6b7280', margin: '4px 0 0', fontSize: '14px' }}>Wine Taste Profile · Vivino @Holdmybirra</p>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '42px', fontWeight: 'bold', color: '#7c3aed', lineHeight: 1 }}>{wines.length}</div>
+                  <div style={{ fontSize: '13px', color: '#9ca3af' }}>of 330 rated on Vivino</div>
+                  <div style={{ width: '120px', height: '6px', background: '#e5e7eb', borderRadius: '3px', marginTop: '6px', overflow: 'hidden' }}>
+                    <div style={{ width: `${(wines.length / 330) * 100}%`, height: '100%', background: 'linear-gradient(90deg, #7c3aed, #a855f7)', borderRadius: '3px' }} />
+                  </div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '16px', marginTop: '20px', flexWrap: 'wrap' }}>
+                {[
+                  { label: 'Avg Rating', value: avgRating + '★', color: '#d4a017' },
+                  { label: '5-Star', value: fiveStarWines.length, color: '#16a34a' },
+                  { label: 'Countries', value: countries.length, color: '#dc2626' },
+                  { label: 'Unique Wines', value: wines.length, color: '#7c3aed' },
+                ].map((stat, i) => (
+                  <div key={i} style={{ flex: '1 1 100px', background: '#f9fafb', borderRadius: '10px', padding: '12px 16px', textAlign: 'center', minWidth: '90px' }}>
+                    <div style={{ fontSize: '22px', fontWeight: 'bold', color: stat.color }}>{stat.value}</div>
+                    <div style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+              {['wines', 'regions', 'grapes', 'insights'].map(tab => (
+                <button key={tab} onClick={() => setActiveTab(tab)} style={{ padding: '10px 20px', borderRadius: '10px', border: 'none', cursor: 'pointer', fontWeight: '600', fontSize: '14px', fontFamily: 'inherit', background: activeTab === tab ? '#fff' : 'rgba(255,255,255,0.15)', color: activeTab === tab ? '#1a0a2e' : 'rgba(255,255,255,0.8)', boxShadow: activeTab === tab ? '0 4px 12px rgba(0,0,0,0.15)' : 'none' }}>
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+              ))}
+            </div>
+
+            <div style={{ background: 'rgba(255,255,255,0.95)', borderRadius: '16px', padding: '24px', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
+              {activeTab === 'wines' && (
+                <div>
+                  <div style={{ display: 'flex', gap: '10px', marginBottom: '16px', flexWrap: 'wrap' }}>
+                    <input type="text" placeholder="Search wines or regions..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} style={{ flex: '1 1 200px', padding: '10px 14px', borderRadius: '8px', border: '1px solid #d1d5db', fontSize: '14px', fontFamily: 'inherit', outline: 'none' }} />
+                    <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #d1d5db', fontSize: '13px', fontFamily: 'inherit' }}>
+                      <option value="rating">Rating ↓</option>
+                      <option value="name">Name A-Z</option>
+                    </select>
+                    <select value={filterRating} onChange={e => setFilterRating(e.target.value)} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #d1d5db', fontSize: '13px', fontFamily: 'inherit' }}>
+                      <option value="all">All</option>
+                      <option value="5">★★★★★</option>
+                      <option value="4.5">★★★★½</option>
+                      <option value="4">★★★★</option>
+                      <option value="3.5">★★★½</option>
+                      <option value="3">★★★</option>
+                    </select>
+                  </div>
+                  <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '12px' }}>Showing {filteredWines.length} wines</p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', maxHeight: '600px', overflowY: 'auto' }}>
+                    {filteredWines.map((wine, i) => (
+                      <div key={i} style={{ border: '1px solid #e5e7eb', borderRadius: '8px', padding: '10px 12px', background: wine.myRating === 5 ? '#fefff7' : '#fff', borderLeft: wine.myRating === 5 ? '4px solid #d4a017' : wine.myRating >= 4.5 ? '4px solid #7c3aed' : '4px solid transparent' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div>
+                            <span style={{ fontWeight: '600', fontSize: '13px' }}>{wine.name}</span>
+                            <span style={{ fontSize: '12px', color: '#6b7280', marginLeft: '8px' }}>{wine.region}</span>
+                          </div>
+                          <div>{renderStars(wine.myRating)}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'regions' && (
+                <div>
+                  <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '16px' }}>Regional Preferences</h2>
+                  {regions.map((r, i) => (
+                    <div key={i} style={{ border: `1px solid ${tierColors[r.tier].border}`, background: tierColors[r.tier].bg, borderRadius: '8px', padding: '10px 14px', marginBottom: '6px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                          <span style={{ fontWeight: '600', color: tierColors[r.tier].text, fontSize: '14px' }}>{r.region}</span>
+                          <span style={{ marginLeft: '8px', fontSize: '10px', padding: '2px 6px', borderRadius: '10px', background: r.tier === 'top' ? '#dcfce7' : r.tier === 'solid' ? '#dbeafe' : '#f3f4f6', color: tierColors[r.tier].text, fontWeight: 700, textTransform: 'uppercase' }}>{r.tier}</span>
+                        </div>
+                        <span style={{ fontWeight: 'bold', color: tierColors[r.tier].text }}>{r.count} wines · {r.avg}★</span>
+                      </div>
+                    </div>
+                  ))}
+                  <h2 style={{ fontSize: '20px', fontWeight: 'bold', margin: '24px 0 12px' }}>By Country</h2>
+                  {countries.map((c, i) => (
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '13px', width: '110px', fontWeight: 500 }}>{c.name}</span>
+                      <div style={{ flex: 1, height: '8px', background: '#e5e7eb', borderRadius: '4px', overflow: 'hidden' }}>
+                        <div style={{ width: `${(c.count / countries[0].count) * 100}%`, height: '100%', background: `hsl(${270 - i * 18}, 55%, ${45 + i * 3}%)`, borderRadius: '4px' }} />
+                      </div>
+                      <span style={{ fontSize: '12px', color: '#6b7280', width: '65px', textAlign: 'right' }}>{c.count} · {c.avg}★</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {activeTab === 'grapes' && (() => {
+                const grapeMap = {};
+                wines.forEach(w => {
+                  const region = w.region.split(', ');
+                  const country = region[region.length - 1];
+                  const subregion = region[0];
+                  let grape = 'Unknown';
+                  if (subregion.includes('Rioja') || subregion.includes('Ribera del Duero') || subregion.includes('Toro') || subregion.includes('Navarra') || w.name.includes('Tempranillo') || w.name.includes('Crianza') || w.name.includes('Reserva') && country === 'Spain') grape = 'Tempranillo';
+                  if (w.name.includes('Pinot Noir') || w.name.includes('Blauburgunder')) grape = 'Pinot Noir';
+                  if (w.name.includes('Cabernet Sauvignon')) grape = 'Cabernet Sauvignon';
+                  if (w.name.includes('Cabernet Franc')) grape = 'Cabernet Franc';
+                  if (w.name.includes('Malbec')) grape = 'Malbec';
+                  if (w.name.includes('Tannat')) grape = 'Tannat';
+                  if (w.name.includes('Primitivo')) grape = 'Primitivo';
+                  if (w.name.includes('Sangiovese') || subregion.includes('Brunello') || subregion.includes('Chianti')) grape = 'Sangiovese';
+                  if (w.name.includes('Aglianico') || subregion.includes('Taurasi') || subregion.includes('Aglianico')) grape = 'Aglianico';
+                  if (w.name.includes("Nero d'Avola") || w.name.includes('Nero d')) grape = "Nero d'Avola";
+                  if (w.name.includes('Carmenère') || w.name.includes('Carménère')) grape = 'Carmenère';
+                  if (w.name.includes('Garnacha') || w.name.includes('Grenache')) grape = 'Garnacha';
+                  if (w.name.includes('Zinfandel')) grape = 'Zinfandel';
+                  if (w.name.includes('Mencia') || w.name.includes('Mencía')) grape = 'Mencía';
+                  if (w.name.includes('Negroamaro')) grape = 'Negroamaro';
+                  if (w.name.includes('Nero Buono')) grape = 'Nero Buono';
+                  if (w.name.includes('Falanghina')) grape = 'Falanghina';
+                  if (w.name.includes('Fiano')) grape = 'Fiano';
+                  if (w.name.includes('Pinot Bianco')) grape = 'Pinot Bianco';
+                  if (w.name.includes('Albariño')) grape = 'Albariño';
+                  if (w.name.includes('Bobal')) grape = 'Bobal';
+                  if (w.name.includes('Corvina') || subregion.includes('Valpolicella')) grape = 'Corvina Blend';
+                  if (w.name.includes('Rosé') || w.name.includes('Rosato')) grape = 'Rosé Blend';
+                  if (subregion.includes('Douro') && country === 'Portugal') grape = 'Portuguese Blend';
+                  if (w.name.includes('Barbera')) grape = 'Barbera';
+                  if (w.name.includes('Lagrein')) grape = 'Lagrein';
+                  if (w.name.includes('Plavac') || w.name.includes('Crljenak')) grape = 'Plavac Mali';
+                  if (w.name.includes('Mantonegro')) grape = 'Mantonegro';
+                  if (subregion.includes('Etna') && !w.name.includes('Rosato')) grape = w.name.includes('Bianco') || w.name.includes('Calderara Bianco') ? 'Carricante' : 'Nerello Mascalese';
+                  if (w.name.includes('Piedirosso')) grape = 'Piedirosso';
+                  if (w.name.includes('Chardonnay')) grape = 'Chardonnay';
+                  if (w.name.includes('Sauvignon')) grape = grape === 'Cabernet Sauvignon' ? grape : 'Sauvignon Blanc';
+                  if (w.name.includes('Muscadet')) grape = 'Melon de Bourgogne';
+                  if (w.name.includes('Syrah')) grape = 'Syrah';
+                  if (w.name.includes('Morgon') || w.name.includes('Gamay')) grape = 'Gamay';
+                  if (w.name.includes('Marselan')) grape = 'Marselan';
+                  if (!grapeMap[grape]) grapeMap[grape] = { count: 0, total: 0 };
+                  grapeMap[grape].count++;
+                  grapeMap[grape].total += w.myRating;
+                });
+                const grapes = Object.entries(grapeMap)
+                  .map(([name, d]) => ({ name, count: d.count, avg: (d.total / d.count).toFixed(1) }))
+                  .filter(g => g.name !== 'Unknown')
+                  .sort((a, b) => b.count - a.count);
+                return (
+                  <div>
+                    <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '16px' }}>Grape Varietals</h2>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: '8px' }}>
+                      {grapes.map((g, i) => (
+                        <div key={i} style={{ border: '1px solid #e5e7eb', borderRadius: '10px', padding: '12px', background: i < 3 ? '#fefff7' : '#fff', borderTop: i < 3 ? '3px solid #d4a017' : '3px solid transparent', cursor: 'pointer' }}
+                          onClick={() => { setSearchTerm(g.name); setActiveTab('wines'); }}>
+                          <div style={{ fontWeight: '600', fontSize: '14px', color: '#1f2937' }}>{g.name}</div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px' }}>
+                            <span style={{ fontSize: '12px', color: '#6b7280' }}>{g.count} wines</span>
+                            <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#d4a017' }}>{g.avg}★</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {activeTab === 'insights' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <h2 style={{ fontSize: '20px', fontWeight: 'bold' }}>Taste Profile</h2>
+                  <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: '12px', padding: '20px' }}>
+                    <h3 style={{ fontWeight: 'bold', color: '#166534', marginTop: 0, fontSize: '16px' }}>😍 LOVE</h3>
+                    <p style={{ fontSize: '14px', color: '#15803d', lineHeight: 1.7 }}>
+                      Spanish Rioja & Ribera del Duero Tempranillo · Southern Italian reds (Primitivo, Aglianico, Nero d'Avola) · Italian whites (Carricante, Falanghina, Fiano, Pinot Bianco) · Uruguayan Tannat · Portuguese Douro blends · Quality Cabernet Franc · Brunello di Montalcino · Valpolicella Ripasso · Croatian Plavac Mali
+                    </p>
+                  </div>
+                  <div style={{ background: '#fefce8', border: '1px solid #fde047', borderRadius: '12px', padding: '20px' }}>
+                    <h3 style={{ fontWeight: 'bold', color: '#854d0e', marginTop: 0, fontSize: '16px' }}>😐 MEH</h3>
+                    <p style={{ fontSize: '14px', color: '#a16207', lineHeight: 1.7 }}>
+                      Beaujolais / Gamay · Generic Argentine Malbec · Californian Pinot Noir · Spanish whites · French reds (whites are great though)
+                    </p>
+                  </div>
+                  <div style={{ background: '#faf5ff', border: '1px solid #c084fc', borderRadius: '12px', padding: '20px' }}>
+                    <h3 style={{ fontWeight: 'bold', color: '#6b21a8', marginTop: 0, fontSize: '16px' }}>🍷 Pairing Strategy</h3>
+                    <p style={{ fontSize: '14px', color: '#7e22ce', lineHeight: 1.7 }}>
+                      Priority: Spanish Tempranillo (Rioja/Ribera) {'>'} Southern Italian reds {'>'} Quality Cab Franc {'>'} Douro blends<br/>
+                      Whites: Italian {'>'} French {'>'} Spanish<br/>
+                      Special occasion: R. López de Heredia, Pago de Carraovejas, Cune Imperial, Aalto, Muga Prado Enea, Donnafugata Mille e una Notte<br/>
+                      Value: Muga Selección Especial, Carmelo Rodero Crianza, Torre de Oña, Borsao Tres Picos, Finca Allende
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+            <p style={{ textAlign: 'center', marginTop: '20px', color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>
+              Vivino @Holdmybirra · {wines.length}/330 unique wines · Feb 2026
+            </p>
+          </div>
+        </div>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<WineProfile />);
+  </script>
+</body>
+</html>
