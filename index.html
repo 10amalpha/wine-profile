@@ -8,147 +8,153 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{font-size:16px}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#06090f;color:#e2e8f0;min-height:100vh;min-height:100dvh;padding-bottom:90px;-webkit-font-smoothing:antialiased}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#06090f;color:#e2e8f0;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 
-/* === BOTTOM NAV === */
-.bnav{position:fixed;bottom:0;left:0;right:0;display:flex;background:rgba(6,9,15,0.97);border-top:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);z-index:90;padding:6px 0 4px;padding-bottom:max(6px,env(safe-area-inset-bottom))}
-.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;cursor:pointer;border:none;background:none;color:#3d4a5c;font-size:10px;font-weight:500;letter-spacing:0.2px;transition:color 0.2s}
+/* Bottom nav */
+.bnav{position:fixed;bottom:0;left:0;right:0;display:flex;background:rgba(6,9,15,0.97);border-top:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);z-index:90;padding:8px 0 6px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 0;cursor:pointer;border:none;background:none;color:#3d4a5c;font-size:10px;font-weight:500;transition:color 0.2s}
 .bnav-item.active{color:#c8a97e}
 .bnav-item svg{width:22px;height:22px;fill:currentColor}
 
-/* === TOAST === */
-.toast{position:fixed;top:max(16px,env(safe-area-inset-top));left:16px;right:16px;transform:translateY(-120px);background:#c8a97e;color:#06090f;padding:14px 20px;border-radius:14px;font-size:15px;font-weight:700;z-index:200;transition:transform 0.3s ease;text-align:center}
+/* Toast */
+.toast{position:fixed;top:max(16px,env(safe-area-inset-top));left:16px;right:16px;transform:translateY(-120px);background:#c8a97e;color:#06090f;padding:16px 20px;border-radius:14px;font-size:16px;font-weight:700;z-index:200;transition:transform 0.3s ease;text-align:center}
 .toast.show{transform:translateY(0)}
 
-/* === SCREENS === */
-.screen{display:none;padding:0 20px 20px}
-.screen.active{display:block}
+/* Screens */
+.screen{display:none;min-height:calc(100vh - 70px);min-height:calc(100dvh - 70px);padding:0 24px 100px}
+.screen.active{display:flex;flex-direction:column}
 input[type="file"]{display:none}
 
-/* === HOME / SCAN === */
-.home-top{padding:max(20px,env(safe-area-inset-top)) 0 0;text-align:center}
-.home-logo{font-size:13px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#c8a97e;margin-bottom:2px}
-.home-sub{font-size:11px;color:#3d4a5c;letter-spacing:1px;text-transform:uppercase}
+/* === HOME === */
+.home-top{padding:max(52px,calc(env(safe-area-inset-top) + 16px)) 0 8px;text-align:center}
+.home-logo{font-size:14px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#c8a97e}
+.home-sub{font-size:10px;color:#3d4a5c;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
 
-/* Taste summary - horizontal strip */
-.taste-strip{display:flex;justify-content:space-around;margin:24px 0 28px;padding:16px 0;border-top:1px solid rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.04)}
-.ts-item{text-align:center}
-.ts-num{font-size:22px;font-weight:800;color:#e2e8f0;line-height:1;font-variant-numeric:tabular-nums}
-.ts-label{font-size:9px;color:#4a5568;text-transform:uppercase;letter-spacing:0.8px;margin-top:4px}
+/* Persona Card */
+.persona{margin:20px 0;background:linear-gradient(145deg,rgba(200,169,126,0.06) 0%,rgba(255,255,255,0.02) 100%);border:1px solid rgba(200,169,126,0.12);border-radius:20px;padding:22px 20px;position:relative;overflow:hidden}
+.persona::before{content:'';position:absolute;top:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,126,0.5),transparent)}
+.persona-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.persona-handle{font-size:17px;font-weight:800;color:#e2e8f0}
+.persona-level{font-size:11px;color:#c8a97e;background:rgba(200,169,126,0.12);padding:5px 12px;border-radius:12px;font-weight:600;letter-spacing:0.3px}
+.persona-bio{font-size:14px;color:#6b7a8d;line-height:1.55;margin-bottom:16px}
+.persona-bio b{color:#94a3b8;font-weight:700}
+.persona-stats{display:flex;border-top:1px solid rgba(255,255,255,0.05);padding-top:14px}
+.ps{flex:1;text-align:center;position:relative}
+.ps+.ps::before{content:'';position:absolute;left:0;top:2px;bottom:2px;width:1px;background:rgba(255,255,255,0.05)}
+.ps-n{font-size:22px;font-weight:800;color:#e2e8f0;line-height:1;font-variant-numeric:tabular-nums}
+.ps-l{font-size:9px;color:#4a5568;text-transform:uppercase;letter-spacing:0.8px;margin-top:4px}
+
+/* Tags */
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.tag{font-size:13px;color:#7a8599;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);padding:7px 16px;border-radius:20px;font-weight:500}
 
 /* Action buttons */
-.action-btn{display:flex;align-items:center;gap:16px;width:100%;padding:20px;margin-bottom:12px;border-radius:16px;border:none;cursor:pointer;text-align:left;transition:all 0.15s;-webkit-user-select:none}
-.action-btn:active{transform:scale(0.98)}
-.action-primary{background:linear-gradient(135deg,#c8a97e 0%,#a0845c 100%);color:#06090f}
-.action-primary .action-icon{background:rgba(6,9,15,0.15);color:#06090f}
-.action-secondary{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08) !important;color:#e2e8f0}
-.action-secondary .action-icon{background:rgba(200,169,126,0.1);color:#c8a97e}
-.action-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.action-text h3{font-size:16px;font-weight:700;margin-bottom:2px}
-.action-text p{font-size:13px;opacity:0.7;line-height:1.3}
-.action-arrow{margin-left:auto;font-size:18px;opacity:0.4}
+.actions{display:flex;flex-direction:column;gap:12px;margin-top:auto;padding-top:8px}
+.act{display:flex;align-items:center;gap:16px;width:100%;padding:22px 20px;border-radius:18px;border:none;cursor:pointer;text-align:left;transition:all 0.12s;-webkit-user-select:none;font-family:inherit}
+.act:active{transform:scale(0.97)}
+.act-p{background:linear-gradient(135deg,#c8a97e 0%,#a0845c 100%);color:#06090f}
+.act-p .act-ic{background:rgba(6,9,15,0.12)}
+.act-s{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08) !important;color:#e2e8f0}
+.act-s .act-ic{background:rgba(200,169,126,0.08);color:#c8a97e}
+.act-ic{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.act-tx h3{font-size:17px;font-weight:700;margin-bottom:2px}
+.act-tx p{font-size:13px;opacity:0.65;line-height:1.3}
+.act-arr{margin-left:auto;font-size:20px;opacity:0.35;font-weight:300}
 
-/* Taste tags */
-.taste-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
-.taste-tag{font-size:12px;color:#7a8599;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);padding:6px 14px;border-radius:20px;font-weight:500}
-
-/* === PAIRING / PREVIEW === */
-.pairing-section{margin-top:20px}
-.field-label{font-size:11px;color:#4a5568;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;font-weight:600}
+/* === Pairing/Preview === */
+.section-back{display:flex;align-items:center;gap:6px;color:#7a8599;font-size:14px;cursor:pointer;padding:16px 0 8px;border:none;background:none;font-family:inherit}
+.field-label{font-size:11px;color:#4a5568;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;font-weight:600;margin-top:16px}
 .field-input{width:100%;padding:16px 18px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:#e2e8f0;font-size:17px;outline:none;font-family:inherit}
 .field-input:focus{border-color:rgba(200,169,126,0.4)}
 .field-input::placeholder{color:#2d3748}
 
 .photo-strip{display:flex;gap:10px;margin-top:14px;overflow-x:auto;padding:4px 0;-webkit-overflow-scrolling:touch}
-.photo-thumb{position:relative;width:80px;height:80px;border-radius:14px;overflow:hidden;flex-shrink:0;border:2px solid rgba(255,255,255,0.08)}
+.photo-thumb{position:relative;width:84px;height:84px;border-radius:14px;overflow:hidden;flex-shrink:0;border:2px solid rgba(255,255,255,0.08)}
 .photo-thumb img{width:100%;height:100%;object-fit:cover}
-.photo-thumb-x{position:absolute;top:4px;right:4px;width:22px;height:22px;background:rgba(0,0,0,0.7);color:#ff6b6b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;font-weight:700}
-.photo-thumb-num{position:absolute;bottom:4px;left:4px;width:20px;height:20px;background:#c8a97e;color:#06090f;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
-.add-more-thumb{width:80px;height:80px;border-radius:14px;border:2px dashed rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:26px;color:#4a5568;cursor:pointer;flex-shrink:0}
+.photo-thumb-x{position:absolute;top:4px;right:4px;width:24px;height:24px;background:rgba(0,0,0,0.7);color:#ff6b6b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;font-weight:700}
+.photo-thumb-num{position:absolute;bottom:4px;left:4px;width:22px;height:22px;background:#c8a97e;color:#06090f;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.add-more{width:84px;height:84px;border-radius:14px;border:2px dashed rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:28px;color:#4a5568;cursor:pointer;flex-shrink:0}
 
 /* Buttons */
-.btn-gold{width:100%;margin-top:16px;padding:18px;border-radius:14px;border:none;background:linear-gradient(135deg,#c8a97e,#a0845c);color:#06090f;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-gold{width:100%;margin-top:18px;padding:18px;border-radius:16px;border:none;background:linear-gradient(135deg,#c8a97e,#a0845c);color:#06090f;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit}
 .btn-gold:active{opacity:0.9;transform:scale(0.99)}
-.btn-ghost{width:100%;margin-top:10px;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#7a8599;font-size:15px;cursor:pointer;font-family:inherit}
+.btn-gold:disabled{opacity:0.3}
+.btn-ghost{width:100%;margin-top:10px;padding:16px;border-radius:16px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#7a8599;font-size:15px;cursor:pointer;font-family:inherit}
 .link-muted{text-align:center;margin-top:12px;color:#3d4a5c;font-size:14px;cursor:pointer;padding:10px}
 
-/* === SCAN STATUS & RESULTS === */
-.scan-status{text-align:center;padding:48px 0;color:#7a8599;font-size:16px}
-.spinner{display:inline-block;width:18px;height:18px;border:2.5px solid rgba(200,169,126,0.2);border-top-color:#c8a97e;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:10px;vertical-align:middle}
+/* === Scan status / results === */
+.scan-status{text-align:center;padding:52px 0;color:#7a8599;font-size:16px}
+.spinner{display:inline-block;width:20px;height:20px;border:2.5px solid rgba(200,169,126,0.2);border-top-color:#c8a97e;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:10px;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 .result-section{margin-top:20px}
-.result-header{font-size:11px;color:#4a5568;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.04);font-weight:600}
-.result-header span{color:#c8a97e}
-.result-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:12px}
-.result-card.matched{border-color:rgba(200,169,126,0.3);background:rgba(200,169,126,0.04)}
-.result-left{flex:1;min-width:0}
-.result-name{font-size:15px;font-weight:700;color:#e2e8f0;margin-bottom:3px;line-height:1.3}
-.result-sub{font-size:13px;color:#4a5568}
-.result-pairing{font-size:13px;color:#c8a97e;margin-top:3px}
-.result-right{text-align:center;flex-shrink:0;min-width:48px}
-.result-score{font-size:26px;font-weight:800;color:#c8a97e;line-height:1}
-.result-reorder{font-size:10px;margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px}
-.result-reorder.yes{color:#6fcf97}
-.result-reorder.no{color:#ff6b6b}
-.result-reorder.maybe{color:#f2c94c}
-.result-new{font-size:12px;color:#3d4a5c;font-style:italic}
+.result-hdr{font-size:11px;color:#4a5568;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.04);font-weight:600}
+.result-hdr span{color:#c8a97e}
+.rcard{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:16px 18px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:14px}
+.rcard.matched{border-color:rgba(200,169,126,0.25);background:rgba(200,169,126,0.03)}
+.rc-l{flex:1;min-width:0}
+.rc-name{font-size:16px;font-weight:700;color:#e2e8f0;margin-bottom:3px;line-height:1.3}
+.rc-sub{font-size:13px;color:#4a5568}
+.rc-pair{font-size:13px;color:#c8a97e;margin-top:4px}
+.rc-r{text-align:center;flex-shrink:0;min-width:52px}
+.rc-score{font-size:28px;font-weight:800;color:#c8a97e;line-height:1}
+.rc-ro{font-size:10px;margin-top:3px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px}
+.rc-ro.yes{color:#6fcf97}.rc-ro.no{color:#ff6b6b}.rc-ro.maybe{color:#f2c94c}
+.rc-new{font-size:12px;color:#3d4a5c;font-style:italic}
 
-/* === BOTTLE SCAN === */
-.bottle-flow{text-align:center;padding:20px 0}
-.bottle-preview{margin:20px auto;max-width:180px}
-.bottle-preview img{width:100%;border-radius:16px;border:2px solid rgba(255,255,255,0.06)}
-.bottle-status{color:#7a8599;font-size:16px;margin:14px 0}
-.bottle-name{font-size:22px;font-weight:800;color:#e2e8f0;margin-bottom:4px;line-height:1.2}
-.bottle-detail{font-size:14px;color:#4a5568;margin-bottom:24px}
-.quick-rate{margin-top:24px}
+/* === Bottle === */
+.bottle-flow{text-align:center;padding:16px 0}
+.bottle-img{margin:16px auto;max-width:200px}
+.bottle-img img{width:100%;border-radius:18px;border:2px solid rgba(255,255,255,0.06)}
+.bottle-status{color:#7a8599;font-size:16px;margin:16px 0}
+.b-name{font-size:24px;font-weight:800;color:#e2e8f0;margin-bottom:6px;line-height:1.2}
+.b-detail{font-size:15px;color:#4a5568;margin-bottom:20px}
 .rate-label{font-size:11px;color:#4a5568;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;font-weight:600}
-.rate-stars{display:flex;gap:14px;font-size:38px;cursor:pointer;justify-content:center;margin-bottom:24px}
-.rate-stars span{color:#1a2030;transition:color 0.15s}
+.rate-stars{display:flex;gap:10px;font-size:42px;cursor:pointer;justify-content:center;margin-bottom:24px}
+.rate-stars span{color:#1a2030;transition:color 0.15s;line-height:1}
 .rate-stars span.active{color:#c8a97e}
 .rate-pills{display:flex;gap:10px;justify-content:center;margin-bottom:16px}
-.rpill{padding:12px 24px;border-radius:24px;border:1.5px solid rgba(255,255,255,0.08);background:transparent;color:#7a8599;cursor:pointer;font-size:15px;font-weight:500;transition:all 0.15s;font-family:inherit}
+.rpill{padding:14px 26px;border-radius:26px;border:1.5px solid rgba(255,255,255,0.08);background:transparent;color:#7a8599;cursor:pointer;font-size:16px;font-weight:500;transition:all 0.15s;font-family:inherit}
 .rpill.active{background:rgba(200,169,126,0.12);color:#c8a97e;border-color:rgba(200,169,126,0.3)}
 
-/* === COLLECTION === */
-.coll-head{margin-bottom:16px;padding-top:max(16px,env(safe-area-inset-top))}
-.coll-head h2{font-size:22px;font-weight:800;color:#e2e8f0;margin-bottom:2px}
-.coll-head .coll-sub{font-size:13px;color:#4a5568}
-.coll-search{width:100%;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.03);color:#e2e8f0;font-size:17px;outline:none;margin-bottom:14px;font-family:inherit}
+/* === Collection === */
+.coll-head{padding-top:max(48px,calc(env(safe-area-inset-top) + 12px));margin-bottom:16px}
+.coll-head h2{font-size:24px;font-weight:800;color:#e2e8f0}
+.coll-head .csub{font-size:13px;color:#4a5568;margin-top:2px}
+.coll-search{width:100%;padding:15px 18px;border-radius:14px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.03);color:#e2e8f0;font-size:17px;outline:none;margin-bottom:14px;font-family:inherit}
 .coll-search:focus{border-color:rgba(200,169,126,0.3)}
 .coll-search::placeholder{color:#2d3748}
-.coll-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
-.coll-tab{padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#4a5568;cursor:pointer;font-size:13px;font-weight:500;flex-shrink:0;white-space:nowrap;font-family:inherit}
-.coll-tab.active{background:rgba(200,169,126,0.1);color:#c8a97e;border-color:rgba(200,169,126,0.2)}
-.wine-list{display:flex;flex-direction:column;gap:8px}
-.wine-item{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px}
-.wine-item.top{border-left:3px solid #c8a97e}
-.wi-left{flex:1;min-width:0}
-.wi-name{font-size:15px;font-weight:700;color:#e2e8f0;margin-bottom:3px;line-height:1.3}
-.wi-meta{font-size:13px;color:#3d4a5c}
-.wi-right{text-align:center;flex-shrink:0}
-.wi-score{font-size:22px;font-weight:800;color:#c8a97e;line-height:1}
-.wi-badge{font-size:9px;color:#7a8599;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
+.ctabs{display:flex;gap:8px;margin-bottom:18px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.ctab{padding:9px 18px;border-radius:20px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#4a5568;cursor:pointer;font-size:14px;font-weight:500;flex-shrink:0;white-space:nowrap;font-family:inherit}
+.ctab.active{background:rgba(200,169,126,0.1);color:#c8a97e;border-color:rgba(200,169,126,0.2)}
+.wlist{display:flex;flex-direction:column;gap:10px}
+.witem{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:16px 18px;display:flex;justify-content:space-between;align-items:center;gap:14px}
+.witem.top{border-left:3px solid #c8a97e}
+.wl{flex:1;min-width:0}
+.wl-name{font-size:16px;font-weight:700;color:#e2e8f0;margin-bottom:3px;line-height:1.3}
+.wl-meta{font-size:13px;color:#3d4a5c}
+.wr{text-align:center;flex-shrink:0}
+.wr-score{font-size:24px;font-weight:800;color:#c8a97e;line-height:1}
+.wr-badge{font-size:9px;color:#7a8599;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
 
 /* Analytics */
-.a-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:16px 18px;margin-bottom:12px}
-.a-card h3{font-size:14px;color:#c8a97e;margin-bottom:12px;font-weight:700}
-.a-bar{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.a-lbl{font-size:12px;color:#7a8599;min-width:90px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.a-trk{flex:1;height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden}
-.a-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#c8a97e,#a0845c)}
-.a-val{font-size:11px;color:#4a5568;min-width:50px}
-.ins-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.03);font-size:15px}
-.ins-row:last-child{border:none}
-.ins-k{color:#7a8599}
-.ins-v{color:#c8a97e;font-weight:700}
+.acard{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:16px;padding:18px 20px;margin-bottom:12px}
+.acard h3{font-size:15px;color:#c8a97e;margin-bottom:14px;font-weight:700}
+.abar{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.abar-l{font-size:13px;color:#7a8599;min-width:100px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.abar-t{flex:1;height:7px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden}
+.abar-f{height:100%;border-radius:4px;background:linear-gradient(90deg,#c8a97e,#a0845c)}
+.abar-v{font-size:12px;color:#4a5568;min-width:52px}
+.irow{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.03);font-size:16px}
+.irow:last-child{border:none}
+.ik{color:#7a8599}
+.iv{color:#c8a97e;font-weight:700}
 </style>
 </head>
 <body>
 <div class="toast" id="toast"></div>
 
-<!-- HOME / SCAN -->
 <div class="screen active" id="screen-scan">
   <div class="home-top">
     <div class="home-logo">Hedonicum</div>
@@ -157,33 +163,27 @@ input[type="file"]{display:none}
   <div id="scan-content"></div>
 </div>
 
-<!-- BOTTLE -->
 <div class="screen" id="screen-bottle"><div id="bottle-content"></div></div>
 
-<!-- COLLECTION -->
 <div class="screen" id="screen-collection">
-  <div class="coll-head">
-    <h2>Collection</h2>
-    <div class="coll-sub" id="coll-sub"></div>
-  </div>
+  <div class="coll-head"><h2>Cellar</h2><div class="csub" id="csub"></div></div>
   <input type="text" class="coll-search" id="coll-search" placeholder="Search wines...">
-  <div class="coll-tabs">
-    <div class="coll-tab active" data-view="wines">All</div>
-    <div class="coll-tab" data-view="regions">Regions</div>
-    <div class="coll-tab" data-view="grapes">Grapes</div>
-    <div class="coll-tab" data-view="insights">Insights</div>
+  <div class="ctabs">
+    <div class="ctab active" data-v="wines">All</div>
+    <div class="ctab" data-v="regions">Regions</div>
+    <div class="ctab" data-v="grapes">Grapes</div>
+    <div class="ctab" data-v="insights">Insights</div>
   </div>
-  <div id="coll-content"></div>
+  <div id="coll-body"></div>
 </div>
 
-<!-- NAV -->
 <nav class="bnav">
   <div class="bnav-item active" data-screen="scan">
     <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
     Scan
   </div>
-  <div class="bnav-item" data-screen="bottle" id="nav-bottle" onclick="startBottleScan()">
-    <svg viewBox="0 0 24 24"><path d="M6 22a2 2 0 002 2h8a2 2 0 002-2V10l-2-8H8L6 10v12zm2-11l1.5-6h5L16 11H8zm0 2h8v9H8v-9z" transform="translate(0,-1)"/></svg>
+  <div class="bnav-item" id="nav-bottle" onclick="startBottle()">
+    <svg viewBox="0 0 24 24"><path d="M6 21a2 2 0 002 2h8a2 2 0 002-2V9l-2-8H8L6 9v12zm2-11l1.5-6h5L16 10H8zm0 2h8v9H8v-9z" transform="translate(0,-1)"/></svg>
     Add
   </div>
   <div class="bnav-item" data-screen="collection">
@@ -196,33 +196,23 @@ input[type="file"]{display:none}
 <input type="file" id="bottle-photo" accept="image/*" capture="environment">
 
 <script>
-const SB='https://bzpraigsuwgjgpnclcpd.supabase.co';
-const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cHJhaWdzdXdnamdwbmNsY3BkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1Mzk2NDEsImV4cCI6MjA4NTExNTY0MX0.tBtsac6Mq65BiG93MhYtn1KV8iOGpEpVdlD3tqShrzE';
-const AK='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';
+const SB='https://bzpraigsuwgjgpnclcpd.supabase.co',SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cHJhaWdzdXdnamdwbmNsY3BkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1Mzk2NDEsImV4cCI6MjA4NTExNTY0MX0.tBtsac6Mq65BiG93MhYtn1KV8iOGpEpVdlD3tqShrzE',AK='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';
 const H={'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json'};
-let wines=[],menuP=[],menuR=[],cView='wines',cSearch='';
+let wines=[],menuP=[],menuR=[],cV='wines',cS='';
 
-// NAV
 function go(s){
   document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.bnav-item').forEach(x=>x.classList.remove('active'));
   document.getElementById('screen-'+s).classList.add('active');
   document.querySelector(`.bnav-item[data-screen="${s}"]`)?.classList.add('active');
-  if(s==='collection')renderColl();
-  if(s==='scan')renderHome();
+  if(s==='collection')renderColl();if(s==='scan')renderHome();
 }
-document.querySelectorAll('.bnav-item').forEach(n=>{
-  if(n.id==='nav-bottle')return;
-  n.addEventListener('click',()=>go(n.dataset.screen));
-});
+document.querySelectorAll('.bnav-item[data-screen]').forEach(n=>n.addEventListener('click',()=>go(n.dataset.screen)));
 
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
-async function loadWines(){
-  try{const r=await fetch(`${SB}/rest/v1/wines?select=*&order=rating.desc,name.asc&limit=1000`,{headers:H});wines=await r.json();}catch(e){wines=[];}
-}
+async function loadWines(){try{const r=await fetch(`${SB}/rest/v1/wines?select=*&order=rating.desc,name.asc&limit=1000`,{headers:H});wines=await r.json();}catch(e){wines=[];}}
 
-// HOME
 function renderHome(){
   const el=document.getElementById('scan-content');
   if(menuP.length===0&&menuR.length===0){
@@ -230,111 +220,130 @@ function renderHome(){
     const t5=wines.filter(w=>Number(w.rating)>=5).length;
     const ctry=new Set(wines.map(w=>w.country).filter(Boolean)).size;
     const rgn=new Set(wines.map(w=>w.region).filter(Boolean)).size;
-    const gm={};wines.forEach(w=>{const g=w.grape;if(g){if(!gm[g])gm[g]=0;gm[g]++;}});
-    const topG=Object.entries(gm).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
-    const rm={};wines.forEach(w=>{const r=w.region;if(r){const short=r.split(',')[0].trim();if(!rm[short])rm[short]=0;rm[short]++;}});
+    const gm={};wines.forEach(w=>{if(w.grape){gm[w.grape]=(gm[w.grape]||0)+1;}});
+    const gs=Object.entries(gm).sort((a,b)=>b[1]-a[1]);
+    const topGrape=gs[0]?gs[0][0]:'';
+    const topG3=gs.slice(0,3).map(e=>e[0]);
+    const cm={};wines.forEach(w=>{if(w.country){cm[w.country]=(cm[w.country]||0)+1;}});
+    const cs=Object.entries(cm).sort((a,b)=>b[1]-a[1]);
+    const topC=cs[0]?cs[0][0]:'';
+    const pctC=cs[0]&&n?Math.round(cs[0][1]/n*100):0;
+    const rm={};wines.forEach(w=>{if(w.region){const s=w.region.split(',')[0].trim();rm[s]=(rm[s]||0)+1;}});
     const topR=Object.entries(rm).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
+    const level=n>=200?'Sommelier':n>=100?'Connoisseur':n>=50?'Enthusiast':'Explorer';
+
+    let bio='';
+    if(n>0){
+      bio=`<b>${n} wines</b> across <b>${ctry} countries</b>. `;
+      if(topC&&pctC>30)bio+=`Leans ${topC} (${pctC}%). `;
+      else if(topC)bio+=`Explores widely, mostly ${topC}. `;
+      if(topGrape)bio+=`${topGrape} loyalist. `;
+      if(topR.length>=2)bio+=`Knows ${topR[0]} & ${topR[1]} best.`;
+    }
 
     el.innerHTML=`
-      ${n>0?`<div class="taste-strip">
-        <div class="ts-item"><div class="ts-num">${n}</div><div class="ts-label">Wines</div></div>
-        <div class="ts-item"><div class="ts-num">${avg}</div><div class="ts-label">Avg</div></div>
-        <div class="ts-item"><div class="ts-num">${t5}</div><div class="ts-label">5★</div></div>
-        <div class="ts-item"><div class="ts-num">${ctry}</div><div class="ts-label">Countries</div></div>
-        <div class="ts-item"><div class="ts-num">${rgn}</div><div class="ts-label">Regions</div></div>
+      ${n>0?`<div class="persona">
+        <div class="persona-top">
+          <div class="persona-handle">@Holdmybirra</div>
+          <div class="persona-level">${level}</div>
+        </div>
+        <div class="persona-bio">${bio}</div>
+        <div class="persona-stats">
+          <div class="ps"><div class="ps-n">${avg}</div><div class="ps-l">Avg Score</div></div>
+          <div class="ps"><div class="ps-n">${t5}</div><div class="ps-l">Top Wines</div></div>
+          <div class="ps"><div class="ps-n">${rgn}</div><div class="ps-l">Regions</div></div>
+        </div>
       </div>
-      <div class="taste-tags">${[...topR,...topG].map(t=>`<span class="taste-tag">${t}</span>`).join('')}</div>`:''}
-      <button class="action-btn action-primary" onclick="document.getElementById('menu-photo').click()">
-        <div class="action-icon">📋</div>
-        <div class="action-text"><h3>Scan Menu</h3><p>Snap the wine list, get your picks</p></div>
-        <div class="action-arrow">›</div>
-      </button>
-      <button class="action-btn action-secondary" onclick="startBottleScan()">
-        <div class="action-icon">📸</div>
-        <div class="action-text"><h3>Add a Bottle</h3><p>Photograph to save & rate</p></div>
-        <div class="action-arrow">›</div>
-      </button>`;
+      <div class="tags">${[...topR,...topG3].map(t=>`<span class="tag">${t}</span>`).join('')}</div>`:
+      `<div style="text-align:center;padding:40px 0 20px;color:#3d4a5c;font-size:14px">Start building your taste profile</div>`}
+      <div class="actions">
+        <button class="act act-p" onclick="document.getElementById('menu-photo').click()">
+          <div class="act-ic">📋</div>
+          <div class="act-tx"><h3>Scan Menu</h3><p>Snap the wine list, get your picks</p></div>
+          <div class="act-arr">›</div>
+        </button>
+        <button class="act act-s" onclick="startBottle()">
+          <div class="act-ic">📸</div>
+          <div class="act-tx"><h3>Add a Bottle</h3><p>Photograph to save & rate</p></div>
+          <div class="act-arr">›</div>
+        </button>
+      </div>`;
   } else if(menuR.length>0){renderResults(el);}
   else{renderPreview(el);}
 }
 
 function renderPreview(el){
   el.innerHTML=`<div class="photo-strip">
-    ${menuP.map((p,i)=>`<div class="photo-thumb"><img src="${p}"><div class="photo-thumb-num">${i+1}</div><div class="photo-thumb-x" onclick="rmPhoto(${i})">✕</div></div>`).join('')}
-    <div class="add-more-thumb" onclick="document.getElementById('menu-photo').click()">+</div>
+    ${menuP.map((p,i)=>`<div class="photo-thumb"><img src="${p}"><div class="photo-thumb-num">${i+1}</div><div class="photo-thumb-x" onclick="rmP(${i})">✕</div></div>`).join('')}
+    <div class="add-more" onclick="document.getElementById('menu-photo').click()">+</div>
   </div>
-  <div class="pairing-section"><div class="field-label">🍽 What are you eating?</div>
-    <input type="text" class="field-input" id="pair-in" placeholder="steak, pasta, seafood...">
-  </div>
-  <button class="btn-gold" onclick="analyzeMenu()">Analyze ${menuP.length} ${menuP.length===1?'Photo':'Photos'}</button>
-  <div class="link-muted" onclick="clearMenu()">Clear</div>`;
+  <div class="field-label" style="margin-top:20px">🍽 What are you eating?</div>
+  <input type="text" class="field-input" id="pair-in" placeholder="steak, pasta, seafood...">
+  <button class="btn-gold" onclick="analyze()">Analyze ${menuP.length} ${menuP.length===1?'Photo':'Photos'}</button>
+  <div class="link-muted" onclick="clearM()">Clear</div>`;
 }
 
 function renderResults(el){
-  const found=menuR.filter(r=>r.match),nf=menuR.filter(r=>!r.match);
-  const pair=window._lp||'';
-  el.innerHTML=`<button class="btn-ghost" onclick="clearMenu()">← Scan Another Menu</button>
-    ${pair?`<div style="text-align:center;color:#4a5568;font-size:13px;margin-top:10px">Pairing with <span style="color:#c8a97e;font-weight:600">${pair}</span></div>`:''}
-    ${found.length?`<div class="result-section"><div class="result-header"><span>${found.length}</span> wines you know</div>
-      ${found.map(r=>`<div class="result-card matched"><div class="result-left">
-        <div class="result-name">${r.menuName}</div>
-        <div class="result-sub">${r.match.region||''}${r.match.grape?' · '+r.match.grape:''}</div>
-        ${r.match.notes?`<div class="result-sub" style="font-style:italic;color:#5a677a">"${r.match.notes}"</div>`:''}
-        ${r.pn?`<div class="result-pairing">🍽 ${r.pn}</div>`:''}
-      </div><div class="result-right">
-        <div class="result-score">${Number(r.match.rating).toFixed(1)}</div>
-        ${r.match.reorder?`<div class="result-reorder ${r.match.reorder}">${r.match.reorder==='yes'?'✓ Reorder':r.match.reorder==='no'?'✗ Skip':'~ Maybe'}</div>`:''}
+  const found=menuR.filter(r=>r.match),nf=menuR.filter(r=>!r.match),pair=window._lp||'';
+  el.innerHTML=`<button class="section-back" onclick="clearM()">← New Scan</button>
+    ${pair?`<div style="text-align:center;color:#4a5568;font-size:13px;margin:8px 0 4px">Pairing with <span style="color:#c8a97e;font-weight:600">${pair}</span></div>`:''}
+    ${found.length?`<div class="result-section"><div class="result-hdr"><span>${found.length}</span> wines you know</div>
+      ${found.map(r=>`<div class="rcard matched"><div class="rc-l">
+        <div class="rc-name">${r.mn}</div>
+        <div class="rc-sub">${r.match.region||''}${r.match.grape?' · '+r.match.grape:''}</div>
+        ${r.match.notes?`<div class="rc-sub" style="font-style:italic;color:#5a677a">"${r.match.notes}"</div>`:''}
+        ${r.pn?`<div class="rc-pair">🍽 ${r.pn}</div>`:''}
+      </div><div class="rc-r">
+        <div class="rc-score">${Number(r.match.rating).toFixed(1)}</div>
+        ${r.match.reorder?`<div class="rc-ro ${r.match.reorder}">${r.match.reorder==='yes'?'✓ Reorder':r.match.reorder==='no'?'✗ Skip':'~ Maybe'}</div>`:''}
       </div></div>`).join('')}</div>`:''}
-    ${nf.length?`<div class="result-section"><div class="result-header"><span>${nf.length}</span> new wines</div>
-      ${nf.map(r=>`<div class="result-card"><div class="result-left">
-        <div class="result-name">${r.menuName}</div>
-        ${r.pn?`<div class="result-pairing">🍽 ${r.pn}</div>`:''}
-        <div class="result-new">Not in your cellar</div>
+    ${nf.length?`<div class="result-section"><div class="result-hdr"><span>${nf.length}</span> new to you</div>
+      ${nf.map(r=>`<div class="rcard"><div class="rc-l">
+        <div class="rc-name">${r.mn}</div>
+        ${r.pn?`<div class="rc-pair">🍽 ${r.pn}</div>`:''}
+        <div class="rc-new">Not in your cellar</div>
       </div></div>`).join('')}</div>`:''}`;
 }
 
-// MENU PHOTOS
+// Photos
 document.getElementById('menu-photo').addEventListener('change',e=>{
-  Array.from(e.target.files).forEach(f=>{const r=new FileReader();r.onload=ev=>{menuP.push(ev.target.result);renderHome();};r.readAsDataURL(f);});
-  e.target.value='';
+  Array.from(e.target.files).forEach(f=>{const r=new FileReader();r.onload=v=>{menuP.push(v.target.result);renderHome();};r.readAsDataURL(f);});e.target.value='';
 });
-function rmPhoto(i){menuP.splice(i,1);if(!menuP.length)menuR=[];renderHome();}
-function clearMenu(){menuP=[];menuR=[];window._lp='';renderHome();}
+function rmP(i){menuP.splice(i,1);if(!menuP.length)menuR=[];renderHome();}
+function clearM(){menuP=[];menuR=[];window._lp='';renderHome();}
 
-// ANALYZE
-async function analyzeMenu(){
+// Analyze
+async function analyze(){
   const pair=document.getElementById('pair-in')?.value||'';window._lp=pair;
   const el=document.getElementById('scan-content');
   el.innerHTML=`<div class="scan-status"><span class="spinner"></span>Reading menu...</div>`;
   try{
     const c=[];menuP.forEach(img=>{c.push({type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}});});
-    c.push({type:'text',text:`Extract ALL wine names from ${menuP.length>1?'these menu photos':'this menu photo'}. Return ONLY a JSON array of wine names as written. No explanation.`});
+    c.push({type:'text',text:`Extract ALL wine names from ${menuP.length>1?'these menu photos':'this menu photo'}. Return ONLY a JSON array of wine names. No explanation.`});
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:c}]})});
     if(!res.ok)throw 0;
     const d=await res.json();let mw=[];try{mw=JSON.parse((d.content?.map(x=>x.text||'').join('')||'[]').replace(/```json|```/g,'').trim());}catch(e){}
-    menuR=mw.map(name=>({menuName:name,match:fuz(name,wines),pn:null}));
+    menuR=mw.map(name=>({mn:name,match:fuz(name,wines),pn:null}));
     if(pair.trim()&&menuR.length){
-      el.innerHTML=`<div class="scan-status"><span class="spinner"></span>Matching with ${pair}...</div>`;
-      try{
-        const pr=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:`I'm eating "${pair}". Wines: ${JSON.stringify(mw)}. For each give a 5-8 word pairing note. Return ONLY JSON {"Wine":"note"}. No explanation.`}]})});
-        if(pr.ok){const pd=await pr.json();try{const p=JSON.parse((pd.content?.map(x=>x.text||'').join('')||'{}').replace(/```json|```/g,'').trim());menuR.forEach(r=>{if(p[r.menuName])r.pn=p[r.menuName];});}catch(e){}}
-      }catch(e){}
+      el.innerHTML=`<div class="scan-status"><span class="spinner"></span>Pairing with ${pair}...</div>`;
+      try{const pr=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:`Eating "${pair}". Wines: ${JSON.stringify(mw)}. For each give 5-8 word pairing note. Return ONLY JSON {"Wine":"note"}.`}]})});
+      if(pr.ok){const pd=await pr.json();try{const p=JSON.parse((pd.content?.map(x=>x.text||'').join('')||'{}').replace(/```json|```/g,'').trim());menuR.forEach(r=>{if(p[r.mn])r.pn=p[r.mn];});}catch(e){}}}catch(e){}
     }
     renderHome();
   }catch(e){toast('Error reading menu');renderHome();}
 }
 
-// BOTTLE
-function startBottleScan(){document.getElementById('bottle-photo').click();}
+// Bottle
+function startBottle(){document.getElementById('bottle-photo').click();}
 document.getElementById('bottle-photo').addEventListener('change',async e=>{
   const f=e.target.files[0];if(!f)return;e.target.value='';
   const reader=new FileReader();
   reader.onload=async ev=>{
     const img=ev.target.result;go('bottle');
     const el=document.getElementById('bottle-content');
-    el.innerHTML=`<div class="bottle-flow"><div class="bottle-preview"><img src="${img}"></div><div class="bottle-status"><span class="spinner"></span>Reading label...</div></div>`;
+    el.innerHTML=`<div class="bottle-flow"><div class="bottle-img"><img src="${img}"></div><div class="bottle-status"><span class="spinner"></span>Reading label...</div></div>`;
     try{
-      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}},{type:'text',text:'Read wine label. Return ONLY JSON: {"name":"wine name","region":"region","country":"country","grape":"grape or null","vintage":2020}. Nulls for unknowns.'}]}]})});
+      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}},{type:'text',text:'Read wine label. Return ONLY JSON: {"name":"wine","region":"region","country":"country","grape":"grape or null","vintage":2020}. Nulls for unknowns.'}]}]})});
       if(!res.ok)throw 0;
       const d=await res.json();let info={};try{info=JSON.parse((d.content?.map(x=>x.text||'').join('')||'{}').replace(/```json|```/g,'').trim());}catch(e){}
       showRate(el,img,info);
@@ -345,91 +354,62 @@ document.getElementById('bottle-photo').addEventListener('change',async e=>{
 function showRate(el,img,info){
   window._bi=info;window._br=0;window._bo='';
   el.innerHTML=`<div class="bottle-flow">
-    <div class="bottle-preview"><img src="${img}"></div>
-    ${info.name?`<div class="bottle-name">${info.name}</div><div class="bottle-detail">${[info.region,info.country,info.grape,info.vintage].filter(Boolean).join(' · ')}</div>`
-    :`<div class="bottle-detail" style="margin-top:10px">Could not read label</div><input type="text" class="field-input" id="bn-in" placeholder="Wine name..." style="margin:12px 0">`}
+    <div class="bottle-img"><img src="${img}"></div>
+    ${info.name?`<div class="b-name">${info.name}</div><div class="b-detail">${[info.region,info.country,info.grape,info.vintage].filter(Boolean).join(' · ')}</div>`
+    :`<div class="b-detail" style="margin-top:12px">Could not read label</div><input type="text" class="field-input" id="bn" placeholder="Wine name..." style="margin:12px 0">`}
     <div class="quick-rate">
       <div class="rate-label">Rate it</div>
-      <div class="rate-stars" id="b-stars"><span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span></div>
+      <div class="rate-stars" id="bst"><span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span></div>
       <div class="rate-label">Reorder?</div>
-      <div class="rate-pills" id="b-ro"><div class="rpill" data-v="yes">Yes</div><div class="rpill" data-v="maybe">Maybe</div><div class="rpill" data-v="no">No</div></div>
+      <div class="rate-pills" id="bro"><div class="rpill" data-v="yes">Yes</div><div class="rpill" data-v="maybe">Maybe</div><div class="rpill" data-v="no">No</div></div>
     </div>
-    <button class="btn-gold" id="save-btn" disabled onclick="saveBottle()" style="opacity:0.35">Save to Cellar</button>
+    <button class="btn-gold" id="sbtn" disabled onclick="saveBottle()">Save to Cellar</button>
     <div class="link-muted" onclick="go('scan')">Cancel</div>
   </div>`;
-  document.querySelectorAll('#b-stars span').forEach(s=>s.addEventListener('click',()=>{
+  document.querySelectorAll('#bst span').forEach(s=>s.addEventListener('click',()=>{
     window._br=Number(s.dataset.v);
-    document.querySelectorAll('#b-stars span').forEach((x,i)=>x.classList.toggle('active',i<window._br));
-    const btn=document.getElementById('save-btn');btn.disabled=false;btn.style.opacity='1';
+    document.querySelectorAll('#bst span').forEach((x,i)=>x.classList.toggle('active',i<window._br));
+    document.getElementById('sbtn').disabled=false;
   }));
-  document.querySelectorAll('#b-ro .rpill').forEach(p=>p.addEventListener('click',()=>{
-    document.querySelectorAll('#b-ro .rpill').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('#bro .rpill').forEach(p=>p.addEventListener('click',()=>{
+    document.querySelectorAll('#bro .rpill').forEach(x=>x.classList.remove('active'));
     p.classList.add('active');window._bo=p.dataset.v;
   }));
 }
 
 async function saveBottle(){
-  const info=window._bi||{},name=info.name||document.getElementById('bn-in')?.value?.trim();
-  if(!name){toast('Enter a wine name');return;}
+  const info=window._bi||{},name=info.name||document.getElementById('bn')?.value?.trim();
+  if(!name){toast('Enter wine name');return;}
   const w={name,region:info.region||null,country:info.country||null,grape:info.grape||null,vintage:info.vintage||null,rating:window._br,reorder:window._bo||null,source:'bottle_scan'};
   try{
     const r=await fetch(`${SB}/rest/v1/wines`,{method:'POST',headers:{...H,'Prefer':'return=representation'},body:JSON.stringify(w)});
     if(r.ok){const[a]=await r.json();wines.unshift(a);wines.sort((a,b)=>Number(b.rating)-Number(a.rating));toast(`✓ ${name} saved`);go('scan');}
-    else toast('Error saving');
+    else toast('Save error');
   }catch(e){toast('Network error');}
 }
 
-// COLLECTION
+// Collection
 function renderColl(){
-  document.getElementById('coll-sub').textContent=`${wines.length} wines · ${new Set(wines.map(w=>w.country).filter(Boolean)).size} countries`;
-  const q=cSearch.toLowerCase();
-  const f=q?wines.filter(w=>(w.name||'').toLowerCase().includes(q)||(w.region||'').toLowerCase().includes(q)||(w.country||'').toLowerCase().includes(q)||(w.grape||'').toLowerCase().includes(q)):wines;
-  const el=document.getElementById('coll-content');
-  if(cView==='wines')rWines(el,f);else if(cView==='regions')rRegions(el,f);else if(cView==='grapes')rGrapes(el,f);else rInsights(el,f);
+  document.getElementById('csub').textContent=`${wines.length} wines · ${new Set(wines.map(w=>w.country).filter(Boolean)).size} countries`;
+  const q=cS.toLowerCase(),f=q?wines.filter(w=>(w.name||'').toLowerCase().includes(q)||(w.region||'').toLowerCase().includes(q)||(w.country||'').toLowerCase().includes(q)||(w.grape||'').toLowerCase().includes(q)):wines;
+  const el=document.getElementById('coll-body');
+  if(cV==='wines')rW(el,f);else if(cV==='regions')rR(el,f);else if(cV==='grapes')rG(el,f);else rI(el,f);
 }
-function rWines(el,l){el.innerHTML=`<div class="wine-list">${l.map(w=>{const r=Number(w.rating);return`<div class="wine-item${r>=5?' top':''}"><div class="wi-left"><div class="wi-name">${w.name}</div><div class="wi-meta">${w.region||''}${w.grape?' · '+w.grape:''}${w.vintage?' · '+w.vintage:''}</div></div><div class="wi-right"><div class="wi-score">${r.toFixed(1)}</div><div class="wi-badge">${r>=5?'★ Top':r>=4?'Great':'Good'}</div></div></div>`;}).join('')}</div>`;}
-function rRegions(el,l){
-  const m={};l.forEach(w=>{const r=w.region||'Unknown';if(!m[r])m[r]={n:0,t:0};m[r].n++;m[r].t+=Number(w.rating);});
-  const s=Object.entries(m).sort((a,b)=>b[1].n-a[1].n),mx=s[0]?.[1].n||1;
-  el.innerHTML=`<div class="a-card"><h3>Regions (${s.length})</h3>${s.slice(0,30).map(([n,d])=>`<div class="a-bar"><span class="a-lbl">${n}</span><div class="a-trk"><div class="a-fill" style="width:${d.n/mx*100}%"></div></div><span class="a-val">${d.n} · ${(d.t/d.n).toFixed(1)}★</span></div>`).join('')}</div>`;
-}
-function rGrapes(el,l){
-  const m={};l.forEach(w=>{const g=w.grape||'Unknown';if(!m[g])m[g]={n:0,t:0};m[g].n++;m[g].t+=Number(w.rating);});
-  const s=Object.entries(m).sort((a,b)=>b[1].n-a[1].n),mx=s[0]?.[1].n||1;
-  el.innerHTML=`<div class="a-card"><h3>Grapes (${s.length})</h3>${s.slice(0,25).map(([n,d])=>`<div class="a-bar"><span class="a-lbl">${n}</span><div class="a-trk"><div class="a-fill" style="width:${d.n/mx*100}%"></div></div><span class="a-val">${d.n} · ${(d.t/d.n).toFixed(1)}★</span></div>`).join('')}</div>`;
-}
-function rInsights(el,l){
-  const c={};l.forEach(w=>{const k=w.country||'?';if(!c[k])c[k]=0;c[k]++;});
-  const tc=Object.entries(c).sort((a,b)=>b[1]-a[1])[0];
-  const avg=l.length?(l.reduce((s,w)=>s+Number(w.rating),0)/l.length).toFixed(2):'-';
-  const t5=l.filter(w=>Number(w.rating)>=5).length;
-  el.innerHTML=`<div class="a-card"><h3>Taste DNA</h3>
-    <div class="ins-row"><span class="ins-k">Total wines</span><span class="ins-v">${l.length}</span></div>
-    <div class="ins-row"><span class="ins-k">Average rating</span><span class="ins-v">${avg}</span></div>
-    <div class="ins-row"><span class="ins-k">5★ wines</span><span class="ins-v">${t5} (${l.length?Math.round(t5/l.length*100):0}%)</span></div>
-    <div class="ins-row"><span class="ins-k">Top country</span><span class="ins-v">${tc?tc[0]+' ('+tc[1]+')':'-'}</span></div>
-    <div class="ins-row"><span class="ins-k">Regions</span><span class="ins-v">${new Set(l.map(w=>w.region).filter(Boolean)).size}</span></div>
-    <div class="ins-row"><span class="ins-k">Countries</span><span class="ins-v">${Object.keys(c).length}</span></div>
-  </div>`;
-}
-document.querySelectorAll('.coll-tab').forEach(t=>t.addEventListener('click',()=>{
-  document.querySelectorAll('.coll-tab').forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');cView=t.dataset.view;renderColl();
-}));
-document.getElementById('coll-search').addEventListener('input',e=>{cSearch=e.target.value;renderColl();});
+function rW(el,l){el.innerHTML=`<div class="wlist">${l.map(w=>{const r=Number(w.rating);return`<div class="witem${r>=5?' top':''}"><div class="wl"><div class="wl-name">${w.name}</div><div class="wl-meta">${w.region||''}${w.grape?' · '+w.grape:''}${w.vintage?' · '+w.vintage:''}</div></div><div class="wr"><div class="wr-score">${r.toFixed(1)}</div><div class="wr-badge">${r>=5?'★ Top':r>=4?'Great':'Good'}</div></div></div>`;}).join('')}</div>`;}
+function rR(el,l){const m={};l.forEach(w=>{const r=w.region||'?';m[r]=m[r]||{n:0,t:0};m[r].n++;m[r].t+=Number(w.rating);});const s=Object.entries(m).sort((a,b)=>b[1].n-a[1].n),mx=s[0]?.[1].n||1;el.innerHTML=`<div class="acard"><h3>Regions (${s.length})</h3>${s.slice(0,30).map(([n,d])=>`<div class="abar"><span class="abar-l">${n}</span><div class="abar-t"><div class="abar-f" style="width:${d.n/mx*100}%"></div></div><span class="abar-v">${d.n} · ${(d.t/d.n).toFixed(1)}★</span></div>`).join('')}</div>`;}
+function rG(el,l){const m={};l.forEach(w=>{const g=w.grape||'?';m[g]=m[g]||{n:0,t:0};m[g].n++;m[g].t+=Number(w.rating);});const s=Object.entries(m).sort((a,b)=>b[1].n-a[1].n),mx=s[0]?.[1].n||1;el.innerHTML=`<div class="acard"><h3>Grapes (${s.length})</h3>${s.slice(0,25).map(([n,d])=>`<div class="abar"><span class="abar-l">${n}</span><div class="abar-t"><div class="abar-f" style="width:${d.n/mx*100}%"></div></div><span class="abar-v">${d.n} · ${(d.t/d.n).toFixed(1)}★</span></div>`).join('')}</div>`;}
+function rI(el,l){const c={};l.forEach(w=>{const k=w.country||'?';c[k]=(c[k]||0)+1;});const tc=Object.entries(c).sort((a,b)=>b[1]-a[1])[0];const avg=l.length?(l.reduce((s,w)=>s+Number(w.rating),0)/l.length).toFixed(2):'-';const t5=l.filter(w=>Number(w.rating)>=5).length;
+el.innerHTML=`<div class="acard"><h3>Taste DNA</h3>
+<div class="irow"><span class="ik">Total wines</span><span class="iv">${l.length}</span></div>
+<div class="irow"><span class="ik">Average rating</span><span class="iv">${avg}</span></div>
+<div class="irow"><span class="ik">5★ wines</span><span class="iv">${t5} (${l.length?Math.round(t5/l.length*100):0}%)</span></div>
+<div class="irow"><span class="ik">Top country</span><span class="iv">${tc?tc[0]+' ('+tc[1]+')':'-'}</span></div>
+<div class="irow"><span class="ik">Regions</span><span class="iv">${new Set(l.map(w=>w.region).filter(Boolean)).size}</span></div>
+<div class="irow"><span class="ik">Countries</span><span class="iv">${Object.keys(c).length}</span></div></div>`;}
+document.querySelectorAll('.ctab').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.ctab').forEach(x=>x.classList.remove('active'));t.classList.add('active');cV=t.dataset.v;renderColl();}));
+document.getElementById('coll-search').addEventListener('input',e=>{cS=e.target.value;renderColl();});
 
-// FUZZY
-function fuz(q,wl){
-  const a=q.toLowerCase().replace(/[^a-záéíóúñü0-9\s]/gi,'').trim(),aw=a.split(/\s+/).filter(w=>w.length>2);
-  let best=null,bs=0;
-  for(const w of wl){
-    const n=(w.name||'').toLowerCase().replace(/[^a-záéíóúñü0-9\s]/gi,'').trim();
-    if(n.includes(a)||a.includes(n))return w;
-    const nw=n.split(/\s+/).filter(w=>w.length>2);let sc=0;
-    for(const x of aw)for(const y of nw){if(y===x)sc+=3;else if(y.includes(x)||x.includes(y))sc+=2;else if(lev(x,y)<=2)sc+=1;}
-    const ns=sc/Math.max(aw.length,nw.length,1);if(ns>bs&&ns>=1.5){bs=ns;best=w;}
-  }return best;
-}
+function fuz(q,wl){const a=q.toLowerCase().replace(/[^a-záéíóúñü0-9\s]/gi,'').trim(),aw=a.split(/\s+/).filter(w=>w.length>2);let best=null,bs=0;for(const w of wl){const n=(w.name||'').toLowerCase().replace(/[^a-záéíóúñü0-9\s]/gi,'').trim();if(n.includes(a)||a.includes(n))return w;const nw=n.split(/\s+/).filter(w=>w.length>2);let sc=0;for(const x of aw)for(const y of nw){if(y===x)sc+=3;else if(y.includes(x)||x.includes(y))sc+=2;else if(lev(x,y)<=2)sc+=1;}const ns=sc/Math.max(aw.length,nw.length,1);if(ns>bs&&ns>=1.5){bs=ns;best=w;}}return best;}
 function lev(a,b){const m=a.length,n=b.length,d=Array.from({length:m+1},(_,i)=>i);for(let j=1;j<=n;j++){let p=d[0];d[0]=j;for(let i=1;i<=m;i++){const t=d[i];d[i]=a[i-1]===b[j-1]?p:1+Math.min(p,d[i],d[i-1]);p=t;}}return d[m];}
 
 loadWines().then(()=>renderHome());
