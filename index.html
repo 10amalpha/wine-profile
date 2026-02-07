@@ -301,28 +301,28 @@
         const full = Math.floor(rating);
         const half = rating % 1 >= 0.25;
         return (
-          <span style={{ color: '#d4a017', letterSpacing: '1px', fontSize: '15px' }}>
+          <span style={{ color: '#fbbf24', letterSpacing: '1px', fontSize: '15px' }}>
             {'★'.repeat(full)}{half ? '½' : ''}{'☆'.repeat(5 - full - (half ? 1 : 0))}
           </span>
         );
       };
 
-      const tierColors = { top: { bg: '#f0fdf4', border: '#86efac', text: '#166534' }, solid: { bg: '#eff6ff', border: '#93c5fd', text: '#1e40af' }, meh: { bg: '#f9fafb', border: '#d1d5db', text: '#6b7280' } };
+      const tierColors = { top: { bg: 'rgba(45,212,191,0.08)', border: '#2dd4bf', text: '#2dd4bf' }, solid: { bg: 'rgba(6,182,212,0.08)', border: '#06b6d4', text: '#06b6d4' }, meh: { bg: 'rgba(100,116,139,0.08)', border: '#475569', text: '#94a3b8' } };
 
       return (
-        <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #1a0a2e 0%, #2d1341 25%, #44174a 50%, #5c1a3e 75%, #2d1341 100%)', fontFamily: "'Georgia', serif", color: '#1f2937', padding: '24px 16px' }}>
+        <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #0a1628 0%, #0d1f3c 50%, #0a1628 100%)', fontFamily: "'Georgia', serif", color: '#e2e8f0', padding: '24px 16px' }}>
           <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-            <div style={{ background: 'rgba(255,255,255,0.95)', borderRadius: '16px', padding: '28px 32px', marginBottom: '20px', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
+            <div style={{ background: 'rgba(13,31,60,0.9)', borderRadius: '16px', padding: '28px 32px', marginBottom: '20px', boxShadow: '0 8px 32px rgba(0,0,0,0.3)', border: '1px solid rgba(45,212,191,0.15)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <h1 style={{ fontSize: '28px', fontWeight: 'bold', margin: 0, color: '#1a0a2e' }}>🍷 Holdmybirra</h1>
-                  <p style={{ color: '#6b7280', margin: '4px 0 0', fontSize: '14px' }}>Wine Taste Profile · Vivino @Holdmybirra</p>
+                  <h1 style={{ fontSize: '28px', fontWeight: 'bold', margin: 0, color: '#2dd4bf' }}>🍷 Holdmybirra</h1>
+                  <p style={{ color: '#94a3b8', margin: '4px 0 0', fontSize: '14px' }}>Wine Taste Profile · Vivino @Holdmybirra</p>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '42px', fontWeight: 'bold', color: '#7c3aed', lineHeight: 1 }}>{wines.length}</div>
-                  <div style={{ fontSize: '13px', color: '#9ca3af' }}>of 330 rated on Vivino</div>
-                  <div style={{ width: '120px', height: '6px', background: '#e5e7eb', borderRadius: '3px', marginTop: '6px', overflow: 'hidden' }}>
-                    <div style={{ width: `${(wines.length / 330) * 100}%`, height: '100%', background: 'linear-gradient(90deg, #7c3aed, #a855f7)', borderRadius: '3px' }} />
+                  <div style={{ fontSize: '42px', fontWeight: 'bold', color: '#2dd4bf', lineHeight: 1 }}>{wines.length}</div>
+                  <div style={{ fontSize: '13px', color: '#64748b' }}>of 330 rated on Vivino</div>
+                  <div style={{ width: '120px', height: '6px', background: '#1e293b', borderRadius: '3px', marginTop: '6px', overflow: 'hidden' }}>
+                    <div style={{ width: `${(wines.length / 330) * 100}%`, height: '100%', background: 'linear-gradient(90deg, #2dd4bf, #06b6d4)', borderRadius: '3px' }} />
                   </div>
                 </div>
               </div>
@@ -331,11 +331,11 @@
                   { label: 'Avg Rating', value: avgRating + '★', color: '#d4a017' },
                   { label: '5-Star', value: fiveStarWines.length, color: '#16a34a' },
                   { label: 'Countries', value: countries.length, color: '#dc2626' },
-                  { label: 'Unique Wines', value: wines.length, color: '#7c3aed' },
+                  { label: 'Unique Wines', value: wines.length, color: '#2dd4bf' },
                 ].map((stat, i) => (
-                  <div key={i} style={{ flex: '1 1 100px', background: '#f9fafb', borderRadius: '10px', padding: '12px 16px', textAlign: 'center', minWidth: '90px' }}>
+                  <div key={i} style={{ flex: '1 1 100px', background: '#0f2035', borderRadius: '10px', padding: '12px 16px', border: '1px solid rgba(45,212,191,0.1)', textAlign: 'center', minWidth: '90px' }}>
                     <div style={{ fontSize: '22px', fontWeight: 'bold', color: stat.color }}>{stat.value}</div>
-                    <div style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{stat.label}</div>
+                    <div style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{stat.label}</div>
                   </div>
                 ))}
               </div>
@@ -343,22 +343,22 @@
 
             <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
               {['wines', 'regions', 'grapes', 'insights'].map(tab => (
-                <button key={tab} onClick={() => setActiveTab(tab)} style={{ padding: '10px 20px', borderRadius: '10px', border: 'none', cursor: 'pointer', fontWeight: '600', fontSize: '14px', fontFamily: 'inherit', background: activeTab === tab ? '#fff' : 'rgba(255,255,255,0.15)', color: activeTab === tab ? '#1a0a2e' : 'rgba(255,255,255,0.8)', boxShadow: activeTab === tab ? '0 4px 12px rgba(0,0,0,0.15)' : 'none' }}>
+                <button key={tab} onClick={() => setActiveTab(tab)} style={{ padding: '10px 20px', borderRadius: '10px', border: 'none', cursor: 'pointer', fontWeight: '600', fontSize: '14px', fontFamily: 'inherit', background: activeTab === tab ? '#2dd4bf' : 'rgba(45,212,191,0.1)', color: activeTab === tab ? '#0a1628' : '#94a3b8', boxShadow: activeTab === tab ? '0 4px 12px rgba(0,0,0,0.15)' : 'none' }}>
                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
                 </button>
               ))}
             </div>
 
-            <div style={{ background: 'rgba(255,255,255,0.95)', borderRadius: '16px', padding: '24px', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
+            <div style={{ background: 'rgba(13,31,60,0.9)', borderRadius: '16px', padding: '24px', boxShadow: '0 8px 32px rgba(0,0,0,0.3)', border: '1px solid rgba(45,212,191,0.15)' }}>
               {activeTab === 'wines' && (
                 <div>
                   <div style={{ display: 'flex', gap: '10px', marginBottom: '16px', flexWrap: 'wrap' }}>
-                    <input type="text" placeholder="Search wines or regions..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} style={{ flex: '1 1 200px', padding: '10px 14px', borderRadius: '8px', border: '1px solid #d1d5db', fontSize: '14px', fontFamily: 'inherit', outline: 'none' }} />
-                    <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #d1d5db', fontSize: '13px', fontFamily: 'inherit' }}>
+                    <input type="text" placeholder="Search wines or regions..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} style={{ flex: '1 1 200px', padding: '10px 14px', borderRadius: '8px', border: '1px solid #1e3a5f', fontSize: '14px', fontFamily: 'inherit', outline: 'none', background: '#0f2035', color: '#e2e8f0' }} />
+                    <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #1e3a5f', fontSize: '13px', fontFamily: 'inherit', background: '#0f2035', color: '#e2e8f0' }}>
                       <option value="rating">Rating ↓</option>
                       <option value="name">Name A-Z</option>
                     </select>
-                    <select value={filterRating} onChange={e => setFilterRating(e.target.value)} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #d1d5db', fontSize: '13px', fontFamily: 'inherit' }}>
+                    <select value={filterRating} onChange={e => setFilterRating(e.target.value)} style={{ padding: '10px', borderRadius: '8px', border: '1px solid #1e3a5f', fontSize: '13px', fontFamily: 'inherit', background: '#0f2035', color: '#e2e8f0' }}>
                       <option value="all">All</option>
                       <option value="5">★★★★★</option>
                       <option value="4.5">★★★★½</option>
@@ -367,14 +367,14 @@
                       <option value="3">★★★</option>
                     </select>
                   </div>
-                  <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '12px' }}>Showing {filteredWines.length} wines</p>
+                  <p style={{ fontSize: '13px', color: '#64748b', marginBottom: '12px' }}>Showing {filteredWines.length} wines</p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', maxHeight: '600px', overflowY: 'auto' }}>
                     {filteredWines.map((wine, i) => (
-                      <div key={i} style={{ border: '1px solid #e5e7eb', borderRadius: '8px', padding: '10px 12px', background: wine.myRating === 5 ? '#fefff7' : '#fff', borderLeft: wine.myRating === 5 ? '4px solid #d4a017' : wine.myRating >= 4.5 ? '4px solid #7c3aed' : '4px solid transparent' }}>
+                      <div key={i} style={{ border: '1px solid #1e3a5f', borderRadius: '8px', padding: '10px 12px', background: wine.myRating === 5 ? 'rgba(45,212,191,0.05)' : '#0f2035', borderLeft: wine.myRating === 5 ? '4px solid #2dd4bf' : wine.myRating >= 4.5 ? '4px solid #06b6d4' : '4px solid transparent' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <div>
-                            <span style={{ fontWeight: '600', fontSize: '13px' }}>{wine.name}</span>
-                            <span style={{ fontSize: '12px', color: '#6b7280', marginLeft: '8px' }}>{wine.region}</span>
+                            <span style={{ fontWeight: '600', fontSize: '13px', color: '#e2e8f0' }}>{wine.name}</span>
+                            <span style={{ fontSize: '12px', color: '#64748b', marginLeft: '8px' }}>{wine.region}</span>
                           </div>
                           <div>{renderStars(wine.myRating)}</div>
                         </div>
@@ -386,26 +386,26 @@
 
               {activeTab === 'regions' && (
                 <div>
-                  <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '16px' }}>Regional Preferences</h2>
+                  <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '16px', color: '#2dd4bf' }}>Regional Preferences</h2>
                   {regions.map((r, i) => (
                     <div key={i} style={{ border: `1px solid ${tierColors[r.tier].border}`, background: tierColors[r.tier].bg, borderRadius: '8px', padding: '10px 14px', marginBottom: '6px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div>
                           <span style={{ fontWeight: '600', color: tierColors[r.tier].text, fontSize: '14px' }}>{r.region}</span>
-                          <span style={{ marginLeft: '8px', fontSize: '10px', padding: '2px 6px', borderRadius: '10px', background: r.tier === 'top' ? '#dcfce7' : r.tier === 'solid' ? '#dbeafe' : '#f3f4f6', color: tierColors[r.tier].text, fontWeight: 700, textTransform: 'uppercase' }}>{r.tier}</span>
+                          <span style={{ marginLeft: '8px', fontSize: '10px', padding: '2px 6px', borderRadius: '10px', background: r.tier === 'top' ? 'rgba(45,212,191,0.2)' : r.tier === 'solid' ? 'rgba(6,182,212,0.2)' : 'rgba(100,116,139,0.15)', color: tierColors[r.tier].text, fontWeight: 700, textTransform: 'uppercase' }}>{r.tier}</span>
                         </div>
                         <span style={{ fontWeight: 'bold', color: tierColors[r.tier].text }}>{r.count} wines · {r.avg}★</span>
                       </div>
                     </div>
                   ))}
-                  <h2 style={{ fontSize: '20px', fontWeight: 'bold', margin: '24px 0 12px' }}>By Country</h2>
+                  <h2 style={{ fontSize: '20px', fontWeight: 'bold', margin: '24px 0 12px', color: '#2dd4bf' }}>By Country</h2>
                   {countries.map((c, i) => (
                     <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
-                      <span style={{ fontSize: '13px', width: '110px', fontWeight: 500 }}>{c.name}</span>
-                      <div style={{ flex: 1, height: '8px', background: '#e5e7eb', borderRadius: '4px', overflow: 'hidden' }}>
-                        <div style={{ width: `${(c.count / countries[0].count) * 100}%`, height: '100%', background: `hsl(${270 - i * 18}, 55%, ${45 + i * 3}%)`, borderRadius: '4px' }} />
+                      <span style={{ fontSize: '13px', width: '110px', fontWeight: 500, color: '#e2e8f0' }}>{c.name}</span>
+                      <div style={{ flex: 1, height: '8px', background: '#1e293b', borderRadius: '4px', overflow: 'hidden' }}>
+                        <div style={{ width: `${(c.count / countries[0].count) * 100}%`, height: '100%', background: `hsl(${175 - i * 8}, 65%, ${45 - i * 2}%)`, borderRadius: '4px' }} />
                       </div>
-                      <span style={{ fontSize: '12px', color: '#6b7280', width: '65px', textAlign: 'right' }}>{c.count} · {c.avg}★</span>
+                      <span style={{ fontSize: '12px', color: '#94a3b8', width: '65px', textAlign: 'right' }}>{c.count} · {c.avg}★</span>
                     </div>
                   ))}
                 </div>
@@ -464,15 +464,15 @@
                   .sort((a, b) => b.count - a.count);
                 return (
                   <div>
-                    <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '16px' }}>Grape Varietals</h2>
+                    <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '16px', color: '#2dd4bf' }}>Grape Varietals</h2>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: '8px' }}>
                       {grapes.map((g, i) => (
-                        <div key={i} style={{ border: '1px solid #e5e7eb', borderRadius: '10px', padding: '12px', background: i < 3 ? '#fefff7' : '#fff', borderTop: i < 3 ? '3px solid #d4a017' : '3px solid transparent', cursor: 'pointer' }}
+                        <div key={i} style={{ border: '1px solid #1e3a5f', borderRadius: '10px', padding: '12px', background: i < 3 ? 'rgba(45,212,191,0.08)' : '#0f2035', borderTop: i < 3 ? '3px solid #2dd4bf' : '3px solid transparent', cursor: 'pointer' }}
                           onClick={() => { setSearchTerm(g.name); setActiveTab('wines'); }}>
-                          <div style={{ fontWeight: '600', fontSize: '14px', color: '#1f2937' }}>{g.name}</div>
+                          <div style={{ fontWeight: '600', fontSize: '14px', color: '#e2e8f0' }}>{g.name}</div>
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px' }}>
-                            <span style={{ fontSize: '12px', color: '#6b7280' }}>{g.count} wines</span>
-                            <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#d4a017' }}>{g.avg}★</span>
+                            <span style={{ fontSize: '12px', color: '#64748b' }}>{g.count} wines</span>
+                            <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#fbbf24' }}>{g.avg}★</span>
                           </div>
                         </div>
                       ))}
@@ -483,22 +483,22 @@
 
               {activeTab === 'insights' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  <h2 style={{ fontSize: '20px', fontWeight: 'bold' }}>Taste Profile</h2>
-                  <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: '12px', padding: '20px' }}>
-                    <h3 style={{ fontWeight: 'bold', color: '#166534', marginTop: 0, fontSize: '16px' }}>😍 LOVE</h3>
-                    <p style={{ fontSize: '14px', color: '#15803d', lineHeight: 1.7 }}>
+                  <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#2dd4bf' }}>Taste Profile</h2>
+                  <div style={{ background: 'rgba(45,212,191,0.06)', border: '1px solid rgba(45,212,191,0.3)', borderRadius: '12px', padding: '20px' }}>
+                    <h3 style={{ fontWeight: 'bold', color: '#2dd4bf', marginTop: 0, fontSize: '16px' }}>😍 LOVE</h3>
+                    <p style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.7 }}>
                       Spanish Rioja & Ribera del Duero Tempranillo · Southern Italian reds (Primitivo, Aglianico, Nero d'Avola) · Italian whites (Carricante, Falanghina, Fiano, Pinot Bianco) · Uruguayan Tannat · Portuguese Douro blends · Quality Cabernet Franc · Brunello di Montalcino · Valpolicella Ripasso · Croatian Plavac Mali
                     </p>
                   </div>
-                  <div style={{ background: '#fefce8', border: '1px solid #fde047', borderRadius: '12px', padding: '20px' }}>
-                    <h3 style={{ fontWeight: 'bold', color: '#854d0e', marginTop: 0, fontSize: '16px' }}>😐 MEH</h3>
-                    <p style={{ fontSize: '14px', color: '#a16207', lineHeight: 1.7 }}>
+                  <div style={{ background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.3)', borderRadius: '12px', padding: '20px' }}>
+                    <h3 style={{ fontWeight: 'bold', color: '#fbbf24', marginTop: 0, fontSize: '16px' }}>😐 MEH</h3>
+                    <p style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.7 }}>
                       Beaujolais / Gamay · Generic Argentine Malbec · Californian Pinot Noir · Spanish whites · French reds (whites are great though)
                     </p>
                   </div>
-                  <div style={{ background: '#faf5ff', border: '1px solid #c084fc', borderRadius: '12px', padding: '20px' }}>
-                    <h3 style={{ fontWeight: 'bold', color: '#6b21a8', marginTop: 0, fontSize: '16px' }}>🍷 Pairing Strategy</h3>
-                    <p style={{ fontSize: '14px', color: '#7e22ce', lineHeight: 1.7 }}>
+                  <div style={{ background: 'rgba(6,182,212,0.06)', border: '1px solid rgba(6,182,212,0.3)', borderRadius: '12px', padding: '20px' }}>
+                    <h3 style={{ fontWeight: 'bold', color: '#06b6d4', marginTop: 0, fontSize: '16px' }}>🍷 Pairing Strategy</h3>
+                    <p style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.7 }}>
                       Priority: Spanish Tempranillo (Rioja/Ribera) {'>'} Southern Italian reds {'>'} Quality Cab Franc {'>'} Douro blends<br/>
                       Whites: Italian {'>'} French {'>'} Spanish<br/>
                       Special occasion: R. López de Heredia, Pago de Carraovejas, Cune Imperial, Aalto, Muga Prado Enea, Donnafugata Mille e una Notte<br/>
