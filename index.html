@@ -25,7 +25,11 @@ header p{color:#64748b;font-size:0.9rem}
 .wine-card{background:rgba(15,32,53,0.8);border:1px solid rgba(45,212,191,0.1);border-radius:12px;padding:16px;transition:all 0.2s}
 .wine-card:hover{border-color:rgba(45,212,191,0.3);transform:translateY(-1px)}
 .wine-card.top{border-color:rgba(45,212,191,0.3)}
-.wine-name{font-size:0.95rem;font-weight:600;color:#e2e8f0;margin-bottom:6px}
+.wine-card-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.wine-card-left{flex:1;min-width:0}
+.wine-card-right{text-align:center;flex-shrink:0}
+.wine-score{font-size:1.3rem;font-weight:800;color:#2dd4bf;line-height:1}
+.wine-name{font-size:0.95rem;font-weight:600;color:#e2e8f0;margin-bottom:4px;line-height:1.3}
 .wine-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
 .wine-region{font-size:0.8rem;color:#64748b}
 .wine-rating{display:flex;gap:2px}
@@ -75,7 +79,57 @@ header p{color:#64748b;font-size:0.9rem}
 .fab{position:fixed;bottom:28px;right:28px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2dd4bf,#06b6d4);border:none;color:#0a1628;font-size:1.8rem;cursor:pointer;box-shadow:0 4px 20px rgba(45,212,191,0.3);z-index:50;display:flex;align-items:center;justify-content:center;transition:transform 0.2s}
 .fab:hover{transform:scale(1.1)}
 .loading{text-align:center;padding:60px;color:#64748b}
-@media(max-width:600px){.wine-grid{grid-template-columns:1fr}.analytics-grid{grid-template-columns:1fr}.stats-bar{gap:8px}.stat{padding:8px 12px}}
+@media(max-width:600px){
+  .container{padding:12px 16px}
+  header{padding:16px 0 10px}
+  header h1{font-size:1.5rem}
+  header p{font-size:0.8rem}
+  .stats-bar{gap:6px;margin:10px 0 14px;justify-content:space-between}
+  .stat{padding:6px 0;flex:1;min-width:0;border:none;background:none}
+  .stat .num{font-size:1.1rem}
+  .stat .label{font-size:0.6rem;letter-spacing:0}
+  .tabs{gap:6px;justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;margin-bottom:12px;-webkit-overflow-scrolling:touch}
+  .tab{padding:7px 14px;font-size:0.8rem;flex-shrink:0}
+  .search-box{margin-bottom:14px;padding:10px 14px;font-size:1rem;border-radius:12px;max-width:100%}
+  .wine-grid{grid-template-columns:1fr;gap:8px}
+  .wine-card{padding:14px 16px;border-radius:10px}
+  .wine-card.top{border-left:3px solid #2dd4bf}
+  .wine-card-row{gap:10px}
+  .wine-score{font-size:1.4rem}
+  .wine-name{font-size:1rem;font-weight:700;margin-bottom:4px;line-height:1.3}
+  .wine-meta{margin-bottom:4px;gap:6px}
+  .wine-rating .star{font-size:0.9rem}
+  .wine-region{font-size:0.8rem}
+  .wine-notes{font-size:0.8rem;margin-top:4px}
+  .badge{font-size:0.6rem;padding:2px 6px}
+  .analytics-grid{grid-template-columns:1fr;gap:10px}
+  .analytics-card{padding:14px 16px;border-radius:10px}
+  .analytics-card h3{font-size:0.85rem;margin-bottom:10px}
+  .bar-row{gap:6px;margin-bottom:6px}
+  .bar-label{font-size:0.75rem;min-width:90px}
+  .bar-count{font-size:0.7rem;min-width:50px}
+  .bar-track{height:6px}
+  .fab{bottom:20px;right:20px;width:52px;height:52px;font-size:1.6rem}
+  .fab-menu{bottom:80px;right:20px}
+  .modal{padding:20px;width:95%;border-radius:14px}
+  .modal h2{font-size:1.1rem;margin-bottom:14px}
+  .form-group{margin-bottom:12px}
+  .form-group input,.form-group textarea{padding:12px;font-size:1rem;border-radius:10px}
+  .form-group label{font-size:0.75rem;margin-bottom:4px}
+  .star-input{font-size:1.8rem;gap:10px}
+  .pill{padding:10px 16px;font-size:0.9rem}
+  .btn{padding:14px 20px;font-size:1rem;border-radius:12px}
+  .btn-row{gap:8px}
+  .scan-upload{padding:30px 16px;border-radius:14px}
+  .scan-icon{font-size:2.5rem}
+  .scan-title{font-size:1rem}
+  .scan-hint{font-size:0.8rem}
+  .match-card{padding:12px 14px;border-radius:10px}
+  .match-name{font-size:0.95rem}
+  .match-detail{font-size:0.8rem}
+  .match-stars{font-size:0.9rem}
+  .menu-wines-header{font-size:0.85rem;margin:16px 0 8px}
+}
 /* Scan Menu */
 .scan-tab{background:rgba(45,212,191,0.1);border-color:rgba(45,212,191,0.3)}
 .scan-view{max-width:600px;margin:0 auto}
@@ -280,16 +334,22 @@ function tierBadge(r) {
 }
 
 function renderWines(el, list) {
-  el.innerHTML = `<div class="wine-grid">${list.map(w => `
-    <div class="wine-card${Number(w.rating)>=5?' top':''}">
-      <div class="wine-name">${w.name}</div>
-      <div class="wine-meta">
-        <div class="wine-rating">${stars(Number(w.rating))}</div>
-        ${tierBadge(Number(w.rating))}
+  el.innerHTML = `<div class="wine-grid">${list.map(w => {
+    const r = Number(w.rating);
+    return `<div class="wine-card${r>=5?' top':''}">
+      <div class="wine-card-row">
+        <div class="wine-card-left">
+          <div class="wine-name">${w.name}</div>
+          <div class="wine-region">${w.region||''}${w.grape?' · '+w.grape:''}${w.vintage?' · '+w.vintage:''}</div>
+        </div>
+        <div class="wine-card-right">
+          <div class="wine-score">${r.toFixed(1)}</div>
+          ${tierBadge(r)}
+        </div>
       </div>
-      <div class="wine-region">${w.region||''}${w.grape?' · '+w.grape:''}${w.vintage?' · '+w.vintage:''}</div>
       ${w.notes?`<div class="wine-notes">"${w.notes}"</div>`:''}
-    </div>`).join('')}</div>`;
+    </div>`;
+  }).join('')}</div>`;
 }
 
 function renderRegions(el, list) {
