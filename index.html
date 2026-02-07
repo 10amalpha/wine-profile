@@ -5,210 +5,193 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Hedonicum</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0a0e17">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--gold:#c8a97e;--gold-dim:rgba(200,169,126,0.12);--bg:#06090f;--card:rgba(255,255,255,0.025);--border:rgba(255,255,255,0.06);--text:#e2e8f0;--muted:#4a5568;--subtle:#2d3748}
-html,body{height:100%;overflow:hidden}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:#0a0e17;color:#e2e8f0;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:80px;
+  overflow-x:hidden
+}
 
-/* Nav */
-.bnav{position:fixed;bottom:0;left:0;right:0;display:flex;background:rgba(6,9,15,0.98);border-top:1px solid var(--border);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);z-index:90;padding:8px 0 6px;padding-bottom:max(8px,env(safe-area-inset-bottom))}
-.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 0;cursor:pointer;border:none;background:none;color:#3d4a5c;font-size:10px;font-weight:600;transition:color 0.2s;letter-spacing:0.3px}
-.bnav-item.active{color:var(--gold)}
-.bnav-item svg{width:22px;height:22px;fill:currentColor}
+/* ===== NAV ===== */
+.nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#0a0e17;border-top:1px solid #1a1f2e;z-index:90;padding:10px 0 12px;padding-bottom:max(12px,env(safe-area-inset-bottom))}
+.nav-i{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;border:none;background:none;color:#3b4254;font-size:10px;font-weight:600;letter-spacing:0.3px}
+.nav-i.on{color:#d4a96a}
+.nav-i svg{width:24px;height:24px;fill:currentColor}
 
-/* Toast */
-.toast{position:fixed;top:max(16px,env(safe-area-inset-top));left:16px;right:16px;transform:translateY(-120px);background:var(--gold);color:var(--bg);padding:16px 20px;border-radius:14px;font-size:16px;font-weight:700;z-index:200;transition:transform 0.3s;text-align:center}
+/* ===== TOAST ===== */
+.toast{position:fixed;top:16px;left:16px;right:16px;transform:translateY(-100px);background:#d4a96a;color:#0a0e17;padding:16px;border-radius:14px;font-size:16px;font-weight:700;z-index:200;transition:transform 0.3s;text-align:center}
 .toast.show{transform:translateY(0)}
 
-/* Screens */
-.screen{display:none;position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.screen.active{display:block}
+/* ===== SCREENS ===== */
+.screen{display:none}
+.screen.on{display:block}
 input[type="file"]{display:none}
 
-/* === HOME — top-aligned, spacers distribute extra room === */
-#screen-scan .home-wrap{
-  min-height:100%;display:flex;flex-direction:column;
-  padding:max(48px,env(safe-area-inset-top)) 24px max(90px,calc(env(safe-area-inset-bottom) + 70px))
-}
-.home-spacer{flex:1;min-height:12px;max-height:48px}
+/* ===== HEADER ===== */
+.hdr{text-align:center;padding:48px 24px 32px}
+.hdr h1{font-size:28px;font-weight:800;color:#d4a96a;letter-spacing:0.5px}
+.hdr p{font-size:11px;color:#3b4254;letter-spacing:2px;text-transform:uppercase;margin-top:4px}
 
-/* Logo */
-.logo{text-align:center;margin-bottom:28px}
-.logo-text{font-family:'Playfair Display',Georgia,serif;font-size:32px;font-weight:800;color:var(--gold);letter-spacing:1px}
-.logo-sub{font-size:10px;color:#3d4a5c;letter-spacing:2px;text-transform:uppercase;margin-top:2px}
+/* ===== PERSONA CARD ===== */
+.persona{margin:0 16px 20px;background:#111827;border:1px solid #1e2538;border-radius:20px;padding:24px 22px;position:relative}
+.persona-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.persona-name{font-size:20px;font-weight:800;color:#fff}
+.persona-lvl{font-size:10px;color:#d4a96a;background:rgba(212,169,106,0.12);border:1px solid rgba(212,169,106,0.2);padding:5px 14px;border-radius:20px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase}
+.persona-bio{font-size:15px;color:#6b7a8d;line-height:1.65;margin-bottom:20px}
+.persona-bio b{color:#94a3b8;font-weight:700}
 
-/* Persona */
-.persona{background:var(--card);border:1px solid rgba(200,169,126,0.1);border-radius:20px;padding:24px;margin-bottom:16px;position:relative;overflow:hidden}
-.persona::after{content:'';position:absolute;top:0;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,126,0.35),transparent)}
-.p-row1{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.p-handle{font-family:'Playfair Display',Georgia,serif;font-size:20px;font-weight:800;color:var(--text)}
-.p-badge{font-size:10px;color:var(--gold);background:var(--gold-dim);padding:5px 12px;border-radius:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase}
-.p-bio{font-size:15px;color:#6b7a8d;line-height:1.6;margin-bottom:18px}
-.p-bio b{color:#94a3b8;font-weight:700}
-.p-stats{display:flex;border-top:1px solid var(--border);padding-top:16px}
-.p-stat{flex:1;text-align:center;position:relative}
-.p-stat+.p-stat::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:1px;background:var(--border)}
-.p-num{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:800;color:var(--text);line-height:1}
-.p-label{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:5px}
+/* Stats row */
+.stats{display:flex;background:#0d1117;border-radius:14px;padding:18px 0;margin-bottom:0}
+.stat{flex:1;text-align:center;position:relative}
+.stat+.stat::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:1px;background:#1a1f2e}
+.stat-n{font-size:28px;font-weight:800;color:#fff;line-height:1}
+.stat-l{font-size:9px;color:#4a5568;text-transform:uppercase;letter-spacing:1px;margin-top:6px}
 
 /* Tags */
-.tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
-.tag{font-size:13px;color:#6b7a8d;background:var(--card);border:1px solid var(--border);padding:8px 16px;border-radius:20px;font-weight:500}
+.tags{display:flex;gap:8px;flex-wrap:wrap;padding:16px 16px 8px}
+.tag{font-size:14px;color:#6b7a8d;background:#111827;border:1px solid #1e2538;padding:10px 18px;border-radius:24px;font-weight:500}
 
-/* Actions */
-.actions{display:flex;flex-direction:column;gap:12px}
-.act{display:flex;align-items:center;gap:16px;width:100%;padding:22px 22px;border-radius:18px;border:none;cursor:pointer;text-align:left;transition:transform 0.12s;-webkit-user-select:none;font-family:inherit}
-.act:active{transform:scale(0.97)}
-.act-p{background:linear-gradient(135deg,#c8a97e 0%,#9e7f56 100%);color:var(--bg)}
-.act-p .act-ic{background:rgba(6,9,15,0.1)}
-.act-s{background:var(--card);border:1px solid var(--border) !important;color:var(--text)}
-.act-s .act-ic{background:var(--gold-dim);color:var(--gold)}
-.act-ic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.act-tx h3{font-size:17px;font-weight:700;margin-bottom:2px}
-.act-tx p{font-size:13px;opacity:0.6;line-height:1.3}
-.act-arr{margin-left:auto;font-size:22px;opacity:0.3}
+/* ===== ACTION BUTTONS ===== */
+.actions{padding:12px 16px 0}
+.act{display:flex;align-items:center;gap:16px;width:100%;padding:22px 22px;border-radius:18px;border:none;cursor:pointer;text-align:left;margin-bottom:12px;font-family:inherit;-webkit-user-select:none}
+.act:active{opacity:0.92;transform:scale(0.98)}
 
-/* === SCAN FLOW SCREENS === */
-.flow-wrap{padding:max(48px,env(safe-area-inset-top)) 24px max(90px,calc(env(safe-area-inset-bottom) + 70px))}
+/* Primary - solid gold, no gradient */
+.act-1{background:#d4a96a;color:#0a0e17}
+.act-1 .act-ic{background:rgba(10,14,23,0.12)}
+/* Secondary - dark card */
+.act-2{background:#111827;border:1px solid #1e2538 !important;color:#e2e8f0}
+.act-2 .act-ic{background:rgba(212,169,106,0.1);color:#d4a96a}
 
-.field-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;font-weight:700;margin-top:20px}
-.field-input{width:100%;padding:16px 18px;border-radius:14px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:17px;outline:none;font-family:inherit}
-.field-input:focus{border-color:rgba(200,169,126,0.35)}
-.field-input::placeholder{color:var(--subtle)}
+.act-ic{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.act-ic svg{width:24px;height:24px;fill:currentColor}
+.act-tx{flex:1}
+.act-tx h3{font-size:18px;font-weight:700;margin-bottom:3px}
+.act-tx p{font-size:14px;opacity:0.55}
+.act-arr{font-size:24px;opacity:0.3;margin-left:auto}
 
-.photo-strip{display:flex;gap:10px;margin-top:14px;overflow-x:auto;padding:4px 0;-webkit-overflow-scrolling:touch}
-.pthumb{position:relative;width:86px;height:86px;border-radius:16px;overflow:hidden;flex-shrink:0;border:2px solid var(--border)}
-.pthumb img{width:100%;height:100%;object-fit:cover}
-.pthumb-x{position:absolute;top:4px;right:4px;width:24px;height:24px;background:rgba(0,0,0,0.7);color:#ff6b6b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;font-weight:700}
-.pthumb-n{position:absolute;bottom:4px;left:4px;width:22px;height:22px;background:var(--gold);color:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
-.padd{width:86px;height:86px;border-radius:16px;border:2px dashed rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--muted);cursor:pointer;flex-shrink:0}
+/* ===== SCAN FLOW ===== */
+.flow{padding:24px 16px}
 
-.btn-gold{width:100%;margin-top:20px;padding:18px;border-radius:16px;border:none;background:linear-gradient(135deg,#c8a97e,#9e7f56);color:var(--bg);font-size:17px;font-weight:700;cursor:pointer;font-family:inherit}
-.btn-gold:active{opacity:0.9;transform:scale(0.99)}
-.btn-gold:disabled{opacity:0.3}
-.link-back{display:inline-flex;align-items:center;gap:4px;color:#6b7a8d;font-size:14px;cursor:pointer;padding:12px 0;border:none;background:none;font-family:inherit}
-.link-muted{text-align:center;margin-top:14px;color:#3d4a5c;font-size:14px;cursor:pointer;padding:10px}
+.fld-l{font-size:11px;color:#4a5568;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:700;margin-top:20px}
+.fld-i{width:100%;padding:18px 20px;border-radius:16px;border:1px solid #1e2538;background:#111827;color:#e2e8f0;font-size:17px;outline:none;font-family:inherit}
+.fld-i:focus{border-color:rgba(212,169,106,0.35)}
+.fld-i::placeholder{color:#2d3748}
+
+.photos{display:flex;gap:10px;margin:16px 0;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:4px 0}
+.photo{position:relative;width:88px;height:88px;border-radius:16px;overflow:hidden;flex-shrink:0;border:2px solid #1e2538}
+.photo img{width:100%;height:100%;object-fit:cover}
+.photo-x{position:absolute;top:4px;right:4px;width:26px;height:26px;background:rgba(0,0,0,0.75);color:#ff6b6b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;font-weight:700}
+.photo-n{position:absolute;bottom:4px;left:4px;width:24px;height:24px;background:#d4a96a;color:#0a0e17;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.photo-add{width:88px;height:88px;border-radius:16px;border:2px dashed #1e2538;display:flex;align-items:center;justify-content:center;font-size:30px;color:#3b4254;cursor:pointer;flex-shrink:0}
+
+/* Buttons */
+.btn{width:100%;margin-top:20px;padding:20px;border-radius:16px;border:none;background:#d4a96a;color:#0a0e17;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn:active{opacity:0.9}
+.btn:disabled{opacity:0.25}
+.btn-o{width:100%;margin-top:10px;padding:18px;border-radius:16px;border:1px solid #1e2538;background:transparent;color:#6b7a8d;font-size:15px;cursor:pointer;font-family:inherit}
+.lnk{text-align:center;margin-top:14px;color:#3b4254;font-size:14px;cursor:pointer;padding:12px}
 
 /* Status */
-.status{text-align:center;padding:60px 0;color:#6b7a8d;font-size:16px}
-.spinner{display:inline-block;width:20px;height:20px;border:2.5px solid var(--gold-dim);border-top-color:var(--gold);border-radius:50%;animation:spin 0.7s linear infinite;margin-right:10px;vertical-align:middle}
-@keyframes spin{to{transform:rotate(360deg)}}
+.sts{text-align:center;padding:60px 0;color:#6b7a8d;font-size:16px}
+.spin{display:inline-block;width:20px;height:20px;border:2.5px solid rgba(212,169,106,0.15);border-top-color:#d4a96a;border-radius:50%;animation:sp 0.7s linear infinite;margin-right:10px;vertical-align:middle}
+@keyframes sp{to{transform:rotate(360deg)}}
 
 /* Results */
-.rsec{margin-top:22px}
-.rsec-h{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);font-weight:700}
-.rsec-h span{color:var(--gold)}
-.rc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:14px}
-.rc.hit{border-color:rgba(200,169,126,0.2);background:rgba(200,169,126,0.03)}
+.rsec{margin-top:24px}
+.rsec-h{font-size:11px;color:#4a5568;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #1a1f2e;font-weight:700}
+.rsec-h span{color:#d4a96a}
+.rc{background:#111827;border:1px solid #1e2538;border-radius:16px;padding:18px 20px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:14px}
+.rc.hit{border-color:rgba(212,169,106,0.25);background:rgba(212,169,106,0.04)}
 .rc-l{flex:1;min-width:0}
-.rc-name{font-size:16px;font-weight:700;color:var(--text);margin-bottom:3px;line-height:1.3}
-.rc-sub{font-size:13px;color:var(--muted)}
-.rc-pair{font-size:13px;color:var(--gold);margin-top:4px}
-.rc-r{text-align:center;flex-shrink:0;min-width:52px}
-.rc-score{font-family:'Playfair Display',Georgia,serif;font-size:30px;font-weight:800;color:var(--gold);line-height:1}
-.rc-ro{font-size:10px;margin-top:3px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px}
+.rc-nm{font-size:17px;font-weight:700;color:#fff;margin-bottom:4px;line-height:1.3}
+.rc-sub{font-size:13px;color:#4a5568}
+.rc-pair{font-size:14px;color:#d4a96a;margin-top:5px}
+.rc-r{text-align:center;flex-shrink:0;min-width:56px}
+.rc-sc{font-size:32px;font-weight:800;color:#d4a96a;line-height:1}
+.rc-ro{font-size:10px;margin-top:4px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px}
 .rc-ro.yes{color:#6fcf97}.rc-ro.no{color:#ff6b6b}.rc-ro.maybe{color:#f2c94c}
-.rc-new{font-size:12px;color:#3d4a5c;font-style:italic}
+.rc-nw{font-size:13px;color:#3b4254;font-style:italic;margin-top:2px}
 
 /* Bottle */
-.bflow{text-align:center;padding:16px 0}
-.bimg{margin:16px auto;max-width:200px}
-.bimg img{width:100%;border-radius:18px;border:2px solid var(--border)}
-.bstatus{color:#6b7a8d;font-size:16px;margin:16px 0}
-.bname{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.2}
-.bdetail{font-size:15px;color:var(--muted);margin-bottom:24px}
-.rlabel{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;font-weight:700}
-.rstars{display:flex;gap:10px;font-size:44px;cursor:pointer;justify-content:center;margin-bottom:28px}
-.rstars span{color:#151c28;transition:color 0.15s;line-height:1}
-.rstars span.on{color:var(--gold)}
-.rpills{display:flex;gap:10px;justify-content:center;margin-bottom:20px}
-.rpill{padding:14px 28px;border-radius:26px;border:1.5px solid var(--border);background:transparent;color:#6b7a8d;cursor:pointer;font-size:16px;font-weight:500;transition:all 0.15s;font-family:inherit}
-.rpill.on{background:var(--gold-dim);color:var(--gold);border-color:rgba(200,169,126,0.3)}
+.bflow{text-align:center;padding:20px 0}
+.bimg{margin:20px auto;max-width:220px}
+.bimg img{width:100%;border-radius:20px;border:2px solid #1e2538}
+.bsts{color:#6b7a8d;font-size:17px;margin:20px 0}
+.bnm{font-size:28px;font-weight:800;color:#fff;margin-bottom:8px;line-height:1.2}
+.bdt{font-size:16px;color:#4a5568;margin-bottom:28px}
+.rl{font-size:11px;color:#4a5568;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;font-weight:700}
+.rstars{display:flex;gap:8px;font-size:48px;cursor:pointer;justify-content:center;margin-bottom:32px}
+.rstars span{color:#1a1f2e;transition:color 0.15s;line-height:1}
+.rstars span.on{color:#d4a96a}
+.rpills{display:flex;gap:10px;justify-content:center;margin-bottom:24px}
+.rpill{padding:16px 28px;border-radius:28px;border:1.5px solid #1e2538;background:transparent;color:#6b7a8d;cursor:pointer;font-size:17px;font-weight:500;transition:all 0.15s;font-family:inherit}
+.rpill.on{background:rgba(212,169,106,0.1);color:#d4a96a;border-color:rgba(212,169,106,0.3)}
 
 /* Collection */
-.coll-wrap{padding:max(48px,env(safe-area-inset-top)) 24px max(90px,calc(env(safe-area-inset-bottom) + 70px))}
-.coll-wrap h2{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:800;color:var(--text);margin-bottom:2px}
-.coll-sub{font-size:13px;color:var(--muted);margin-bottom:16px}
-.csearch{width:100%;padding:15px 18px;border-radius:14px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:17px;outline:none;margin-bottom:14px;font-family:inherit}
-.csearch:focus{border-color:rgba(200,169,126,0.3)}
-.csearch::placeholder{color:var(--subtle)}
-.ctabs{display:flex;gap:8px;margin-bottom:18px;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.ctab{padding:9px 18px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:14px;font-weight:500;flex-shrink:0;white-space:nowrap;font-family:inherit}
-.ctab.on{background:var(--gold-dim);color:var(--gold);border-color:rgba(200,169,126,0.2)}
+.coll{padding:24px 16px}
+.coll h2{font-size:28px;font-weight:800;color:#fff;margin-bottom:4px}
+.coll-sub{font-size:14px;color:#4a5568;margin-bottom:18px}
+.cs{width:100%;padding:16px 20px;border-radius:16px;border:1px solid #1e2538;background:#111827;color:#e2e8f0;font-size:17px;outline:none;margin-bottom:16px;font-family:inherit}
+.cs:focus{border-color:rgba(212,169,106,0.3)}
+.cs::placeholder{color:#2d3748}
+.ctabs{display:flex;gap:8px;margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.ct{padding:10px 20px;border-radius:22px;border:1px solid #1e2538;background:transparent;color:#4a5568;cursor:pointer;font-size:14px;font-weight:600;flex-shrink:0;white-space:nowrap;font-family:inherit}
+.ct.on{background:rgba(212,169,106,0.1);color:#d4a96a;border-color:rgba(212,169,106,0.2)}
 .wlist{display:flex;flex-direction:column;gap:10px;padding-bottom:20px}
-.wi{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;justify-content:space-between;align-items:center;gap:14px}
-.wi.top{border-left:3px solid var(--gold)}
+.wi{background:#111827;border:1px solid #1e2538;border-radius:16px;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:14px}
+.wi.top{border-left:3px solid #d4a96a}
 .wi-l{flex:1;min-width:0}
-.wi-name{font-size:16px;font-weight:700;color:var(--text);margin-bottom:3px;line-height:1.3}
-.wi-meta{font-size:13px;color:#3d4a5c}
+.wi-nm{font-size:17px;font-weight:700;color:#fff;margin-bottom:4px;line-height:1.3}
+.wi-m{font-size:13px;color:#3b4254}
 .wi-r{text-align:center;flex-shrink:0}
-.wi-score{font-family:'Playfair Display',Georgia,serif;font-size:24px;font-weight:800;color:var(--gold);line-height:1}
-.wi-badge{font-size:9px;color:#6b7a8d;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
-.acard{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:12px}
-.acard h3{font-size:16px;color:var(--gold);margin-bottom:14px;font-weight:700}
-.ab{display:flex;align-items:center;gap:8px;margin-bottom:9px}
-.ab-l{font-size:13px;color:#6b7a8d;min-width:100px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ab-t{flex:1;height:7px;background:rgba(255,255,255,0.04);border-radius:4px;overflow:hidden}
-.ab-f{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--gold),#9e7f56)}
-.ab-v{font-size:12px;color:var(--muted);min-width:52px}
-.ir{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border);font-size:16px}
+.wi-sc{font-size:26px;font-weight:800;color:#d4a96a;line-height:1}
+.wi-b{font-size:9px;color:#6b7a8d;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
+.ac{background:#111827;border:1px solid #1e2538;border-radius:18px;padding:20px;margin-bottom:14px}
+.ac h3{font-size:16px;color:#d4a96a;margin-bottom:14px;font-weight:700}
+.ab{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ab-l{font-size:14px;color:#6b7a8d;min-width:105px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ab-t{flex:1;height:8px;background:#1a1f2e;border-radius:4px;overflow:hidden}
+.ab-f{height:100%;border-radius:4px;background:#d4a96a}
+.ab-v{font-size:13px;color:#4a5568;min-width:55px}
+.ir{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid #1a1f2e;font-size:17px}
 .ir:last-child{border:none}
 .ir-k{color:#6b7a8d}
-.ir-v{color:var(--gold);font-weight:700}
+.ir-v{color:#d4a96a;font-weight:700}
 </style>
 </head>
 <body>
 <div class="toast" id="toast"></div>
 
-<div class="screen active" id="screen-scan">
-  <div class="home-wrap">
-    <div class="home-spacer"></div>
-    <div class="logo">
-      <div class="logo-text">Hedonicum</div>
-      <div class="logo-sub">Wine Intelligence</div>
-    </div>
-    <div id="scan-content"></div>
-  </div>
+<div class="screen on" id="s-scan">
+  <div class="hdr"><h1>Hedonicum</h1><p>Wine Intelligence</p></div>
+  <div id="home"></div>
 </div>
 
-<div class="screen" id="screen-bottle"><div class="flow-wrap" id="bottle-content"></div></div>
+<div class="screen" id="s-bottle"><div class="flow" id="bottle"></div></div>
 
-<div class="screen" id="screen-collection">
-  <div class="coll-wrap">
+<div class="screen" id="s-coll">
+  <div class="coll">
     <h2>Cellar</h2>
     <div class="coll-sub" id="csub"></div>
-    <input type="text" class="csearch" id="csearch" placeholder="Search wines...">
-    <div class="ctabs">
-      <div class="ctab on" data-v="wines">All</div>
-      <div class="ctab" data-v="regions">Regions</div>
-      <div class="ctab" data-v="grapes">Grapes</div>
-      <div class="ctab" data-v="insights">Insights</div>
-    </div>
+    <input type="text" class="cs" id="csearch" placeholder="Search wines...">
+    <div class="ctabs"><div class="ct on" data-v="wines">All</div><div class="ct" data-v="regions">Regions</div><div class="ct" data-v="grapes">Grapes</div><div class="ct" data-v="insights">Insights</div></div>
     <div id="cbody"></div>
   </div>
 </div>
 
-<nav class="bnav">
-  <div class="bnav-item active" data-screen="scan">
-    <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-    Scan
-  </div>
-  <div class="bnav-item" id="nav-add" onclick="startBottle()">
-    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-    Add
-  </div>
-  <div class="bnav-item" data-screen="collection">
-    <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
-    Cellar
-  </div>
+<nav class="nav">
+  <div class="nav-i on" data-s="scan"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>Scan</div>
+  <div class="nav-i" id="nav-add" onclick="startBottle()"><svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>Add</div>
+  <div class="nav-i" data-s="coll"><svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>Cellar</div>
 </nav>
 
-<input type="file" id="menu-photo" accept="image/*" capture="environment" multiple>
-<input type="file" id="bottle-photo" accept="image/*" capture="environment">
+<input type="file" id="f-menu" accept="image/*" capture="environment" multiple>
+<input type="file" id="f-bottle" accept="image/*" capture="environment">
 
 <script>
 const SB='https://bzpraigsuwgjgpnclcpd.supabase.co',SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cHJhaWdzdXdnamdwbmNsY3BkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1Mzk2NDEsImV4cCI6MjA4NTExNTY0MX0.tBtsac6Mq65BiG93MhYtn1KV8iOGpEpVdlD3tqShrzE',AK='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';
@@ -216,18 +199,19 @@ const H={'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/js
 let wines=[],menuP=[],menuR=[],cV='wines',cS='';
 
 function go(s){
-  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.bnav-item').forEach(x=>x.classList.remove('active'));
-  document.getElementById('screen-'+s).classList.add('active');
-  document.querySelector(`.bnav-item[data-screen="${s}"]`)?.classList.add('active');
-  if(s==='collection')renderColl();if(s==='scan')renderHome();
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.nav-i').forEach(x=>x.classList.remove('on'));
+  document.getElementById('s-'+s).classList.add('on');
+  document.querySelector(`.nav-i[data-s="${s}"]`)?.classList.add('on');
+  if(s==='coll')renderColl();if(s==='scan')renderHome();
+  window.scrollTo(0,0);
 }
-document.querySelectorAll('.bnav-item[data-screen]').forEach(n=>n.addEventListener('click',()=>go(n.dataset.screen)));
+document.querySelectorAll('.nav-i[data-s]').forEach(n=>n.addEventListener('click',()=>go(n.dataset.s)));
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 async function loadWines(){try{const r=await fetch(`${SB}/rest/v1/wines?select=*&order=rating.desc,name.asc&limit=1000`,{headers:H});wines=await r.json();}catch(e){wines=[];}}
 
 function renderHome(){
-  const el=document.getElementById('scan-content');
+  const el=document.getElementById('home');
   if(menuP.length===0&&menuR.length===0){
     const n=wines.length,avg=n?(wines.reduce((s,w)=>s+Number(w.rating),0)/n).toFixed(1):'–';
     const t5=wines.filter(w=>Number(w.rating)>=5).length;
@@ -235,101 +219,103 @@ function renderHome(){
     const rgn=new Set(wines.map(w=>w.region).filter(Boolean)).size;
     const gm={};wines.forEach(w=>{if(w.grape){gm[w.grape]=(gm[w.grape]||0)+1;}});
     const gs=Object.entries(gm).sort((a,b)=>b[1]-a[1]);
-    const topGrape=gs[0]?gs[0][0]:'';
-    const topG3=gs.slice(0,3).map(e=>e[0]);
+    const topGrape=gs[0]?gs[0][0]:'';const topG3=gs.slice(0,3).map(e=>e[0]);
     const cm={};wines.forEach(w=>{if(w.country){cm[w.country]=(cm[w.country]||0)+1;}});
     const cs=Object.entries(cm).sort((a,b)=>b[1]-a[1]);
     const topC=cs[0]?cs[0][0]:'';const pctC=cs[0]&&n?Math.round(cs[0][1]/n*100):0;
     const rm={};wines.forEach(w=>{if(w.region){const s=w.region.split(',')[0].trim();rm[s]=(rm[s]||0)+1;}});
     const topR=Object.entries(rm).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
     const level=n>=200?'Sommelier':n>=100?'Connoisseur':n>=50?'Enthusiast':'Explorer';
-    let bio='';
-    if(n>0){
+    let bio='';if(n>0){
       bio=`<b>${n} wines</b> across <b>${ctry} countries</b>. `;
-      if(topC&&pctC>30)bio+=`Leans ${topC} (${pctC}%). `;else if(topC)bio+=`Explores widely, mostly ${topC}. `;
+      if(topC&&pctC>30)bio+=`Leans ${topC} (${pctC}%). `;else if(topC)bio+=`Mostly ${topC}. `;
       if(topGrape)bio+=`${topGrape} loyalist. `;
-      if(topR.length>=2)bio+=`Knows ${topR[0]} & ${topR[1]} best.`;
+      if(topR.length>=2)bio+=`Knows ${topR[0]} &amp; ${topR[1]} best.`;
     }
     el.innerHTML=`
       ${n>0?`<div class="persona">
-        <div class="p-row1"><div class="p-handle">@Holdmybirra</div><div class="p-badge">${level}</div></div>
-        <div class="p-bio">${bio}</div>
-        <div class="p-stats">
-          <div class="p-stat"><div class="p-num">${avg}</div><div class="p-label">Avg Score</div></div>
-          <div class="p-stat"><div class="p-num">${t5}</div><div class="p-label">Top Wines</div></div>
-          <div class="p-stat"><div class="p-num">${rgn}</div><div class="p-label">Regions</div></div>
+        <div class="persona-hd"><div class="persona-name">@Holdmybirra</div><div class="persona-lvl">${level}</div></div>
+        <div class="persona-bio">${bio}</div>
+        <div class="stats">
+          <div class="stat"><div class="stat-n">${avg}</div><div class="stat-l">Avg Score</div></div>
+          <div class="stat"><div class="stat-n">${t5}</div><div class="stat-l">Top Wines</div></div>
+          <div class="stat"><div class="stat-n">${rgn}</div><div class="stat-l">Regions</div></div>
         </div>
       </div>
       <div class="tags">${[...topR,...topG3].map(t=>`<span class="tag">${t}</span>`).join('')}</div>`
-      :`<div style="text-align:center;padding:32px 0;color:#3d4a5c;font-size:15px">Start building your taste profile</div>`}
-      <div class="home-spacer"></div>
+      :`<div style="text-align:center;padding:32px 16px;color:#3b4254;font-size:15px">Scan your first bottle to start building your taste profile</div>`}
       <div class="actions">
-        <button class="act act-p" onclick="document.getElementById('menu-photo').click()">
-          <div class="act-ic">📋</div><div class="act-tx"><h3>Scan Menu</h3><p>Snap the wine list, get your picks</p></div><div class="act-arr">›</div>
+        <button class="act act-1" onclick="document.getElementById('f-menu').click()">
+          <div class="act-ic"><svg viewBox="0 0 24 24"><path d="M3 4v16h18V4H3zm16 14H5V8h14v10z"/><path d="M7 10h4v4H7z"/></svg></div>
+          <div class="act-tx"><h3>Scan Menu</h3><p>Snap the wine list, get picks</p></div>
+          <div class="act-arr">›</div>
         </button>
-        <button class="act act-s" onclick="startBottle()">
-          <div class="act-ic">📸</div><div class="act-tx"><h3>Add a Bottle</h3><p>Photograph to save & rate</p></div><div class="act-arr">›</div>
+        <button class="act act-2" onclick="startBottle()">
+          <div class="act-ic"><svg viewBox="0 0 24 24"><path d="M12 12m-3.2 0a3.2 3.2 0 1 0 6.4 0a3.2 3.2 0 1 0-6.4 0M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9z"/></svg></div>
+          <div class="act-tx"><h3>Add a Bottle</h3><p>Photograph to save &amp; rate</p></div>
+          <div class="act-arr">›</div>
         </button>
-      </div>
-      <div class="home-spacer"></div>`;
+      </div>`;
   } else if(menuR.length>0){renderResults(el);}else{renderPreview(el);}
 }
 
 function renderPreview(el){
-  el.innerHTML=`<div class="photo-strip">
-    ${menuP.map((p,i)=>`<div class="pthumb"><img src="${p}"><div class="pthumb-n">${i+1}</div><div class="pthumb-x" onclick="rmP(${i})">✕</div></div>`).join('')}
-    <div class="padd" onclick="document.getElementById('menu-photo').click()">+</div>
+  el.innerHTML=`<div class="flow"><div class="photos">
+    ${menuP.map((p,i)=>`<div class="photo"><img src="${p}"><div class="photo-n">${i+1}</div><div class="photo-x" onclick="rmP(${i})">✕</div></div>`).join('')}
+    <div class="photo-add" onclick="document.getElementById('f-menu').click()">+</div>
   </div>
-  <div class="field-label">🍽 What are you eating?</div>
-  <input type="text" class="field-input" id="pair-in" placeholder="steak, pasta, seafood...">
-  <button class="btn-gold" onclick="doAnalyze()">Analyze ${menuP.length} ${menuP.length===1?'Photo':'Photos'}</button>
-  <div class="link-muted" onclick="clearM()">Clear</div>`;
+  <div class="fld-l">🍽 What are you eating?</div>
+  <input type="text" class="fld-i" id="pair" placeholder="steak, pasta, seafood...">
+  <button class="btn" onclick="doAnalyze()">Analyze ${menuP.length} ${menuP.length===1?'Photo':'Photos'}</button>
+  <div class="lnk" onclick="clearM()">Clear</div></div>`;
 }
 
 function renderResults(el){
   const found=menuR.filter(r=>r.match),nf=menuR.filter(r=>!r.match),pair=window._lp||'';
-  el.innerHTML=`<button class="link-back" onclick="clearM()">← New Scan</button>
-    ${pair?`<div style="text-align:center;color:#4a5568;font-size:13px;margin:4px 0 8px">Pairing: <span style="color:var(--gold);font-weight:600">${pair}</span></div>`:''}
+  el.innerHTML=`<div class="flow">
+    <button class="btn-o" onclick="clearM()">← Scan Another Menu</button>
+    ${pair?`<div style="text-align:center;color:#4a5568;font-size:14px;margin:10px 0">Pairing: <span style="color:#d4a96a;font-weight:700">${pair}</span></div>`:''}
     ${found.length?`<div class="rsec"><div class="rsec-h"><span>${found.length}</span> wines you know</div>
       ${found.map(r=>`<div class="rc hit"><div class="rc-l">
-        <div class="rc-name">${r.mn}</div><div class="rc-sub">${r.match.region||''}${r.match.grape?' · '+r.match.grape:''}</div>
+        <div class="rc-nm">${r.mn}</div><div class="rc-sub">${r.match.region||''}${r.match.grape?' · '+r.match.grape:''}</div>
         ${r.match.notes?`<div class="rc-sub" style="font-style:italic;color:#5a677a">"${r.match.notes}"</div>`:''}
         ${r.pn?`<div class="rc-pair">🍽 ${r.pn}</div>`:''}
-      </div><div class="rc-r"><div class="rc-score">${Number(r.match.rating).toFixed(1)}</div>
+      </div><div class="rc-r"><div class="rc-sc">${Number(r.match.rating).toFixed(1)}</div>
         ${r.match.reorder?`<div class="rc-ro ${r.match.reorder}">${r.match.reorder==='yes'?'✓ Reorder':r.match.reorder==='no'?'✗ Skip':'~ Maybe'}</div>`:''}
       </div></div>`).join('')}</div>`:''}
     ${nf.length?`<div class="rsec"><div class="rsec-h"><span>${nf.length}</span> new to you</div>
-      ${nf.map(r=>`<div class="rc"><div class="rc-l"><div class="rc-name">${r.mn}</div>${r.pn?`<div class="rc-pair">🍽 ${r.pn}</div>`:''}<div class="rc-new">Not in cellar</div></div></div>`).join('')}</div>`:''}`;
+      ${nf.map(r=>`<div class="rc"><div class="rc-l"><div class="rc-nm">${r.mn}</div>${r.pn?`<div class="rc-pair">🍽 ${r.pn}</div>`:''}<div class="rc-nw">Not in cellar</div></div></div>`).join('')}</div>`:''}
+  </div>`;
 }
 
-document.getElementById('menu-photo').addEventListener('change',e=>{Array.from(e.target.files).forEach(f=>{const r=new FileReader();r.onload=v=>{menuP.push(v.target.result);renderHome();};r.readAsDataURL(f);});e.target.value='';});
+document.getElementById('f-menu').addEventListener('change',e=>{Array.from(e.target.files).forEach(f=>{const r=new FileReader();r.onload=v=>{menuP.push(v.target.result);renderHome();};r.readAsDataURL(f);});e.target.value='';});
 function rmP(i){menuP.splice(i,1);if(!menuP.length)menuR=[];renderHome();}
 function clearM(){menuP=[];menuR=[];window._lp='';renderHome();}
 
 async function doAnalyze(){
-  const pair=document.getElementById('pair-in')?.value||'';window._lp=pair;
-  const el=document.getElementById('scan-content');
-  el.innerHTML=`<div class="status"><span class="spinner"></span>Reading menu...</div>`;
+  const pair=document.getElementById('pair')?.value||'';window._lp=pair;
+  const el=document.getElementById('home');
+  el.innerHTML=`<div class="sts"><span class="spin"></span>Reading menu...</div>`;
   try{
     const c=[];menuP.forEach(img=>{c.push({type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}});});
-    c.push({type:'text',text:`Extract ALL wine names from ${menuP.length>1?'these photos':'this photo'}. Return ONLY JSON array of names. No explanation.`});
+    c.push({type:'text',text:`Extract ALL wine names from ${menuP.length>1?'these photos':'this photo'}. Return ONLY JSON array. No explanation.`});
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:c}]})});
     if(!res.ok)throw 0;const d=await res.json();let mw=[];try{mw=JSON.parse((d.content?.map(x=>x.text||'').join('')||'[]').replace(/```json|```/g,'').trim());}catch(e){}
     menuR=mw.map(name=>({mn:name,match:fuz(name,wines),pn:null}));
     if(pair.trim()&&menuR.length){
-      el.innerHTML=`<div class="status"><span class="spinner"></span>Pairing...</div>`;
+      el.innerHTML=`<div class="sts"><span class="spin"></span>Pairing...</div>`;
       try{const pr=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:`Eating "${pair}". Wines: ${JSON.stringify(mw)}. 5-8 word pairing note each. ONLY JSON {"Wine":"note"}.`}]})});
       if(pr.ok){const pd=await pr.json();try{const p=JSON.parse((pd.content?.map(x=>x.text||'').join('')||'{}').replace(/```json|```/g,'').trim());menuR.forEach(r=>{if(p[r.mn])r.pn=p[r.mn];});}catch(e){}}}catch(e){}
     }renderHome();
   }catch(e){toast('Error');renderHome();}
 }
 
-function startBottle(){document.getElementById('bottle-photo').click();}
-document.getElementById('bottle-photo').addEventListener('change',async e=>{
+function startBottle(){document.getElementById('f-bottle').click();}
+document.getElementById('f-bottle').addEventListener('change',async e=>{
   const f=e.target.files[0];if(!f)return;e.target.value='';
   const rd=new FileReader();rd.onload=async ev=>{
-    const img=ev.target.result;go('bottle');const el=document.getElementById('bottle-content');
-    el.innerHTML=`<div class="bflow"><div class="bimg"><img src="${img}"></div><div class="bstatus"><span class="spinner"></span>Reading label...</div></div>`;
+    const img=ev.target.result;go('bottle');const el=document.getElementById('bottle');
+    el.innerHTML=`<div class="bflow"><div class="bimg"><img src="${img}"></div><div class="bsts"><span class="spin"></span>Reading label...</div></div>`;
     try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}},{type:'text',text:'Read wine label. ONLY JSON: {"name":"wine","region":"region","country":"country","grape":"grape or null","vintage":2020}. Nulls for unknowns.'}]}]})});
     if(!res.ok)throw 0;const d=await res.json();let info={};try{info=JSON.parse((d.content?.map(x=>x.text||'').join('')||'{}').replace(/```json|```/g,'').trim());}catch(e){}
     showRate(el,img,info);}catch(e){showRate(el,img,{});}
@@ -340,14 +326,14 @@ function showRate(el,img,info){
   window._bi=info;window._br=0;window._bo='';
   el.innerHTML=`<div class="bflow">
     <div class="bimg"><img src="${img}"></div>
-    ${info.name?`<div class="bname">${info.name}</div><div class="bdetail">${[info.region,info.country,info.grape,info.vintage].filter(Boolean).join(' · ')}</div>`
-    :`<div class="bdetail" style="margin-top:12px">Could not read label</div><input type="text" class="field-input" id="bn" placeholder="Wine name..." style="margin:12px 0">`}
-    <div class="rlabel">Rate it</div>
+    ${info.name?`<div class="bnm">${info.name}</div><div class="bdt">${[info.region,info.country,info.grape,info.vintage].filter(Boolean).join(' · ')}</div>`
+    :`<div class="bdt" style="margin-top:12px">Could not read label</div><input type="text" class="fld-i" id="bn" placeholder="Wine name..." style="margin:12px 0">`}
+    <div class="rl">Rate it</div>
     <div class="rstars" id="bst"><span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span></div>
-    <div class="rlabel">Reorder?</div>
+    <div class="rl">Reorder?</div>
     <div class="rpills" id="bro"><div class="rpill" data-v="yes">Yes</div><div class="rpill" data-v="maybe">Maybe</div><div class="rpill" data-v="no">No</div></div>
-    <button class="btn-gold" id="sbtn" disabled onclick="saveBottle()">Save to Cellar</button>
-    <div class="link-muted" onclick="go('scan')">Cancel</div>
+    <button class="btn" id="sbtn" disabled onclick="saveB()">Save to Cellar</button>
+    <div class="lnk" onclick="go('scan')">Cancel</div>
   </div>`;
   document.querySelectorAll('#bst span').forEach(s=>s.addEventListener('click',()=>{
     window._br=Number(s.dataset.v);document.querySelectorAll('#bst span').forEach((x,i)=>x.classList.toggle('on',i<window._br));document.getElementById('sbtn').disabled=false;
@@ -357,7 +343,7 @@ function showRate(el,img,info){
   }));
 }
 
-async function saveBottle(){
+async function saveB(){
   const info=window._bi||{},name=info.name||document.getElementById('bn')?.value?.trim();
   if(!name){toast('Enter wine name');return;}
   try{const r=await fetch(`${SB}/rest/v1/wines`,{method:'POST',headers:{...H,'Prefer':'return=representation'},body:JSON.stringify({name,region:info.region||null,country:info.country||null,grape:info.grape||null,vintage:info.vintage||null,rating:window._br,reorder:window._bo||null,source:'bottle_scan'})});
@@ -367,20 +353,19 @@ async function saveBottle(){
 function renderColl(){
   document.getElementById('csub').textContent=`${wines.length} wines · ${new Set(wines.map(w=>w.country).filter(Boolean)).size} countries`;
   const q=cS.toLowerCase(),f=q?wines.filter(w=>(w.name||'').toLowerCase().includes(q)||(w.region||'').toLowerCase().includes(q)||(w.country||'').toLowerCase().includes(q)||(w.grape||'').toLowerCase().includes(q)):wines;
-  const el=document.getElementById('cbody');
-  ({wines:rW,regions:rR,grapes:rG,insights:rI})[cV](el,f);
+  ({wines:rW,regions:rR,grapes:rG,insights:rI})[cV](document.getElementById('cbody'),f);
 }
-function rW(el,l){el.innerHTML=`<div class="wlist">${l.map(w=>{const r=Number(w.rating);return`<div class="wi${r>=5?' top':''}"><div class="wi-l"><div class="wi-name">${w.name}</div><div class="wi-meta">${w.region||''}${w.grape?' · '+w.grape:''}${w.vintage?' · '+w.vintage:''}</div></div><div class="wi-r"><div class="wi-score">${r.toFixed(1)}</div><div class="wi-badge">${r>=5?'★ Top':r>=4?'Great':'Good'}</div></div></div>`;}).join('')}</div>`;}
-function rR(el,l){const m={};l.forEach(w=>{const r=w.region||'?';m[r]=m[r]||{n:0,t:0};m[r].n++;m[r].t+=Number(w.rating);});const s=Object.entries(m).sort((a,b)=>b[1].n-a[1].n),mx=s[0]?.[1].n||1;el.innerHTML=`<div class="acard"><h3>Regions (${s.length})</h3>${s.slice(0,30).map(([n,d])=>`<div class="ab"><span class="ab-l">${n}</span><div class="ab-t"><div class="ab-f" style="width:${d.n/mx*100}%"></div></div><span class="ab-v">${d.n} · ${(d.t/d.n).toFixed(1)}★</span></div>`).join('')}</div>`;}
-function rG(el,l){const m={};l.forEach(w=>{const g=w.grape||'?';m[g]=m[g]||{n:0,t:0};m[g].n++;m[g].t+=Number(w.rating);});const s=Object.entries(m).sort((a,b)=>b[1].n-a[1].n),mx=s[0]?.[1].n||1;el.innerHTML=`<div class="acard"><h3>Grapes (${s.length})</h3>${s.slice(0,25).map(([n,d])=>`<div class="ab"><span class="ab-l">${n}</span><div class="ab-t"><div class="ab-f" style="width:${d.n/mx*100}%"></div></div><span class="ab-v">${d.n} · ${(d.t/d.n).toFixed(1)}★</span></div>`).join('')}</div>`;}
+function rW(el,l){el.innerHTML=`<div class="wlist">${l.map(w=>{const r=Number(w.rating);return`<div class="wi${r>=5?' top':''}"><div class="wi-l"><div class="wi-nm">${w.name}</div><div class="wi-m">${w.region||''}${w.grape?' · '+w.grape:''}${w.vintage?' · '+w.vintage:''}</div></div><div class="wi-r"><div class="wi-sc">${r.toFixed(1)}</div><div class="wi-b">${r>=5?'★ Top':r>=4?'Great':'Good'}</div></div></div>`;}).join('')}</div>`;}
+function rR(el,l){const m={};l.forEach(w=>{const r=w.region||'?';m[r]=m[r]||{n:0,t:0};m[r].n++;m[r].t+=Number(w.rating);});const s=Object.entries(m).sort((a,b)=>b[1].n-a[1].n),mx=s[0]?.[1].n||1;el.innerHTML=`<div class="ac"><h3>Regions (${s.length})</h3>${s.slice(0,30).map(([n,d])=>`<div class="ab"><span class="ab-l">${n}</span><div class="ab-t"><div class="ab-f" style="width:${d.n/mx*100}%"></div></div><span class="ab-v">${d.n} · ${(d.t/d.n).toFixed(1)}★</span></div>`).join('')}</div>`;}
+function rG(el,l){const m={};l.forEach(w=>{const g=w.grape||'?';m[g]=m[g]||{n:0,t:0};m[g].n++;m[g].t+=Number(w.rating);});const s=Object.entries(m).sort((a,b)=>b[1].n-a[1].n),mx=s[0]?.[1].n||1;el.innerHTML=`<div class="ac"><h3>Grapes (${s.length})</h3>${s.slice(0,25).map(([n,d])=>`<div class="ab"><span class="ab-l">${n}</span><div class="ab-t"><div class="ab-f" style="width:${d.n/mx*100}%"></div></div><span class="ab-v">${d.n} · ${(d.t/d.n).toFixed(1)}★</span></div>`).join('')}</div>`;}
 function rI(el,l){const c={};l.forEach(w=>{const k=w.country||'?';c[k]=(c[k]||0)+1;});const tc=Object.entries(c).sort((a,b)=>b[1]-a[1])[0];const avg=l.length?(l.reduce((s,w)=>s+Number(w.rating),0)/l.length).toFixed(2):'-';const t5=l.filter(w=>Number(w.rating)>=5).length;
-el.innerHTML=`<div class="acard"><h3>Taste DNA</h3>
+el.innerHTML=`<div class="ac"><h3>Taste DNA</h3>
 <div class="ir"><span class="ir-k">Total wines</span><span class="ir-v">${l.length}</span></div>
 <div class="ir"><span class="ir-k">Average</span><span class="ir-v">${avg}</span></div>
 <div class="ir"><span class="ir-k">5★ wines</span><span class="ir-v">${t5} (${l.length?Math.round(t5/l.length*100):0}%)</span></div>
 <div class="ir"><span class="ir-k">Top country</span><span class="ir-v">${tc?tc[0]+' ('+tc[1]+')':'-'}</span></div>
 <div class="ir"><span class="ir-k">Regions</span><span class="ir-v">${new Set(l.map(w=>w.region).filter(Boolean)).size}</span></div></div>`;}
-document.querySelectorAll('.ctab').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.ctab').forEach(x=>x.classList.remove('on'));t.classList.add('on');cV=t.dataset.v;renderColl();}));
+document.querySelectorAll('.ct').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.ct').forEach(x=>x.classList.remove('on'));t.classList.add('on');cV=t.dataset.v;renderColl();}));
 document.getElementById('csearch').addEventListener('input',e=>{cS=e.target.value;renderColl();});
 
 function fuz(q,wl){const a=q.toLowerCase().replace(/[^a-záéíóúñü0-9\s]/gi,'').trim(),aw=a.split(/\s+/).filter(w=>w.length>2);let best=null,bs=0;for(const w of wl){const n=(w.name||'').toLowerCase().replace(/[^a-záéíóúñü0-9\s]/gi,'').trim();if(n.includes(a)||a.includes(n))return w;const nw=n.split(/\s+/).filter(w=>w.length>2);let sc=0;for(const x of aw)for(const y of nw){if(y===x)sc+=3;else if(y.includes(x)||x.includes(y))sc+=2;else if(lev(x,y)<=2)sc+=1;}const ns=sc/Math.max(aw.length,nw.length,1);if(ns>bs&&ns>=1.5){bs=ns;best=w;}}return best;}
