@@ -9,412 +9,430 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{font-size:16px}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#080f1e;color:#e2e8f0;min-height:100vh;min-height:100dvh;padding-bottom:90px;-webkit-font-smoothing:antialiased}
-/* Bottom nav */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:rgba(8,15,30,0.97);border-top:1px solid rgba(45,212,191,0.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:90;padding:10px 0 6px;padding-bottom:max(10px,env(safe-area-inset-bottom))}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 0;cursor:pointer;color:#475569;font-size:11px;font-weight:500;transition:color 0.2s;border:none;background:none}
-.nav-item.active{color:#2dd4bf}
-.nav-item .nav-icon{font-size:24px}
-/* Toast */
-.toast{position:fixed;top:max(20px,env(safe-area-inset-top));left:16px;right:16px;transform:translateY(-120px);background:rgba(45,212,191,0.95);color:#0a1628;padding:14px 20px;border-radius:14px;font-size:15px;font-weight:600;z-index:200;transition:transform 0.3s ease;box-shadow:0 4px 20px rgba(0,0,0,0.3);text-align:center}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#06090f;color:#e2e8f0;min-height:100vh;min-height:100dvh;padding-bottom:90px;-webkit-font-smoothing:antialiased}
+
+/* === BOTTOM NAV === */
+.bnav{position:fixed;bottom:0;left:0;right:0;display:flex;background:rgba(6,9,15,0.97);border-top:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);z-index:90;padding:6px 0 4px;padding-bottom:max(6px,env(safe-area-inset-bottom))}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;cursor:pointer;border:none;background:none;color:#3d4a5c;font-size:10px;font-weight:500;letter-spacing:0.2px;transition:color 0.2s}
+.bnav-item.active{color:#c8a97e}
+.bnav-item svg{width:22px;height:22px;fill:currentColor}
+
+/* === TOAST === */
+.toast{position:fixed;top:max(16px,env(safe-area-inset-top));left:16px;right:16px;transform:translateY(-120px);background:#c8a97e;color:#06090f;padding:14px 20px;border-radius:14px;font-size:15px;font-weight:700;z-index:200;transition:transform 0.3s ease;text-align:center}
 .toast.show{transform:translateY(0)}
-/* Screens */
-.screen{display:none;padding:20px 20px}
+
+/* === SCREENS === */
+.screen{display:none;padding:0 20px 20px}
 .screen.active{display:block}
-/* Scan hero */
-.scan-hero{text-align:center;padding:24px 0 20px}
-.scan-hero h1{font-size:28px;background:linear-gradient(135deg,#2dd4bf,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;font-weight:800}
-.scan-hero p{color:#536178;font-size:14px}
-/* Scan action cards */
-.scan-cards{display:flex;flex-direction:column;gap:14px;margin-top:20px}
-.scan-card{background:rgba(15,25,45,0.8);border:1.5px solid rgba(45,212,191,0.15);border-radius:18px;padding:22px 20px;display:flex;align-items:center;gap:18px;cursor:pointer;transition:all 0.15s;-webkit-user-select:none}
-.scan-card:active{transform:scale(0.97);border-color:rgba(45,212,191,0.4);background:rgba(20,35,60,0.9)}
-.scan-card-icon{font-size:36px;flex-shrink:0}
-.scan-card-text h3{font-size:17px;font-weight:700;color:#e2e8f0;margin-bottom:4px}
-.scan-card-text p{font-size:14px;color:#64748b;line-height:1.4}
-/* Taste fingerprint */
-.taste-card{margin-top:24px;background:rgba(15,25,45,0.5);border:1px solid rgba(45,212,191,0.08);border-radius:18px;padding:20px;position:relative;overflow:hidden}
-.taste-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#2dd4bf,transparent)}
-.taste-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px}
-.taste-title{font-size:12px;font-weight:700;color:#2dd4bf;text-transform:uppercase;letter-spacing:1px}
-.taste-subtitle{font-size:12px;color:#334155}
-.taste-stats{display:flex;justify-content:space-between;margin-bottom:16px}
-.taste-stat{text-align:center;flex:1}
-.ts-num{font-size:24px;font-weight:800;color:#e2e8f0;line-height:1}
-.ts-label{font-size:10px;color:#536178;text-transform:uppercase;letter-spacing:0.5px;margin-top:4px}
-.taste-tags{display:flex;align-items:center;gap:6px;margin-top:10px;flex-wrap:wrap}
-.taste-tag-label{font-size:10px;color:#3d4f68;text-transform:uppercase;letter-spacing:0.5px;min-width:72px}
-.taste-tag{font-size:12px;color:#8896a8;background:rgba(45,212,191,0.06);border:1px solid rgba(45,212,191,0.1);padding:5px 12px;border-radius:12px}
 input[type="file"]{display:none}
-/* Pairing */
+
+/* === HOME / SCAN === */
+.home-top{padding:max(20px,env(safe-area-inset-top)) 0 0;text-align:center}
+.home-logo{font-size:13px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#c8a97e;margin-bottom:2px}
+.home-sub{font-size:11px;color:#3d4a5c;letter-spacing:1px;text-transform:uppercase}
+
+/* Taste summary - horizontal strip */
+.taste-strip{display:flex;justify-content:space-around;margin:24px 0 28px;padding:16px 0;border-top:1px solid rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.04)}
+.ts-item{text-align:center}
+.ts-num{font-size:22px;font-weight:800;color:#e2e8f0;line-height:1;font-variant-numeric:tabular-nums}
+.ts-label{font-size:9px;color:#4a5568;text-transform:uppercase;letter-spacing:0.8px;margin-top:4px}
+
+/* Action buttons */
+.action-btn{display:flex;align-items:center;gap:16px;width:100%;padding:20px;margin-bottom:12px;border-radius:16px;border:none;cursor:pointer;text-align:left;transition:all 0.15s;-webkit-user-select:none}
+.action-btn:active{transform:scale(0.98)}
+.action-primary{background:linear-gradient(135deg,#c8a97e 0%,#a0845c 100%);color:#06090f}
+.action-primary .action-icon{background:rgba(6,9,15,0.15);color:#06090f}
+.action-secondary{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08) !important;color:#e2e8f0}
+.action-secondary .action-icon{background:rgba(200,169,126,0.1);color:#c8a97e}
+.action-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.action-text h3{font-size:16px;font-weight:700;margin-bottom:2px}
+.action-text p{font-size:13px;opacity:0.7;line-height:1.3}
+.action-arrow{margin-left:auto;font-size:18px;opacity:0.4}
+
+/* Taste tags */
+.taste-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.taste-tag{font-size:12px;color:#7a8599;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);padding:6px 14px;border-radius:20px;font-weight:500}
+
+/* === PAIRING / PREVIEW === */
 .pairing-section{margin-top:20px}
-.pairing-section label{display:block;font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-weight:600}
-.pairing-input{width:100%;padding:16px 18px;border-radius:16px;border:1.5px solid rgba(45,212,191,0.15);background:rgba(15,25,45,0.8);color:#e2e8f0;font-size:17px;outline:none}
-.pairing-input:focus{border-color:rgba(45,212,191,0.4)}
-.pairing-input::placeholder{color:#334155}
-/* Menu photo strip */
+.field-label{font-size:11px;color:#4a5568;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;font-weight:600}
+.field-input{width:100%;padding:16px 18px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:#e2e8f0;font-size:17px;outline:none;font-family:inherit}
+.field-input:focus{border-color:rgba(200,169,126,0.4)}
+.field-input::placeholder{color:#2d3748}
+
 .photo-strip{display:flex;gap:10px;margin-top:14px;overflow-x:auto;padding:4px 0;-webkit-overflow-scrolling:touch}
-.photo-thumb{position:relative;width:80px;height:80px;border-radius:14px;overflow:hidden;flex-shrink:0;border:2px solid rgba(45,212,191,0.2)}
+.photo-thumb{position:relative;width:80px;height:80px;border-radius:14px;overflow:hidden;flex-shrink:0;border:2px solid rgba(255,255,255,0.08)}
 .photo-thumb img{width:100%;height:100%;object-fit:cover}
-.photo-thumb-x{position:absolute;top:4px;right:4px;width:24px;height:24px;background:rgba(0,0,0,0.7);color:#ef4444;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer}
-.photo-thumb-num{position:absolute;bottom:4px;left:4px;width:22px;height:22px;background:rgba(45,212,191,0.9);color:#0a1628;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
-.add-more-thumb{width:80px;height:80px;border-radius:14px;border:2px dashed rgba(45,212,191,0.25);display:flex;align-items:center;justify-content:center;font-size:28px;color:#2dd4bf;cursor:pointer;flex-shrink:0}
+.photo-thumb-x{position:absolute;top:4px;right:4px;width:22px;height:22px;background:rgba(0,0,0,0.7);color:#ff6b6b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;font-weight:700}
+.photo-thumb-num{position:absolute;bottom:4px;left:4px;width:20px;height:20px;background:#c8a97e;color:#06090f;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.add-more-thumb{width:80px;height:80px;border-radius:14px;border:2px dashed rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:26px;color:#4a5568;cursor:pointer;flex-shrink:0}
+
 /* Buttons */
-.analyze-btn{width:100%;margin-top:16px;padding:18px;border-radius:16px;border:none;background:linear-gradient(135deg,#2dd4bf,#06b6d4);color:#0a1628;font-size:17px;font-weight:700;cursor:pointer}
-.analyze-btn:active{opacity:0.9;transform:scale(0.99)}
-.clear-link{text-align:center;margin-top:12px;color:#536178;font-size:14px;cursor:pointer;padding:10px}
-/* Scan results */
-.scan-status{text-align:center;padding:40px 0;color:#94a3b8;font-size:16px}
-.spinner{display:inline-block;width:20px;height:20px;border:2.5px solid rgba(45,212,191,0.3);border-top-color:#2dd4bf;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:10px;vertical-align:middle}
+.btn-gold{width:100%;margin-top:16px;padding:18px;border-radius:14px;border:none;background:linear-gradient(135deg,#c8a97e,#a0845c);color:#06090f;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-gold:active{opacity:0.9;transform:scale(0.99)}
+.btn-ghost{width:100%;margin-top:10px;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#7a8599;font-size:15px;cursor:pointer;font-family:inherit}
+.link-muted{text-align:center;margin-top:12px;color:#3d4a5c;font-size:14px;cursor:pointer;padding:10px}
+
+/* === SCAN STATUS & RESULTS === */
+.scan-status{text-align:center;padding:48px 0;color:#7a8599;font-size:16px}
+.spinner{display:inline-block;width:18px;height:18px;border:2.5px solid rgba(200,169,126,0.2);border-top-color:#c8a97e;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:10px;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
+
 .result-section{margin-top:20px}
-.result-header{font-size:13px;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(30,41,59,0.5);font-weight:600}
-.result-header span{color:#2dd4bf;font-weight:700}
-.result-card{background:rgba(15,25,45,0.8);border:1.5px solid rgba(45,212,191,0.12);border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:12px}
-.result-card.matched{border-color:rgba(45,212,191,0.35)}
+.result-header{font-size:11px;color:#4a5568;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.04);font-weight:600}
+.result-header span{color:#c8a97e}
+.result-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.result-card.matched{border-color:rgba(200,169,126,0.3);background:rgba(200,169,126,0.04)}
 .result-left{flex:1;min-width:0}
-.result-name{font-size:16px;font-weight:700;color:#e2e8f0;margin-bottom:3px;line-height:1.3}
-.result-sub{font-size:13px;color:#64748b}
-.result-pairing{font-size:13px;color:#2dd4bf;margin-top:3px}
-.result-right{text-align:center;flex-shrink:0;min-width:50px}
-.result-score{font-size:28px;font-weight:800;color:#2dd4bf;line-height:1}
-.result-reorder{font-size:11px;margin-top:3px;font-weight:600}
-.result-reorder.yes{color:#2dd4bf}
-.result-reorder.no{color:#ef4444}
-.result-reorder.maybe{color:#f59e0b}
-.result-new{font-size:13px;color:#475569;font-style:italic}
-/* Bottle scan */
+.result-name{font-size:15px;font-weight:700;color:#e2e8f0;margin-bottom:3px;line-height:1.3}
+.result-sub{font-size:13px;color:#4a5568}
+.result-pairing{font-size:13px;color:#c8a97e;margin-top:3px}
+.result-right{text-align:center;flex-shrink:0;min-width:48px}
+.result-score{font-size:26px;font-weight:800;color:#c8a97e;line-height:1}
+.result-reorder{font-size:10px;margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px}
+.result-reorder.yes{color:#6fcf97}
+.result-reorder.no{color:#ff6b6b}
+.result-reorder.maybe{color:#f2c94c}
+.result-new{font-size:12px;color:#3d4a5c;font-style:italic}
+
+/* === BOTTLE SCAN === */
 .bottle-flow{text-align:center;padding:20px 0}
-.bottle-preview{margin:16px auto;max-width:220px}
-.bottle-preview img{width:100%;border-radius:16px;border:2px solid rgba(45,212,191,0.2)}
-.bottle-status{color:#94a3b8;font-size:16px;margin:14px 0}
-.bottle-result-name{font-size:22px;font-weight:800;color:#e2e8f0;margin-bottom:6px}
-.bottle-result-detail{font-size:15px;color:#64748b;margin-bottom:20px}
-.quick-rate{margin-top:20px}
-.quick-rate-label{font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;font-weight:600}
-.quick-stars{display:flex;gap:12px;font-size:40px;cursor:pointer;justify-content:center;margin-bottom:20px}
-.quick-stars span{color:#1e293b;transition:color 0.15s}
-.quick-stars span.active{color:#2dd4bf}
-.quick-pills{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
-.qpill{padding:12px 22px;border-radius:22px;border:1.5px solid rgba(45,212,191,0.2);background:transparent;color:#94a3b8;cursor:pointer;font-size:16px;font-weight:500;transition:all 0.15s}
-.qpill.active{background:rgba(45,212,191,0.15);color:#2dd4bf;border-color:rgba(45,212,191,0.4)}
-.save-bottle-btn{width:100%;padding:18px;border-radius:16px;border:none;background:linear-gradient(135deg,#2dd4bf,#06b6d4);color:#0a1628;font-size:17px;font-weight:700;cursor:pointer;margin-top:16px}
-.save-bottle-btn:disabled{opacity:0.35}
-.save-bottle-btn:active{opacity:0.9}
-/* Collection */
-.coll-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.coll-header h2{font-size:22px;font-weight:800;color:#e2e8f0}
-.coll-header .coll-count{font-size:14px;color:#2dd4bf;font-weight:600}
-.coll-search{width:100%;padding:14px 16px;border-radius:14px;border:1.5px solid rgba(45,212,191,0.12);background:rgba(15,25,45,0.8);color:#e2e8f0;font-size:17px;outline:none;margin-bottom:14px}
-.coll-search:focus{border-color:rgba(45,212,191,0.35)}
-.coll-search::placeholder{color:#334155}
-.coll-tabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.coll-tab{padding:9px 16px;border-radius:18px;border:1px solid rgba(45,212,191,0.15);background:transparent;color:#64748b;cursor:pointer;font-size:14px;font-weight:500;flex-shrink:0;white-space:nowrap}
-.coll-tab.active{background:rgba(45,212,191,0.12);color:#2dd4bf;border-color:rgba(45,212,191,0.3)}
-.wine-list{display:flex;flex-direction:column;gap:10px}
-.wine-item{background:rgba(15,25,45,0.8);border:1.5px solid rgba(45,212,191,0.1);border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px}
-.wine-item.top{border-left:3px solid #2dd4bf}
+.bottle-preview{margin:20px auto;max-width:180px}
+.bottle-preview img{width:100%;border-radius:16px;border:2px solid rgba(255,255,255,0.06)}
+.bottle-status{color:#7a8599;font-size:16px;margin:14px 0}
+.bottle-name{font-size:22px;font-weight:800;color:#e2e8f0;margin-bottom:4px;line-height:1.2}
+.bottle-detail{font-size:14px;color:#4a5568;margin-bottom:24px}
+.quick-rate{margin-top:24px}
+.rate-label{font-size:11px;color:#4a5568;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;font-weight:600}
+.rate-stars{display:flex;gap:14px;font-size:38px;cursor:pointer;justify-content:center;margin-bottom:24px}
+.rate-stars span{color:#1a2030;transition:color 0.15s}
+.rate-stars span.active{color:#c8a97e}
+.rate-pills{display:flex;gap:10px;justify-content:center;margin-bottom:16px}
+.rpill{padding:12px 24px;border-radius:24px;border:1.5px solid rgba(255,255,255,0.08);background:transparent;color:#7a8599;cursor:pointer;font-size:15px;font-weight:500;transition:all 0.15s;font-family:inherit}
+.rpill.active{background:rgba(200,169,126,0.12);color:#c8a97e;border-color:rgba(200,169,126,0.3)}
+
+/* === COLLECTION === */
+.coll-head{margin-bottom:16px;padding-top:max(16px,env(safe-area-inset-top))}
+.coll-head h2{font-size:22px;font-weight:800;color:#e2e8f0;margin-bottom:2px}
+.coll-head .coll-sub{font-size:13px;color:#4a5568}
+.coll-search{width:100%;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.03);color:#e2e8f0;font-size:17px;outline:none;margin-bottom:14px;font-family:inherit}
+.coll-search:focus{border-color:rgba(200,169,126,0.3)}
+.coll-search::placeholder{color:#2d3748}
+.coll-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.coll-tab{padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#4a5568;cursor:pointer;font-size:13px;font-weight:500;flex-shrink:0;white-space:nowrap;font-family:inherit}
+.coll-tab.active{background:rgba(200,169,126,0.1);color:#c8a97e;border-color:rgba(200,169,126,0.2)}
+.wine-list{display:flex;flex-direction:column;gap:8px}
+.wine-item{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.wine-item.top{border-left:3px solid #c8a97e}
 .wi-left{flex:1;min-width:0}
-.wi-name{font-size:16px;font-weight:700;color:#e2e8f0;margin-bottom:3px;line-height:1.3}
-.wi-meta{font-size:13px;color:#536178}
+.wi-name{font-size:15px;font-weight:700;color:#e2e8f0;margin-bottom:3px;line-height:1.3}
+.wi-meta{font-size:13px;color:#3d4a5c}
 .wi-right{text-align:center;flex-shrink:0}
-.wi-score{font-size:24px;font-weight:800;color:#2dd4bf;line-height:1}
-.wi-badge{font-size:10px;color:#06b6d4;text-transform:uppercase;letter-spacing:0.3px;margin-top:2px}
+.wi-score{font-size:22px;font-weight:800;color:#c8a97e;line-height:1}
+.wi-badge{font-size:9px;color:#7a8599;text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
+
 /* Analytics */
-.a-card{background:rgba(15,25,45,0.8);border:1.5px solid rgba(45,212,191,0.1);border-radius:14px;padding:16px 18px;margin-bottom:12px}
-.a-card h3{font-size:15px;color:#2dd4bf;margin-bottom:12px;font-weight:700}
+.a-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:16px 18px;margin-bottom:12px}
+.a-card h3{font-size:14px;color:#c8a97e;margin-bottom:12px;font-weight:700}
 .a-bar{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.a-label{font-size:13px;color:#94a3b8;min-width:90px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.a-track{flex:1;height:8px;background:rgba(30,41,59,0.8);border-radius:4px;overflow:hidden}
-.a-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#2dd4bf,#06b6d4)}
-.a-val{font-size:12px;color:#64748b;min-width:50px}
-/* Insights */
-.insight-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(30,41,59,0.3);font-size:15px}
-.insight-row:last-child{border:none}
-.insight-label{color:#94a3b8}
-.insight-val{color:#2dd4bf;font-weight:700}
+.a-lbl{font-size:12px;color:#7a8599;min-width:90px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a-trk{flex:1;height:6px;background:rgba(255,255,255,0.04);border-radius:3px;overflow:hidden}
+.a-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#c8a97e,#a0845c)}
+.a-val{font-size:11px;color:#4a5568;min-width:50px}
+.ins-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.03);font-size:15px}
+.ins-row:last-child{border:none}
+.ins-k{color:#7a8599}
+.ins-v{color:#c8a97e;font-weight:700}
 </style>
 </head>
 <body>
 <div class="toast" id="toast"></div>
+
+<!-- HOME / SCAN -->
 <div class="screen active" id="screen-scan">
-  <div class="scan-hero"><h1>🍷 Hedonicum</h1><p>Your wine intelligence</p></div>
+  <div class="home-top">
+    <div class="home-logo">Hedonicum</div>
+    <div class="home-sub">Wine Intelligence</div>
+  </div>
   <div id="scan-content"></div>
 </div>
+
+<!-- BOTTLE -->
 <div class="screen" id="screen-bottle"><div id="bottle-content"></div></div>
+
+<!-- COLLECTION -->
 <div class="screen" id="screen-collection">
-  <div class="coll-header"><h2>My Wines</h2><span class="coll-count" id="coll-count"></span></div>
+  <div class="coll-head">
+    <h2>Collection</h2>
+    <div class="coll-sub" id="coll-sub"></div>
+  </div>
   <input type="text" class="coll-search" id="coll-search" placeholder="Search wines...">
-  <div class="coll-tabs" id="coll-tabs">
-    <div class="coll-tab active" data-view="wines">All Wines</div>
+  <div class="coll-tabs">
+    <div class="coll-tab active" data-view="wines">All</div>
     <div class="coll-tab" data-view="regions">Regions</div>
     <div class="coll-tab" data-view="grapes">Grapes</div>
     <div class="coll-tab" data-view="insights">Insights</div>
   </div>
   <div id="coll-content"></div>
 </div>
-<nav class="bottom-nav">
-  <div class="nav-item active" data-screen="scan"><span class="nav-icon">📷</span>Scan</div>
-  <div class="nav-item" data-screen="bottle" id="nav-bottle" onclick="startBottleScan()"><span class="nav-icon">🍾</span>Add Wine</div>
-  <div class="nav-item" data-screen="collection"><span class="nav-icon">📚</span>Collection</div>
+
+<!-- NAV -->
+<nav class="bnav">
+  <div class="bnav-item active" data-screen="scan">
+    <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+    Scan
+  </div>
+  <div class="bnav-item" data-screen="bottle" id="nav-bottle" onclick="startBottleScan()">
+    <svg viewBox="0 0 24 24"><path d="M6 22a2 2 0 002 2h8a2 2 0 002-2V10l-2-8H8L6 10v12zm2-11l1.5-6h5L16 11H8zm0 2h8v9H8v-9z" transform="translate(0,-1)"/></svg>
+    Add
+  </div>
+  <div class="bnav-item" data-screen="collection">
+    <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
+    Cellar
+  </div>
 </nav>
+
 <input type="file" id="menu-photo" accept="image/*" capture="environment" multiple>
 <input type="file" id="bottle-photo" accept="image/*" capture="environment">
-<script>
-const SB_URL='https://bzpraigsuwgjgpnclcpd.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cHJhaWdzdXdnamdwbmNsY3BkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1Mzk2NDEsImV4cCI6MjA4NTExNTY0MX0.tBtsac6Mq65BiG93MhYtn1KV8iOGpEpVdlD3tqShrzE';
-const API_KEY='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';
-const hdrs={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'};
-let wines=[],menuPhotos=[],menuResults=[],collView='wines',collSearch='';
 
-function switchScreen(name){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('screen-'+name).classList.add('active');
-  document.querySelector(`.nav-item[data-screen="${name}"]`)?.classList.add('active');
-  if(name==='collection')renderCollection();
-  if(name==='scan')renderScanHome();
+<script>
+const SB='https://bzpraigsuwgjgpnclcpd.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cHJhaWdzdXdnamdwbmNsY3BkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1Mzk2NDEsImV4cCI6MjA4NTExNTY0MX0.tBtsac6Mq65BiG93MhYtn1KV8iOGpEpVdlD3tqShrzE';
+const AK='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';
+const H={'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json'};
+let wines=[],menuP=[],menuR=[],cView='wines',cSearch='';
+
+// NAV
+function go(s){
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.bnav-item').forEach(x=>x.classList.remove('active'));
+  document.getElementById('screen-'+s).classList.add('active');
+  document.querySelector(`.bnav-item[data-screen="${s}"]`)?.classList.add('active');
+  if(s==='collection')renderColl();
+  if(s==='scan')renderHome();
 }
-document.querySelectorAll('.nav-item').forEach(n=>{
+document.querySelectorAll('.bnav-item').forEach(n=>{
   if(n.id==='nav-bottle')return;
-  n.addEventListener('click',()=>switchScreen(n.dataset.screen));
+  n.addEventListener('click',()=>go(n.dataset.screen));
 });
 
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
 async function loadWines(){
-  try{const r=await fetch(`${SB_URL}/rest/v1/wines?select=*&order=rating.desc,name.asc&limit=1000`,{headers:hdrs});wines=await r.json();}catch(e){wines=[];}
+  try{const r=await fetch(`${SB}/rest/v1/wines?select=*&order=rating.desc,name.asc&limit=1000`,{headers:H});wines=await r.json();}catch(e){wines=[];}
 }
 
-function renderScanHome(){
+// HOME
+function renderHome(){
   const el=document.getElementById('scan-content');
-  if(menuPhotos.length===0&&menuResults.length===0){
-    // Taste fingerprint
-    const n=wines.length;
-    const avg=n?(wines.reduce((s,w)=>s+Number(w.rating),0)/n).toFixed(1):'–';
-    const top5=wines.filter(w=>Number(w.rating)>=5).length;
-    const countries=new Set(wines.map(w=>w.country).filter(Boolean)).size;
-    const regions=new Set(wines.map(w=>w.region).filter(Boolean)).size;
-    // Top 3 grapes
+  if(menuP.length===0&&menuR.length===0){
+    const n=wines.length,avg=n?(wines.reduce((s,w)=>s+Number(w.rating),0)/n).toFixed(1):'–';
+    const t5=wines.filter(w=>Number(w.rating)>=5).length;
+    const ctry=new Set(wines.map(w=>w.country).filter(Boolean)).size;
+    const rgn=new Set(wines.map(w=>w.region).filter(Boolean)).size;
     const gm={};wines.forEach(w=>{const g=w.grape;if(g){if(!gm[g])gm[g]=0;gm[g]++;}});
-    const topGrapes=Object.entries(gm).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
-    // Top 3 regions
-    const rm={};wines.forEach(w=>{const r=w.region;if(r){if(!rm[r])rm[r]=0;rm[r]++;}});
-    const topRegions=Object.entries(rm).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
+    const topG=Object.entries(gm).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
+    const rm={};wines.forEach(w=>{const r=w.region;if(r){const short=r.split(',')[0].trim();if(!rm[short])rm[short]=0;rm[short]++;}});
+    const topR=Object.entries(rm).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
 
-    el.innerHTML=`<div class="scan-cards">
-      <div class="scan-card" onclick="document.getElementById('menu-photo').click()">
-        <div class="scan-card-icon">📋</div>
-        <div class="scan-card-text"><h3>Scan Wine Menu</h3><p>Take photos of the menu and get instant pairing recommendations</p></div>
+    el.innerHTML=`
+      ${n>0?`<div class="taste-strip">
+        <div class="ts-item"><div class="ts-num">${n}</div><div class="ts-label">Wines</div></div>
+        <div class="ts-item"><div class="ts-num">${avg}</div><div class="ts-label">Avg</div></div>
+        <div class="ts-item"><div class="ts-num">${t5}</div><div class="ts-label">5★</div></div>
+        <div class="ts-item"><div class="ts-num">${ctry}</div><div class="ts-label">Countries</div></div>
+        <div class="ts-item"><div class="ts-num">${rgn}</div><div class="ts-label">Regions</div></div>
       </div>
-      <div class="scan-card" onclick="startBottleScan()">
-        <div class="scan-card-icon">🍾</div>
-        <div class="scan-card-text"><h3>Add a Bottle</h3><p>Snap the label to save it to your collection</p></div>
-      </div>
-    </div>
-    ${n>0?`<div class="taste-card">
-      <div class="taste-header">
-        <div class="taste-title">Taste Profile</div>
-        <div class="taste-subtitle">@Holdmybirra</div>
-      </div>
-      <div class="taste-stats">
-        <div class="taste-stat"><div class="ts-num">${n}</div><div class="ts-label">wines</div></div>
-        <div class="taste-stat"><div class="ts-num">${avg}</div><div class="ts-label">avg</div></div>
-        <div class="taste-stat"><div class="ts-num">${top5}</div><div class="ts-label">5★</div></div>
-        <div class="taste-stat"><div class="ts-num">${countries}</div><div class="ts-label">countries</div></div>
-      </div>
-      ${topGrapes.length?`<div class="taste-tags"><span class="taste-tag-label">Top grapes</span>${topGrapes.map(g=>`<span class="taste-tag">${g}</span>`).join('')}</div>`:''}
-      ${topRegions.length?`<div class="taste-tags"><span class="taste-tag-label">Top regions</span>${topRegions.map(r=>`<span class="taste-tag">${r}</span>`).join('')}</div>`:''}
-    </div>`:''}`; 
-  } else if(menuResults.length>0){renderScanResults(el);}
-  else{renderScanPreview(el);}
+      <div class="taste-tags">${[...topR,...topG].map(t=>`<span class="taste-tag">${t}</span>`).join('')}</div>`:''}
+      <button class="action-btn action-primary" onclick="document.getElementById('menu-photo').click()">
+        <div class="action-icon">📋</div>
+        <div class="action-text"><h3>Scan Menu</h3><p>Snap the wine list, get your picks</p></div>
+        <div class="action-arrow">›</div>
+      </button>
+      <button class="action-btn action-secondary" onclick="startBottleScan()">
+        <div class="action-icon">📸</div>
+        <div class="action-text"><h3>Add a Bottle</h3><p>Photograph to save & rate</p></div>
+        <div class="action-arrow">›</div>
+      </button>`;
+  } else if(menuR.length>0){renderResults(el);}
+  else{renderPreview(el);}
 }
 
-function renderScanPreview(el){
+function renderPreview(el){
   el.innerHTML=`<div class="photo-strip">
-    ${menuPhotos.map((p,i)=>`<div class="photo-thumb"><img src="${p}"><div class="photo-thumb-num">${i+1}</div><div class="photo-thumb-x" onclick="removeMenuPhoto(${i})">✕</div></div>`).join('')}
+    ${menuP.map((p,i)=>`<div class="photo-thumb"><img src="${p}"><div class="photo-thumb-num">${i+1}</div><div class="photo-thumb-x" onclick="rmPhoto(${i})">✕</div></div>`).join('')}
     <div class="add-more-thumb" onclick="document.getElementById('menu-photo').click()">+</div>
   </div>
-  <div class="pairing-section"><label>🍽 What are you eating?</label>
-    <input type="text" class="pairing-input" id="pairing-input" placeholder="steak, pasta, seafood, sushi...">
+  <div class="pairing-section"><div class="field-label">🍽 What are you eating?</div>
+    <input type="text" class="field-input" id="pair-in" placeholder="steak, pasta, seafood...">
   </div>
-  <button class="analyze-btn" onclick="analyzeMenu()">🔍 Analyze ${menuPhotos.length} ${menuPhotos.length===1?'Photo':'Photos'}</button>
-  <div class="clear-link" onclick="clearMenu()">Clear all</div>`;
+  <button class="btn-gold" onclick="analyzeMenu()">Analyze ${menuP.length} ${menuP.length===1?'Photo':'Photos'}</button>
+  <div class="link-muted" onclick="clearMenu()">Clear</div>`;
 }
 
-function renderScanResults(el){
-  const found=menuResults.filter(r=>r.match),notFound=menuResults.filter(r=>!r.match);
-  const pairing=window._lastPairing||'';
-  el.innerHTML=`<button class="analyze-btn" style="background:rgba(15,25,45,0.8);color:#2dd4bf;border:1.5px solid rgba(45,212,191,0.2)" onclick="clearMenu()">📷 Scan Another Menu</button>
-    ${pairing?`<div style="text-align:center;color:#64748b;font-size:0.8rem;margin-top:8px">🍽 Pairing with: <span style="color:#2dd4bf">${pairing}</span></div>`:''}
-    ${found.length?`<div class="result-section"><div class="result-header">🎯 <span>${found.length}</span> wines you know</div>
+function renderResults(el){
+  const found=menuR.filter(r=>r.match),nf=menuR.filter(r=>!r.match);
+  const pair=window._lp||'';
+  el.innerHTML=`<button class="btn-ghost" onclick="clearMenu()">← Scan Another Menu</button>
+    ${pair?`<div style="text-align:center;color:#4a5568;font-size:13px;margin-top:10px">Pairing with <span style="color:#c8a97e;font-weight:600">${pair}</span></div>`:''}
+    ${found.length?`<div class="result-section"><div class="result-header"><span>${found.length}</span> wines you know</div>
       ${found.map(r=>`<div class="result-card matched"><div class="result-left">
         <div class="result-name">${r.menuName}</div>
         <div class="result-sub">${r.match.region||''}${r.match.grape?' · '+r.match.grape:''}</div>
-        ${r.match.notes?`<div class="result-sub" style="font-style:italic">"${r.match.notes}"</div>`:''}
-        ${r.pairingNote?`<div class="result-pairing">🍽 ${r.pairingNote}</div>`:''}
+        ${r.match.notes?`<div class="result-sub" style="font-style:italic;color:#5a677a">"${r.match.notes}"</div>`:''}
+        ${r.pn?`<div class="result-pairing">🍽 ${r.pn}</div>`:''}
       </div><div class="result-right">
         <div class="result-score">${Number(r.match.rating).toFixed(1)}</div>
         ${r.match.reorder?`<div class="result-reorder ${r.match.reorder}">${r.match.reorder==='yes'?'✓ Reorder':r.match.reorder==='no'?'✗ Skip':'~ Maybe'}</div>`:''}
       </div></div>`).join('')}</div>`:''}
-    ${notFound.length?`<div class="result-section"><div class="result-header">🆕 <span>${notFound.length}</span> new wines</div>
-      ${notFound.map(r=>`<div class="result-card"><div class="result-left">
+    ${nf.length?`<div class="result-section"><div class="result-header"><span>${nf.length}</span> new wines</div>
+      ${nf.map(r=>`<div class="result-card"><div class="result-left">
         <div class="result-name">${r.menuName}</div>
-        ${r.pairingNote?`<div class="result-pairing">🍽 ${r.pairingNote}</div>`:''}
-        <div class="result-new">Not in your collection</div>
+        ${r.pn?`<div class="result-pairing">🍽 ${r.pn}</div>`:''}
+        <div class="result-new">Not in your cellar</div>
       </div></div>`).join('')}</div>`:''}`;
 }
 
+// MENU PHOTOS
 document.getElementById('menu-photo').addEventListener('change',e=>{
-  Array.from(e.target.files).forEach(f=>{const r=new FileReader();r.onload=ev=>{menuPhotos.push(ev.target.result);renderScanHome();};r.readAsDataURL(f);});
+  Array.from(e.target.files).forEach(f=>{const r=new FileReader();r.onload=ev=>{menuP.push(ev.target.result);renderHome();};r.readAsDataURL(f);});
   e.target.value='';
 });
-function removeMenuPhoto(i){menuPhotos.splice(i,1);if(!menuPhotos.length)menuResults=[];renderScanHome();}
-function clearMenu(){menuPhotos=[];menuResults=[];window._lastPairing='';renderScanHome();}
+function rmPhoto(i){menuP.splice(i,1);if(!menuP.length)menuR=[];renderHome();}
+function clearMenu(){menuP=[];menuR=[];window._lp='';renderHome();}
 
+// ANALYZE
 async function analyzeMenu(){
-  const pairing=document.getElementById('pairing-input')?.value||'';
-  window._lastPairing=pairing;
+  const pair=document.getElementById('pair-in')?.value||'';window._lp=pair;
   const el=document.getElementById('scan-content');
-  el.innerHTML=`<div class="scan-status"><span class="spinner"></span>Reading ${menuPhotos.length} menu ${menuPhotos.length===1?'photo':'photos'}...</div>`;
+  el.innerHTML=`<div class="scan-status"><span class="spinner"></span>Reading menu...</div>`;
   try{
-    const content=[];
-    menuPhotos.forEach(img=>{content.push({type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}});});
-    content.push({type:'text',text:`Extract ALL wine names from ${menuPhotos.length>1?'these menu photos':'this menu photo'}. Return ONLY a JSON array of strings with wine names exactly as written. Example: ["Ramón Bilbao Reserva 2018","Catena Malbec 2020"]. No explanation, just JSON array.`});
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content}]})});
-    if(!res.ok)throw new Error(res.status);
-    const data=await res.json();
-    let mw=[];try{mw=JSON.parse((data.content?.map(c=>c.text||'').join('')||'[]').replace(/```json|```/g,'').trim());}catch(e){}
-    menuResults=mw.map(name=>({menuName:name,match:fuzzyMatch(name,wines),pairingNote:null}));
-    if(pairing.trim()&&menuResults.length){
-      el.innerHTML=`<div class="scan-status"><span class="spinner"></span>Matching with ${pairing}...</div>`;
+    const c=[];menuP.forEach(img=>{c.push({type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}});});
+    c.push({type:'text',text:`Extract ALL wine names from ${menuP.length>1?'these menu photos':'this menu photo'}. Return ONLY a JSON array of wine names as written. No explanation.`});
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:c}]})});
+    if(!res.ok)throw 0;
+    const d=await res.json();let mw=[];try{mw=JSON.parse((d.content?.map(x=>x.text||'').join('')||'[]').replace(/```json|```/g,'').trim());}catch(e){}
+    menuR=mw.map(name=>({menuName:name,match:fuz(name,wines),pn:null}));
+    if(pair.trim()&&menuR.length){
+      el.innerHTML=`<div class="scan-status"><span class="spinner"></span>Matching with ${pair}...</div>`;
       try{
-        const pr=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:`I'm eating: "${pairing}". Wines: ${JSON.stringify(mw)}. For each wine, give a very short pairing note (5-10 words). Return ONLY JSON object: {"Wine Name":"short note"}. No explanation.`}]})});
-        if(pr.ok){const pd=await pr.json();try{const p=JSON.parse((pd.content?.map(c=>c.text||'').join('')||'{}').replace(/```json|```/g,'').trim());menuResults.forEach(r=>{if(p[r.menuName])r.pairingNote=p[r.menuName];});}catch(e){}}
+        const pr=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:`I'm eating "${pair}". Wines: ${JSON.stringify(mw)}. For each give a 5-8 word pairing note. Return ONLY JSON {"Wine":"note"}. No explanation.`}]})});
+        if(pr.ok){const pd=await pr.json();try{const p=JSON.parse((pd.content?.map(x=>x.text||'').join('')||'{}').replace(/```json|```/g,'').trim());menuR.forEach(r=>{if(p[r.menuName])r.pn=p[r.menuName];});}catch(e){}}
       }catch(e){}
     }
-    renderScanHome();
-  }catch(e){console.error(e);toast('Error scanning menu');renderScanHome();}
+    renderHome();
+  }catch(e){toast('Error reading menu');renderHome();}
 }
 
+// BOTTLE
 function startBottleScan(){document.getElementById('bottle-photo').click();}
-
 document.getElementById('bottle-photo').addEventListener('change',async e=>{
-  const file=e.target.files[0];if(!file)return;e.target.value='';
+  const f=e.target.files[0];if(!f)return;e.target.value='';
   const reader=new FileReader();
   reader.onload=async ev=>{
-    const img=ev.target.result;
-    switchScreen('bottle');
+    const img=ev.target.result;go('bottle');
     const el=document.getElementById('bottle-content');
     el.innerHTML=`<div class="bottle-flow"><div class="bottle-preview"><img src="${img}"></div><div class="bottle-status"><span class="spinner"></span>Reading label...</div></div>`;
     try{
-      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}},{type:'text',text:'Read this wine bottle label. Return ONLY JSON: {"name":"full wine name","region":"region","country":"country","grape":"grape or null","vintage":2020}. Use null for unknowns. No explanation.'}]}]})});
-      if(!res.ok)throw new Error(res.status);
-      const data=await res.json();
-      let info={};try{info=JSON.parse((data.content?.map(c=>c.text||'').join('')||'{}').replace(/```json|```/g,'').trim());}catch(e){}
-      renderBottleRate(el,img,info);
-    }catch(err){console.error(err);renderBottleRate(el,img,{});}
-  };
-  reader.readAsDataURL(file);
+      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}},{type:'text',text:'Read wine label. Return ONLY JSON: {"name":"wine name","region":"region","country":"country","grape":"grape or null","vintage":2020}. Nulls for unknowns.'}]}]})});
+      if(!res.ok)throw 0;
+      const d=await res.json();let info={};try{info=JSON.parse((d.content?.map(x=>x.text||'').join('')||'{}').replace(/```json|```/g,'').trim());}catch(e){}
+      showRate(el,img,info);
+    }catch(e){showRate(el,img,{});}
+  };reader.readAsDataURL(f);
 });
 
-function renderBottleRate(el,img,info){
-  window._bi=info;window._br=0;window._bro='';
+function showRate(el,img,info){
+  window._bi=info;window._br=0;window._bo='';
   el.innerHTML=`<div class="bottle-flow">
     <div class="bottle-preview"><img src="${img}"></div>
-    ${info.name?`<div class="bottle-result-name">${info.name}</div><div class="bottle-result-detail">${[info.region,info.country,info.grape,info.vintage].filter(Boolean).join(' · ')}</div>`
-    :`<div class="bottle-result-detail">Could not read label</div><input type="text" class="pairing-input" id="bn-input" placeholder="Type wine name..." style="margin:10px 0">`}
+    ${info.name?`<div class="bottle-name">${info.name}</div><div class="bottle-detail">${[info.region,info.country,info.grape,info.vintage].filter(Boolean).join(' · ')}</div>`
+    :`<div class="bottle-detail" style="margin-top:10px">Could not read label</div><input type="text" class="field-input" id="bn-in" placeholder="Wine name..." style="margin:12px 0">`}
     <div class="quick-rate">
-      <div class="quick-rate-label">Your rating</div>
-      <div class="quick-stars" id="b-stars"><span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span></div>
-      <div class="quick-rate-label">Reorder?</div>
-      <div class="quick-pills" id="b-reorder"><div class="qpill" data-v="yes">Yes</div><div class="qpill" data-v="maybe">Maybe</div><div class="qpill" data-v="no">No</div></div>
+      <div class="rate-label">Rate it</div>
+      <div class="rate-stars" id="b-stars"><span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span></div>
+      <div class="rate-label">Reorder?</div>
+      <div class="rate-pills" id="b-ro"><div class="rpill" data-v="yes">Yes</div><div class="rpill" data-v="maybe">Maybe</div><div class="rpill" data-v="no">No</div></div>
     </div>
-    <button class="save-bottle-btn" id="save-btn" disabled onclick="saveBottle()">Save Wine</button>
-    <div class="clear-link" onclick="switchScreen('scan')">Cancel</div>
+    <button class="btn-gold" id="save-btn" disabled onclick="saveBottle()" style="opacity:0.35">Save to Cellar</button>
+    <div class="link-muted" onclick="go('scan')">Cancel</div>
   </div>`;
   document.querySelectorAll('#b-stars span').forEach(s=>s.addEventListener('click',()=>{
     window._br=Number(s.dataset.v);
     document.querySelectorAll('#b-stars span').forEach((x,i)=>x.classList.toggle('active',i<window._br));
-    document.getElementById('save-btn').disabled=false;
+    const btn=document.getElementById('save-btn');btn.disabled=false;btn.style.opacity='1';
   }));
-  document.querySelectorAll('#b-reorder .qpill').forEach(p=>p.addEventListener('click',()=>{
-    document.querySelectorAll('#b-reorder .qpill').forEach(x=>x.classList.remove('active'));
-    p.classList.add('active');window._bro=p.dataset.v;
+  document.querySelectorAll('#b-ro .rpill').forEach(p=>p.addEventListener('click',()=>{
+    document.querySelectorAll('#b-ro .rpill').forEach(x=>x.classList.remove('active'));
+    p.classList.add('active');window._bo=p.dataset.v;
   }));
 }
 
 async function saveBottle(){
-  const info=window._bi||{};
-  const name=info.name||document.getElementById('bn-input')?.value?.trim();
+  const info=window._bi||{},name=info.name||document.getElementById('bn-in')?.value?.trim();
   if(!name){toast('Enter a wine name');return;}
-  const wine={name,region:info.region||null,country:info.country||null,grape:info.grape||null,vintage:info.vintage||null,rating:window._br,reorder:window._bro||null,source:'bottle_scan'};
+  const w={name,region:info.region||null,country:info.country||null,grape:info.grape||null,vintage:info.vintage||null,rating:window._br,reorder:window._bo||null,source:'bottle_scan'};
   try{
-    const res=await fetch(`${SB_URL}/rest/v1/wines`,{method:'POST',headers:{...hdrs,'Prefer':'return=representation'},body:JSON.stringify(wine)});
-    if(res.ok){const[added]=await res.json();wines.unshift(added);wines.sort((a,b)=>Number(b.rating)-Number(a.rating));toast(`✓ ${name} saved!`);switchScreen('scan');}
-    else{toast('Error saving wine');}
+    const r=await fetch(`${SB}/rest/v1/wines`,{method:'POST',headers:{...H,'Prefer':'return=representation'},body:JSON.stringify(w)});
+    if(r.ok){const[a]=await r.json();wines.unshift(a);wines.sort((a,b)=>Number(b.rating)-Number(a.rating));toast(`✓ ${name} saved`);go('scan');}
+    else toast('Error saving');
   }catch(e){toast('Network error');}
 }
 
-function renderCollection(){
-  document.getElementById('coll-count').textContent=`${wines.length} wines`;
-  const q=collSearch.toLowerCase();
+// COLLECTION
+function renderColl(){
+  document.getElementById('coll-sub').textContent=`${wines.length} wines · ${new Set(wines.map(w=>w.country).filter(Boolean)).size} countries`;
+  const q=cSearch.toLowerCase();
   const f=q?wines.filter(w=>(w.name||'').toLowerCase().includes(q)||(w.region||'').toLowerCase().includes(q)||(w.country||'').toLowerCase().includes(q)||(w.grape||'').toLowerCase().includes(q)):wines;
   const el=document.getElementById('coll-content');
-  if(collView==='wines')renderCollWines(el,f);
-  else if(collView==='regions')renderCollRegions(el,f);
-  else if(collView==='grapes')renderCollGrapes(el,f);
-  else renderCollInsights(el,f);
+  if(cView==='wines')rWines(el,f);else if(cView==='regions')rRegions(el,f);else if(cView==='grapes')rGrapes(el,f);else rInsights(el,f);
 }
-function renderCollWines(el,list){
-  el.innerHTML=`<div class="wine-list">${list.map(w=>{const r=Number(w.rating);return`<div class="wine-item${r>=5?' top':''}"><div class="wi-left"><div class="wi-name">${w.name}</div><div class="wi-meta">${w.region||''}${w.grape?' · '+w.grape:''}${w.vintage?' · '+w.vintage:''}</div></div><div class="wi-right"><div class="wi-score">${r.toFixed(1)}</div><div class="wi-badge">${r>=5?'★ Top':r>=4.5?'Excellent':r>=4?'Great':'Good'}</div></div></div>`;}).join('')}</div>`;
-}
-function renderCollRegions(el,list){
-  const m={};list.forEach(w=>{const r=w.region||'Unknown';if(!m[r])m[r]={n:0,t:0};m[r].n++;m[r].t+=Number(w.rating);});
+function rWines(el,l){el.innerHTML=`<div class="wine-list">${l.map(w=>{const r=Number(w.rating);return`<div class="wine-item${r>=5?' top':''}"><div class="wi-left"><div class="wi-name">${w.name}</div><div class="wi-meta">${w.region||''}${w.grape?' · '+w.grape:''}${w.vintage?' · '+w.vintage:''}</div></div><div class="wi-right"><div class="wi-score">${r.toFixed(1)}</div><div class="wi-badge">${r>=5?'★ Top':r>=4?'Great':'Good'}</div></div></div>`;}).join('')}</div>`;}
+function rRegions(el,l){
+  const m={};l.forEach(w=>{const r=w.region||'Unknown';if(!m[r])m[r]={n:0,t:0};m[r].n++;m[r].t+=Number(w.rating);});
   const s=Object.entries(m).sort((a,b)=>b[1].n-a[1].n),mx=s[0]?.[1].n||1;
-  el.innerHTML=`<div class="a-card"><h3>Regions (${s.length})</h3>${s.slice(0,30).map(([n,d])=>`<div class="a-bar"><span class="a-label">${n}</span><div class="a-track"><div class="a-fill" style="width:${d.n/mx*100}%"></div></div><span class="a-val">${d.n} · ${(d.t/d.n).toFixed(1)}★</span></div>`).join('')}</div>`;
+  el.innerHTML=`<div class="a-card"><h3>Regions (${s.length})</h3>${s.slice(0,30).map(([n,d])=>`<div class="a-bar"><span class="a-lbl">${n}</span><div class="a-trk"><div class="a-fill" style="width:${d.n/mx*100}%"></div></div><span class="a-val">${d.n} · ${(d.t/d.n).toFixed(1)}★</span></div>`).join('')}</div>`;
 }
-function renderCollGrapes(el,list){
-  const m={};list.forEach(w=>{const g=w.grape||'Unknown';if(!m[g])m[g]={n:0,t:0};m[g].n++;m[g].t+=Number(w.rating);});
+function rGrapes(el,l){
+  const m={};l.forEach(w=>{const g=w.grape||'Unknown';if(!m[g])m[g]={n:0,t:0};m[g].n++;m[g].t+=Number(w.rating);});
   const s=Object.entries(m).sort((a,b)=>b[1].n-a[1].n),mx=s[0]?.[1].n||1;
-  el.innerHTML=`<div class="a-card"><h3>Grapes (${s.length})</h3>${s.slice(0,25).map(([n,d])=>`<div class="a-bar"><span class="a-label">${n}</span><div class="a-track"><div class="a-fill" style="width:${d.n/mx*100}%"></div></div><span class="a-val">${d.n} · ${(d.t/d.n).toFixed(1)}★</span></div>`).join('')}</div>`;
+  el.innerHTML=`<div class="a-card"><h3>Grapes (${s.length})</h3>${s.slice(0,25).map(([n,d])=>`<div class="a-bar"><span class="a-lbl">${n}</span><div class="a-trk"><div class="a-fill" style="width:${d.n/mx*100}%"></div></div><span class="a-val">${d.n} · ${(d.t/d.n).toFixed(1)}★</span></div>`).join('')}</div>`;
 }
-function renderCollInsights(el,list){
-  const c={};list.forEach(w=>{const k=w.country||'Unknown';if(!c[k])c[k]=0;c[k]++;});
+function rInsights(el,l){
+  const c={};l.forEach(w=>{const k=w.country||'?';if(!c[k])c[k]=0;c[k]++;});
   const tc=Object.entries(c).sort((a,b)=>b[1]-a[1])[0];
-  const avg=list.length?(list.reduce((s,w)=>s+Number(w.rating),0)/list.length).toFixed(2):'-';
-  const t5=list.filter(w=>Number(w.rating)>=5).length;
+  const avg=l.length?(l.reduce((s,w)=>s+Number(w.rating),0)/l.length).toFixed(2):'-';
+  const t5=l.filter(w=>Number(w.rating)>=5).length;
   el.innerHTML=`<div class="a-card"><h3>Taste DNA</h3>
-    <div class="insight-row"><span class="insight-label">Total wines</span><span class="insight-val">${list.length}</span></div>
-    <div class="insight-row"><span class="insight-label">Average rating</span><span class="insight-val">${avg}</span></div>
-    <div class="insight-row"><span class="insight-label">5★ wines</span><span class="insight-val">${t5} (${list.length?Math.round(t5/list.length*100):0}%)</span></div>
-    <div class="insight-row"><span class="insight-label">Top country</span><span class="insight-val">${tc?tc[0]+' ('+tc[1]+')':'-'}</span></div>
-    <div class="insight-row"><span class="insight-label">Regions</span><span class="insight-val">${new Set(list.map(w=>w.region).filter(Boolean)).size}</span></div>
-    <div class="insight-row"><span class="insight-label">Countries</span><span class="insight-val">${Object.keys(c).length}</span></div>
+    <div class="ins-row"><span class="ins-k">Total wines</span><span class="ins-v">${l.length}</span></div>
+    <div class="ins-row"><span class="ins-k">Average rating</span><span class="ins-v">${avg}</span></div>
+    <div class="ins-row"><span class="ins-k">5★ wines</span><span class="ins-v">${t5} (${l.length?Math.round(t5/l.length*100):0}%)</span></div>
+    <div class="ins-row"><span class="ins-k">Top country</span><span class="ins-v">${tc?tc[0]+' ('+tc[1]+')':'-'}</span></div>
+    <div class="ins-row"><span class="ins-k">Regions</span><span class="ins-v">${new Set(l.map(w=>w.region).filter(Boolean)).size}</span></div>
+    <div class="ins-row"><span class="ins-k">Countries</span><span class="ins-v">${Object.keys(c).length}</span></div>
   </div>`;
 }
 document.querySelectorAll('.coll-tab').forEach(t=>t.addEventListener('click',()=>{
   document.querySelectorAll('.coll-tab').forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');collView=t.dataset.view;renderCollection();
+  t.classList.add('active');cView=t.dataset.view;renderColl();
 }));
-document.getElementById('coll-search').addEventListener('input',e=>{collSearch=e.target.value;renderCollection();});
+document.getElementById('coll-search').addEventListener('input',e=>{cSearch=e.target.value;renderColl();});
 
-function fuzzyMatch(query,wineList){
-  const q=query.toLowerCase().replace(/[^a-záéíóúñü0-9\s]/gi,'').trim();
-  const qw=q.split(/\s+/).filter(w=>w.length>2);
+// FUZZY
+function fuz(q,wl){
+  const a=q.toLowerCase().replace(/[^a-záéíóúñü0-9\s]/gi,'').trim(),aw=a.split(/\s+/).filter(w=>w.length>2);
   let best=null,bs=0;
-  for(const w of wineList){
+  for(const w of wl){
     const n=(w.name||'').toLowerCase().replace(/[^a-záéíóúñü0-9\s]/gi,'').trim();
-    if(n.includes(q)||q.includes(n))return w;
+    if(n.includes(a)||a.includes(n))return w;
     const nw=n.split(/\s+/).filter(w=>w.length>2);let sc=0;
-    for(const a of qw)for(const b of nw){if(b===a)sc+=3;else if(b.includes(a)||a.includes(b))sc+=2;else if(lev(a,b)<=2)sc+=1;}
-    const ns=sc/Math.max(qw.length,nw.length,1);
-    if(ns>bs&&ns>=1.5){bs=ns;best=w;}
+    for(const x of aw)for(const y of nw){if(y===x)sc+=3;else if(y.includes(x)||x.includes(y))sc+=2;else if(lev(x,y)<=2)sc+=1;}
+    const ns=sc/Math.max(aw.length,nw.length,1);if(ns>bs&&ns>=1.5){bs=ns;best=w;}
   }return best;
 }
 function lev(a,b){const m=a.length,n=b.length,d=Array.from({length:m+1},(_,i)=>i);for(let j=1;j<=n;j++){let p=d[0];d[0]=j;for(let i=1;i<=m;i++){const t=d[i];d[i]=a[i-1]===b[j-1]?p:1+Math.min(p,d[i],d[i-1]);p=t;}}return d[m];}
 
-loadWines().then(()=>renderScanHome());
+loadWines().then(()=>renderHome());
 </script>
 </body>
 </html>
