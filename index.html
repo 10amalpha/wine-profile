@@ -2,884 +2,366 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Hedonicum</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#0a1628 0%,#0d1f3c 50%,#0a1628 100%);color:#e2e8f0;min-height:100vh}
-.container{max-width:1200px;margin:0 auto;padding:20px}
-header{text-align:center;padding:30px 0 20px}
-header h1{font-size:1.8rem;background:linear-gradient(135deg,#2dd4bf,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
-header p{color:#64748b;font-size:0.9rem}
-.stats-bar{display:flex;gap:12px;justify-content:center;margin:16px 0 24px;flex-wrap:wrap}
-.stat{background:rgba(15,32,53,0.8);border:1px solid rgba(45,212,191,0.15);border-radius:10px;padding:10px 18px;text-align:center}
-.stat .num{font-size:1.4rem;font-weight:700;color:#2dd4bf}
-.stat .label{font-size:0.7rem;color:#64748b;text-transform:uppercase;letter-spacing:0.5px}
-.tabs{display:flex;gap:8px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
-.tab{padding:8px 20px;border-radius:20px;border:1px solid rgba(45,212,191,0.2);background:transparent;color:#94a3b8;cursor:pointer;font-size:0.85rem;transition:all 0.2s}
-.tab.active,.tab:hover{background:rgba(45,212,191,0.15);color:#2dd4bf;border-color:rgba(45,212,191,0.4)}
-.search-box{width:100%;max-width:500px;margin:0 auto 20px;display:block;padding:10px 16px;border-radius:10px;border:1px solid rgba(45,212,191,0.2);background:rgba(15,32,53,0.8);color:#e2e8f0;font-size:0.9rem;outline:none}
-.search-box:focus{border-color:rgba(45,212,191,0.5)}
-.search-box::placeholder{color:#475569}
-.wine-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
-.wine-card{background:rgba(15,32,53,0.8);border:1px solid rgba(45,212,191,0.1);border-radius:12px;padding:16px;transition:all 0.2s}
-.wine-card:hover{border-color:rgba(45,212,191,0.3);transform:translateY(-1px)}
-.wine-card.top{border-color:rgba(45,212,191,0.3)}
-.wine-card-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.wine-card-left{flex:1;min-width:0}
-.wine-card-right{text-align:center;flex-shrink:0}
-.wine-score{font-size:1.3rem;font-weight:800;color:#2dd4bf;line-height:1}
-.wine-name{font-size:0.95rem;font-weight:600;color:#e2e8f0;margin-bottom:4px;line-height:1.3}
-.wine-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
-.wine-region{font-size:0.8rem;color:#64748b}
-.wine-rating{display:flex;gap:2px}
-.wine-rating .star{color:#2dd4bf;font-size:0.85rem}
-.wine-rating .star.empty{color:#1e293b}
-.wine-notes{font-size:0.8rem;color:#94a3b8;font-style:italic;margin-top:6px}
-.badge{font-size:0.65rem;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
-.badge.tier5{background:rgba(45,212,191,0.2);color:#2dd4bf}
-.badge.tier4{background:rgba(6,182,212,0.15);color:#06b6d4}
-.badge.tier3{background:rgba(100,116,139,0.2);color:#94a3b8}
-.analytics-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-.analytics-card{background:rgba(15,32,53,0.8);border:1px solid rgba(45,212,191,0.1);border-radius:12px;padding:20px}
-.analytics-card h3{font-size:0.9rem;color:#2dd4bf;margin-bottom:12px;font-weight:600}
-.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.bar-label{font-size:0.8rem;color:#94a3b8;min-width:120px;text-align:right}
-.bar-track{flex:1;height:8px;background:rgba(30,41,59,0.8);border-radius:4px;overflow:hidden}
-.bar-fill{height:100%;border-radius:4px;transition:width 0.5s}
-.bar-count{font-size:0.75rem;color:#64748b;min-width:30px}
-.region-item,.grape-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(30,41,59,0.5)}
-.region-item:last-child,.grape-item:last-child{border:none}
-.region-name,.grape-name{font-size:0.85rem;color:#e2e8f0}
-.region-count,.grape-count{font-size:0.8rem;color:#2dd4bf;font-weight:600}
-.region-avg,.grape-avg{font-size:0.75rem;color:#64748b}
-/* Add Wine Modal */
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:none;justify-content:center;align-items:center;z-index:100}
-.modal-overlay.show{display:flex}
-.modal{background:linear-gradient(135deg,#0f2035,#0d1f3c);border:1px solid rgba(45,212,191,0.2);border-radius:16px;padding:28px;max-width:500px;width:90%;max-height:90vh;overflow-y:auto}
-.modal h2{color:#2dd4bf;font-size:1.2rem;margin-bottom:20px}
-.form-group{margin-bottom:16px}
-.form-group label{display:block;font-size:0.8rem;color:#94a3b8;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(45,212,191,0.2);background:rgba(10,22,40,0.8);color:#e2e8f0;font-size:0.9rem;outline:none}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:rgba(45,212,191,0.5)}
-.form-group textarea{resize:vertical;min-height:60px}
-.star-input{display:flex;gap:6px;font-size:1.5rem;cursor:pointer}
-.star-input span{color:#1e293b;transition:color 0.15s}
-.star-input span.active{color:#2dd4bf}
-.star-input span:hover,.star-input span:hover~span{color:rgba(45,212,191,0.5)}
-.pill-group{display:flex;gap:8px;flex-wrap:wrap}
-.pill{padding:8px 16px;border-radius:20px;border:1px solid rgba(45,212,191,0.2);background:transparent;color:#94a3b8;cursor:pointer;font-size:0.85rem;transition:all 0.2s}
-.pill.selected{background:rgba(45,212,191,0.15);color:#2dd4bf;border-color:rgba(45,212,191,0.4)}
-.btn-row{display:flex;gap:10px;margin-top:20px}
-.btn{padding:10px 24px;border-radius:10px;border:none;cursor:pointer;font-size:0.9rem;font-weight:600;transition:all 0.2s}
-.btn-primary{background:linear-gradient(135deg,#2dd4bf,#06b6d4);color:#0a1628}
-.btn-primary:hover{opacity:0.9;transform:translateY(-1px)}
-.btn-secondary{background:transparent;border:1px solid rgba(100,116,139,0.3);color:#94a3b8}
-.btn-secondary:hover{border-color:rgba(45,212,191,0.3);color:#e2e8f0}
-.fab{position:fixed;bottom:28px;right:28px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2dd4bf,#06b6d4);border:none;color:#0a1628;font-size:1.8rem;cursor:pointer;box-shadow:0 4px 20px rgba(45,212,191,0.3);z-index:50;display:flex;align-items:center;justify-content:center;transition:transform 0.2s}
-.fab:hover{transform:scale(1.1)}
-.loading{text-align:center;padding:60px;color:#64748b}
-@media(max-width:600px){
-  .container{padding:12px 16px}
-  header{padding:16px 0 10px}
-  header h1{font-size:1.5rem}
-  header p{font-size:0.8rem}
-  .stats-bar{gap:6px;margin:10px 0 14px;justify-content:space-between}
-  .stat{padding:6px 0;flex:1;min-width:0;border:none;background:none}
-  .stat .num{font-size:1.1rem}
-  .stat .label{font-size:0.6rem;letter-spacing:0}
-  .tabs{gap:6px;justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;margin-bottom:12px;-webkit-overflow-scrolling:touch}
-  .tab{padding:7px 14px;font-size:0.8rem;flex-shrink:0}
-  .search-box{margin-bottom:14px;padding:10px 14px;font-size:1rem;border-radius:12px;max-width:100%}
-  .wine-grid{grid-template-columns:1fr;gap:8px}
-  .wine-card{padding:14px 16px;border-radius:10px}
-  .wine-card.top{border-left:3px solid #2dd4bf}
-  .wine-card-row{gap:10px}
-  .wine-score{font-size:1.4rem}
-  .wine-name{font-size:1rem;font-weight:700;margin-bottom:4px;line-height:1.3}
-  .wine-meta{margin-bottom:4px;gap:6px}
-  .wine-rating .star{font-size:0.9rem}
-  .wine-region{font-size:0.8rem}
-  .wine-notes{font-size:0.8rem;margin-top:4px}
-  .badge{font-size:0.6rem;padding:2px 6px}
-  .analytics-grid{grid-template-columns:1fr;gap:10px}
-  .analytics-card{padding:14px 16px;border-radius:10px}
-  .analytics-card h3{font-size:0.85rem;margin-bottom:10px}
-  .bar-row{gap:6px;margin-bottom:6px}
-  .bar-label{font-size:0.75rem;min-width:90px}
-  .bar-count{font-size:0.7rem;min-width:50px}
-  .bar-track{height:6px}
-  .fab{bottom:20px;right:20px;width:52px;height:52px;font-size:1.6rem}
-  .fab-menu{bottom:80px;right:20px}
-  .modal{padding:20px;width:95%;border-radius:14px}
-  .modal h2{font-size:1.1rem;margin-bottom:14px}
-  .form-group{margin-bottom:12px}
-  .form-group input,.form-group textarea{padding:12px;font-size:1rem;border-radius:10px}
-  .form-group label{font-size:0.75rem;margin-bottom:4px}
-  .star-input{font-size:1.8rem;gap:10px}
-  .pill{padding:10px 16px;font-size:0.9rem}
-  .btn{padding:14px 20px;font-size:1rem;border-radius:12px}
-  .btn-row{gap:8px}
-  .scan-upload{padding:30px 16px;border-radius:14px}
-  .scan-icon{font-size:2.5rem}
-  .scan-title{font-size:1rem}
-  .scan-hint{font-size:0.8rem}
-  .match-card{padding:12px 14px;border-radius:10px}
-  .match-name{font-size:0.95rem}
-  .match-detail{font-size:0.8rem}
-  .match-stars{font-size:0.9rem}
-  .menu-wines-header{font-size:0.85rem;margin:16px 0 8px}
-}
-/* Scan Menu */
-.scan-tab{background:rgba(45,212,191,0.1);border-color:rgba(45,212,191,0.3)}
-.scan-view{max-width:600px;margin:0 auto}
-.scan-upload{border:2px dashed rgba(45,212,191,0.3);border-radius:16px;padding:40px 20px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(15,32,53,0.6)}
-.scan-upload:hover,.scan-upload:active{border-color:rgba(45,212,191,0.6);background:rgba(15,32,53,0.9)}
-.scan-upload input{display:none}
-.scan-icon{font-size:3rem;margin-bottom:12px}
-.scan-title{font-size:1rem;font-weight:600;color:#2dd4bf;margin-bottom:6px}
-.scan-hint{font-size:0.8rem;color:#64748b}
-.scan-preview{position:relative;margin:16px 0;border-radius:12px;overflow:hidden}
-.scan-preview img{width:100%;display:block;border-radius:12px}
-.scan-actions{display:flex;gap:10px;margin:16px 0}
-.scan-actions .btn{flex:1;text-align:center;padding:14px;font-size:0.95rem}
-.scan-status{text-align:center;padding:20px;color:#94a3b8;font-size:0.9rem}
-.scan-status .spinner{display:inline-block;width:20px;height:20px;border:2px solid rgba(45,212,191,0.3);border-top-color:#2dd4bf;border-radius:50%;animation:spin 0.8s linear infinite;margin-right:8px;vertical-align:middle}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#080f1e;color:#e2e8f0;min-height:100vh;min-height:100dvh;padding-bottom:80px}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:rgba(8,15,30,0.95);border-top:1px solid rgba(45,212,191,0.1);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:90;padding:8px 0;padding-bottom:max(8px,env(safe-area-inset-bottom))}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;cursor:pointer;color:#475569;font-size:0.65rem;transition:color 0.2s;border:none;background:none}
+.nav-item.active{color:#2dd4bf}
+.nav-item .nav-icon{font-size:1.4rem}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);background:rgba(45,212,191,0.95);color:#0a1628;padding:12px 24px;border-radius:12px;font-size:0.9rem;font-weight:600;z-index:200;transition:transform 0.3s ease;box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.screen{display:none;padding:16px}
+.screen.active{display:block}
+.scan-hero{text-align:center;padding:20px 0 16px}
+.scan-hero h1{font-size:1.3rem;background:linear-gradient(135deg,#2dd4bf,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:2px}
+.scan-hero p{color:#475569;font-size:0.75rem}
+.scan-cards{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+.scan-card{background:rgba(15,25,45,0.8);border:1.5px solid rgba(45,212,191,0.15);border-radius:16px;padding:24px 20px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:all 0.2s;-webkit-user-select:none}
+.scan-card:active{transform:scale(0.98);border-color:rgba(45,212,191,0.4)}
+.scan-card-icon{font-size:2.2rem;flex-shrink:0}
+.scan-card-text h3{font-size:1rem;font-weight:700;color:#e2e8f0;margin-bottom:3px}
+.scan-card-text p{font-size:0.8rem;color:#64748b;line-height:1.4}
+input[type="file"]{display:none}
+.pairing-section{margin-top:20px}
+.pairing-section label{display:block;font-size:0.75rem;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.pairing-input{width:100%;padding:14px 16px;border-radius:14px;border:1.5px solid rgba(45,212,191,0.15);background:rgba(15,25,45,0.8);color:#e2e8f0;font-size:1rem;outline:none}
+.pairing-input:focus{border-color:rgba(45,212,191,0.4)}
+.pairing-input::placeholder{color:#334155}
+.photo-strip{display:flex;gap:8px;margin-top:12px;overflow-x:auto;padding:4px 0;-webkit-overflow-scrolling:touch}
+.photo-thumb{position:relative;width:72px;height:72px;border-radius:12px;overflow:hidden;flex-shrink:0;border:2px solid rgba(45,212,191,0.2)}
+.photo-thumb img{width:100%;height:100%;object-fit:cover}
+.photo-thumb-x{position:absolute;top:3px;right:3px;width:20px;height:20px;background:rgba(0,0,0,0.7);color:#ef4444;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.65rem;cursor:pointer}
+.photo-thumb-num{position:absolute;bottom:3px;left:3px;width:18px;height:18px;background:rgba(45,212,191,0.9);color:#0a1628;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700}
+.add-more-thumb{width:72px;height:72px;border-radius:12px;border:2px dashed rgba(45,212,191,0.2);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#2dd4bf;cursor:pointer;flex-shrink:0}
+.analyze-btn{width:100%;margin-top:14px;padding:16px;border-radius:14px;border:none;background:linear-gradient(135deg,#2dd4bf,#06b6d4);color:#0a1628;font-size:1rem;font-weight:700;cursor:pointer}
+.analyze-btn:active{opacity:0.9}
+.clear-link{text-align:center;margin-top:10px;color:#64748b;font-size:0.8rem;cursor:pointer;padding:8px}
+.scan-status{text-align:center;padding:30px 0;color:#94a3b8;font-size:0.9rem}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(45,212,191,0.3);border-top-color:#2dd4bf;border-radius:50%;animation:spin 0.7s linear infinite;margin-right:8px;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
-.match-list{display:flex;flex-direction:column;gap:10px;margin-top:16px}
-.match-card{background:rgba(15,32,53,0.8);border:1px solid rgba(45,212,191,0.15);border-radius:12px;padding:14px;display:flex;justify-content:space-between;align-items:center}
-.match-card.found{border-color:rgba(45,212,191,0.4)}
-.match-card.not-found{border-color:rgba(100,116,139,0.2);opacity:0.7}
-.match-info{flex:1}
-.match-name{font-size:0.9rem;font-weight:600;color:#e2e8f0;margin-bottom:4px}
-.match-detail{font-size:0.78rem;color:#64748b}
-.match-rating{text-align:right;min-width:80px}
-.match-stars{color:#2dd4bf;font-size:0.85rem}
-.match-reorder{font-size:0.7rem;margin-top:2px}
-.match-reorder.yes{color:#2dd4bf}
-.match-reorder.no{color:#ef4444}
-.match-reorder.maybe{color:#f59e0b}
-.match-new{font-size:0.75rem;color:#64748b;font-style:italic}
-.menu-wines-header{font-size:0.85rem;color:#94a3b8;margin:20px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(30,41,59,0.5)}
-.menu-wines-header span{color:#2dd4bf;font-weight:600}
-.scan-thumbs{display:flex;gap:8px;margin:16px 0;overflow-x:auto;padding:4px 0}
-.scan-thumb{position:relative;width:80px;height:80px;border-radius:10px;overflow:hidden;flex-shrink:0;border:2px solid rgba(45,212,191,0.2)}
-.scan-thumb.scanning{opacity:0.5;animation:pulse 1.5s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:0.5}50%{opacity:0.8}}
-.scan-thumb img{width:100%;height:100%;object-fit:cover}
-.scan-thumb-badge{position:absolute;top:4px;left:4px;background:rgba(45,212,191,0.9);color:#0a1628;font-size:0.65rem;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-.scan-thumb-remove{position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.7);color:#ef4444;font-size:0.7rem;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer}
-/* FAB Menu */
-.fab-menu{position:fixed;bottom:92px;right:28px;display:none;flex-direction:column;gap:8px;z-index:51}
-.fab-menu.show{display:flex}
-.fab-option{background:rgba(15,32,53,0.95);border:1px solid rgba(45,212,191,0.3);border-radius:12px;padding:12px 18px;color:#e2e8f0;font-size:0.9rem;cursor:pointer;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.4);transition:all 0.2s;text-align:right}
-.fab-option:hover,.fab-option:active{background:rgba(45,212,191,0.15);border-color:rgba(45,212,191,0.5)}
-/* Bottle scan in modal */
-.bottle-preview{text-align:center;margin:12px 0}
-.bottle-preview img{max-height:200px;border-radius:12px;border:1px solid rgba(45,212,191,0.2)}
-.bottle-scanning{text-align:center;padding:20px;color:#94a3b8}
-.bottle-scanning .spinner{display:inline-block;width:20px;height:20px;border:2px solid rgba(45,212,191,0.3);border-top-color:#2dd4bf;border-radius:50%;animation:spin 0.8s linear infinite;margin-right:8px;vertical-align:middle}
-.prefilled-badge{display:inline-block;font-size:0.65rem;background:rgba(45,212,191,0.15);color:#2dd4bf;padding:2px 6px;border-radius:6px;margin-left:6px;vertical-align:middle}
+.result-section{margin-top:16px}
+.result-header{font-size:0.8rem;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(30,41,59,0.5)}
+.result-header span{color:#2dd4bf;font-weight:700}
+.result-card{background:rgba(15,25,45,0.8);border:1.5px solid rgba(45,212,191,0.12);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.result-card.matched{border-color:rgba(45,212,191,0.35)}
+.result-left{flex:1;min-width:0}
+.result-name{font-size:0.95rem;font-weight:700;color:#e2e8f0;margin-bottom:2px}
+.result-sub{font-size:0.78rem;color:#64748b}
+.result-pairing{font-size:0.78rem;color:#2dd4bf;margin-top:2px}
+.result-right{text-align:center;flex-shrink:0}
+.result-score{font-size:1.5rem;font-weight:800;color:#2dd4bf;line-height:1}
+.result-reorder{font-size:0.65rem;margin-top:2px}
+.result-reorder.yes{color:#2dd4bf}
+.result-reorder.no{color:#ef4444}
+.result-reorder.maybe{color:#f59e0b}
+.result-new{font-size:0.72rem;color:#475569;font-style:italic}
+.bottle-flow{text-align:center;padding:20px 0}
+.bottle-preview{margin:16px auto;max-width:200px}
+.bottle-preview img{width:100%;border-radius:14px;border:2px solid rgba(45,212,191,0.2)}
+.bottle-status{color:#94a3b8;font-size:0.9rem;margin:12px 0}
+.bottle-result-name{font-size:1.2rem;font-weight:800;color:#e2e8f0;margin-bottom:4px}
+.bottle-result-detail{font-size:0.85rem;color:#64748b;margin-bottom:16px}
+.quick-rate{margin-top:16px}
+.quick-rate-label{font-size:0.75rem;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+.quick-stars{display:flex;gap:8px;font-size:2.2rem;cursor:pointer;justify-content:center;margin-bottom:16px}
+.quick-stars span{color:#1e293b;transition:color 0.15s}
+.quick-stars span.active{color:#2dd4bf}
+.quick-pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
+.qpill{padding:10px 18px;border-radius:20px;border:1.5px solid rgba(45,212,191,0.2);background:transparent;color:#94a3b8;cursor:pointer;font-size:0.9rem;transition:all 0.15s}
+.qpill.active{background:rgba(45,212,191,0.15);color:#2dd4bf;border-color:rgba(45,212,191,0.4)}
+.save-bottle-btn{width:100%;padding:16px;border-radius:14px;border:none;background:linear-gradient(135deg,#2dd4bf,#06b6d4);color:#0a1628;font-size:1rem;font-weight:700;cursor:pointer;margin-top:12px}
+.save-bottle-btn:disabled{opacity:0.4}
+.save-bottle-btn:active{opacity:0.9}
+.coll-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.coll-header h2{font-size:1.1rem;color:#e2e8f0}
+.coll-header .coll-count{font-size:0.8rem;color:#2dd4bf}
+.coll-search{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid rgba(45,212,191,0.12);background:rgba(15,25,45,0.8);color:#e2e8f0;font-size:1rem;outline:none;margin-bottom:12px}
+.coll-search:focus{border-color:rgba(45,212,191,0.35)}
+.coll-search::placeholder{color:#334155}
+.coll-tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.coll-tab{padding:7px 14px;border-radius:16px;border:1px solid rgba(45,212,191,0.15);background:transparent;color:#64748b;cursor:pointer;font-size:0.8rem;flex-shrink:0;white-space:nowrap}
+.coll-tab.active{background:rgba(45,212,191,0.12);color:#2dd4bf;border-color:rgba(45,212,191,0.3)}
+.wine-list{display:flex;flex-direction:column;gap:8px}
+.wine-item{background:rgba(15,25,45,0.8);border:1.5px solid rgba(45,212,191,0.1);border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.wine-item.top{border-left:3px solid #2dd4bf}
+.wi-left{flex:1;min-width:0}
+.wi-name{font-size:0.95rem;font-weight:700;color:#e2e8f0;margin-bottom:2px;line-height:1.3}
+.wi-meta{font-size:0.78rem;color:#536178}
+.wi-right{text-align:center;flex-shrink:0}
+.wi-score{font-size:1.3rem;font-weight:800;color:#2dd4bf;line-height:1}
+.wi-badge{font-size:0.6rem;color:#06b6d4;text-transform:uppercase;letter-spacing:0.3px}
+.a-card{background:rgba(15,25,45,0.8);border:1.5px solid rgba(45,212,191,0.1);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.a-card h3{font-size:0.85rem;color:#2dd4bf;margin-bottom:10px;font-weight:600}
+.a-bar{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.a-label{font-size:0.75rem;color:#94a3b8;min-width:80px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a-track{flex:1;height:6px;background:rgba(30,41,59,0.8);border-radius:3px;overflow:hidden}
+.a-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#2dd4bf,#06b6d4)}
+.a-val{font-size:0.7rem;color:#64748b;min-width:45px}
+.insight-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(30,41,59,0.3);font-size:0.85rem}
+.insight-row:last-child{border:none}
+.insight-label{color:#94a3b8}
+.insight-val{color:#2dd4bf;font-weight:700}
 </style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <h1>🍷 Hedonicum</h1>
-    <p>@Holdmybirra — <span id="wine-count">0</span> wines rated</p>
-  </header>
-  <div class="stats-bar" id="stats-bar"></div>
-  <div class="tabs">
-    <button class="tab active" data-tab="wines">Wines</button>
-    <button class="tab" data-tab="regions">Regions</button>
-    <button class="tab" data-tab="grapes">Grapes</button>
-    <button class="tab" data-tab="insights">Insights</button>
-    <button class="tab scan-tab" data-tab="scan">📷 Scan Menu</button>
+<div class="toast" id="toast"></div>
+<div class="screen active" id="screen-scan">
+  <div class="scan-hero"><h1>🍷 Hedonicum</h1><p>Your wine intelligence</p></div>
+  <div id="scan-content"></div>
+</div>
+<div class="screen" id="screen-bottle"><div id="bottle-content"></div></div>
+<div class="screen" id="screen-collection">
+  <div class="coll-header"><h2>My Wines</h2><span class="coll-count" id="coll-count"></span></div>
+  <input type="text" class="coll-search" id="coll-search" placeholder="Search wines...">
+  <div class="coll-tabs" id="coll-tabs">
+    <div class="coll-tab active" data-view="wines">All Wines</div>
+    <div class="coll-tab" data-view="regions">Regions</div>
+    <div class="coll-tab" data-view="grapes">Grapes</div>
+    <div class="coll-tab" data-view="insights">Insights</div>
   </div>
-  <input type="text" class="search-box" id="search" placeholder="Search wines, regions, grapes...">
-  <div id="content"><div class="loading">Loading wines...</div></div>
+  <div id="coll-content"></div>
 </div>
-
-<button class="fab" onclick="toggleFabMenu()">+</button>
-<div class="fab-menu" id="fab-menu">
-  <div class="fab-option" onclick="startBottleScan()">📷 Scan Bottle</div>
-  <div class="fab-option" onclick="openAddWine()">✏️ Manual Entry</div>
-</div>
-
-<input type="file" id="bottle-photo" accept="image/*" capture="environment" style="display:none" onchange="handleBottlePhoto(event)">
-
-<div class="modal-overlay" id="modal">
-  <div class="modal">
-    <h2>Add Wine</h2>
-    <div class="form-group">
-      <label>Wine Name</label>
-      <input type="text" id="f-name" placeholder="e.g. Ramón Bilbao Reserva 2018">
-    </div>
-    <div class="form-group">
-      <label>Region</label>
-      <input type="text" id="f-region" placeholder="e.g. Rioja, Spain">
-    </div>
-    <div class="form-group">
-      <label>Country</label>
-      <input type="text" id="f-country" placeholder="e.g. Spain">
-    </div>
-    <div class="form-group">
-      <label>Grape</label>
-      <input type="text" id="f-grape" placeholder="e.g. Tempranillo">
-    </div>
-    <div class="form-group">
-      <label>Vintage</label>
-      <input type="number" id="f-vintage" placeholder="e.g. 2018">
-    </div>
-    <div class="form-group">
-      <label>Rating</label>
-      <div class="star-input" id="star-input">
-        <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Would you reorder?</label>
-      <div class="pill-group" id="reorder-pills">
-        <div class="pill" data-v="yes">Yes</div>
-        <div class="pill" data-v="maybe">Maybe</div>
-        <div class="pill" data-v="no">No</div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Occasion</label>
-      <div class="pill-group" id="occasion-pills">
-        <div class="pill" data-v="casual">Casual</div>
-        <div class="pill" data-v="date">Date</div>
-        <div class="pill" data-v="celebration">Celebration</div>
-        <div class="pill" data-v="pairing">Pairing</div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Notes</label>
-      <textarea id="f-notes" placeholder="Tasting notes, pairing, mood..."></textarea>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="saveWine()">Save Wine</button>
-      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-    </div>
-  </div>
-</div>
-
+<nav class="bottom-nav">
+  <div class="nav-item active" data-screen="scan"><span class="nav-icon">📷</span>Scan</div>
+  <div class="nav-item" data-screen="bottle" id="nav-bottle" onclick="startBottleScan()"><span class="nav-icon">🍾</span>Add Wine</div>
+  <div class="nav-item" data-screen="collection"><span class="nav-icon">📚</span>Collection</div>
+</nav>
+<input type="file" id="menu-photo" accept="image/*" capture="environment" multiple>
+<input type="file" id="bottle-photo" accept="image/*" capture="environment">
 <script>
-const SUPABASE_URL = 'https://bzpraigsuwgjgpnclcpd.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cHJhaWdzdXdnamdwbmNsY3BkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1Mzk2NDEsImV4cCI6MjA4NTExNTY0MX0.tBtsac6Mq65BiG93MhYtn1KV8iOGpEpVdlD3tqShrzE';
+const SB_URL='https://bzpraigsuwgjgpnclcpd.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cHJhaWdzdXdnamdwbmNsY3BkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1Mzk2NDEsImV4cCI6MjA4NTExNTY0MX0.tBtsac6Mq65BiG93MhYtn1KV8iOGpEpVdlD3tqShrzE';
+const API_KEY='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';
+const hdrs={'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'};
+let wines=[],menuPhotos=[],menuResults=[],collView='wines',collSearch='';
 
-let wines = [];
-let currentTab = 'wines';
-let searchTerm = '';
-let formRating = 0;
-let formReorder = '';
-let formOccasion = '';
+function switchScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  document.querySelector(`.nav-item[data-screen="${name}"]`)?.classList.add('active');
+  if(name==='collection')renderCollection();
+  if(name==='scan')renderScanHome();
+}
+document.querySelectorAll('.nav-item').forEach(n=>{
+  if(n.id==='nav-bottle')return;
+  n.addEventListener('click',()=>switchScreen(n.dataset.screen));
+});
 
-const headers = {'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'};
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
-async function loadWines() {
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/wines?select=*&order=rating.desc,name.asc&limit=1000`, {headers});
-    wines = await res.json();
-    document.getElementById('wine-count').textContent = wines.length;
-    renderStats();
-    render();
-  } catch(e) { document.getElementById('content').innerHTML = '<div class="loading">Error loading wines</div>'; }
+async function loadWines(){
+  try{const r=await fetch(`${SB_URL}/rest/v1/wines?select=*&order=rating.desc,name.asc&limit=1000`,{headers:hdrs});wines=await r.json();}catch(e){wines=[];}
 }
 
-function renderStats() {
-  const avg = wines.length ? (wines.reduce((s,w)=>s+Number(w.rating),0)/wines.length).toFixed(1) : 0;
-  const countries = new Set(wines.map(w=>w.country).filter(Boolean));
-  const regions = new Set(wines.map(w=>w.region).filter(Boolean));
-  const top = wines.filter(w=>Number(w.rating)>=5).length;
-  document.getElementById('stats-bar').innerHTML = `
-    <div class="stat"><div class="num">${wines.length}</div><div class="label">Wines</div></div>
-    <div class="stat"><div class="num">${avg}</div><div class="label">Avg Rating</div></div>
-    <div class="stat"><div class="num">${countries.size}</div><div class="label">Countries</div></div>
-    <div class="stat"><div class="num">${regions.size}</div><div class="label">Regions</div></div>
-    <div class="stat"><div class="num">${top}</div><div class="label">5★ Wines</div></div>`;
-}
-
-function render() {
-  const el = document.getElementById('content');
-  const q = searchTerm.toLowerCase();
-  const filtered = q ? wines.filter(w => 
-    (w.name||'').toLowerCase().includes(q) || 
-    (w.region||'').toLowerCase().includes(q) || 
-    (w.country||'').toLowerCase().includes(q) ||
-    (w.grape||'').toLowerCase().includes(q)
-  ) : wines;
-
-  if (currentTab === 'wines') renderWines(el, filtered);
-  else if (currentTab === 'regions') renderRegions(el, filtered);
-  else if (currentTab === 'grapes') renderGrapes(el, filtered);
-  else if (currentTab === 'scan') renderScan(el);
-  else renderInsights(el, filtered);
-}
-
-function stars(r) {
-  const full = Math.floor(r);
-  const half = r % 1 >= 0.25;
-  let s = '';
-  for(let i=0;i<5;i++) s += `<span class="star${i<full||(i===full&&half)?' ':' empty'}">${i<full?'★':(i===full&&half?'★':'★')}</span>`;
-  return s;
-}
-
-function tierBadge(r) {
-  if(r>=5) return '<span class="badge tier5">★ Top</span>';
-  if(r>=4.5) return '<span class="badge tier4">Excellent</span>';
-  if(r>=4) return '<span class="badge tier4">Great</span>';
-  return '<span class="badge tier3">Good</span>';
-}
-
-function renderWines(el, list) {
-  el.innerHTML = `<div class="wine-grid">${list.map(w => {
-    const r = Number(w.rating);
-    return `<div class="wine-card${r>=5?' top':''}">
-      <div class="wine-card-row">
-        <div class="wine-card-left">
-          <div class="wine-name">${w.name}</div>
-          <div class="wine-region">${w.region||''}${w.grape?' · '+w.grape:''}${w.vintage?' · '+w.vintage:''}</div>
-        </div>
-        <div class="wine-card-right">
-          <div class="wine-score">${r.toFixed(1)}</div>
-          ${tierBadge(r)}
-        </div>
+function renderScanHome(){
+  const el=document.getElementById('scan-content');
+  if(menuPhotos.length===0&&menuResults.length===0){
+    el.innerHTML=`<div class="scan-cards">
+      <div class="scan-card" onclick="document.getElementById('menu-photo').click()">
+        <div class="scan-card-icon">📋</div>
+        <div class="scan-card-text"><h3>Scan Wine Menu</h3><p>Take photos of the menu and get instant pairing recommendations</p></div>
       </div>
-      ${w.notes?`<div class="wine-notes">"${w.notes}"</div>`:''}
-    </div>`;
-  }).join('')}</div>`;
-}
-
-function renderRegions(el, list) {
-  const map = {};
-  list.forEach(w => {
-    const r = w.region || 'Unknown';
-    if(!map[r]) map[r] = {wines:[], total:0};
-    map[r].wines.push(w);
-    map[r].total += Number(w.rating);
-  });
-  const sorted = Object.entries(map).sort((a,b) => b[1].wines.length - a[1].wines.length);
-  const max = sorted[0]?.[1].wines.length || 1;
-  el.innerHTML = `<div class="analytics-grid"><div class="analytics-card" style="grid-column:1/-1">
-    <h3>Regions by Count (${sorted.length} regions)</h3>
-    ${sorted.slice(0,30).map(([name,d]) => {
-      const avg = (d.total/d.wines.length).toFixed(1);
-      const pct = (d.wines.length/max*100);
-      return `<div class="bar-row">
-        <span class="bar-label">${name}</span>
-        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:linear-gradient(90deg,#2dd4bf,#06b6d4)"></div></div>
-        <span class="bar-count">${d.wines.length} (${avg}★)</span>
-      </div>`;
-    }).join('')}
-  </div></div>`;
-}
-
-function renderGrapes(el, list) {
-  const map = {};
-  list.forEach(w => {
-    const g = w.grape || 'Unknown';
-    if(!map[g]) map[g] = {count:0, total:0};
-    map[g].count++;
-    map[g].total += Number(w.rating);
-  });
-  const sorted = Object.entries(map).sort((a,b) => b[1].count - a[1].count);
-  const max = sorted[0]?.[1].count || 1;
-  el.innerHTML = `<div class="analytics-grid"><div class="analytics-card" style="grid-column:1/-1">
-    <h3>Grapes (${sorted.length} varieties)</h3>
-    ${sorted.slice(0,25).map(([name,d]) => {
-      const avg = (d.total/d.count).toFixed(1);
-      const pct = (d.count/max*100);
-      return `<div class="bar-row">
-        <span class="bar-label">${name}</span>
-        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:linear-gradient(90deg,#06b6d4,#2dd4bf)"></div></div>
-        <span class="bar-count">${d.count} (${avg}★)</span>
-      </div>`;
-    }).join('')}
-  </div></div>`;
-}
-
-function renderInsights(el, list) {
-  const countries = {};
-  list.forEach(w => {
-    const c = w.country || 'Unknown';
-    if(!countries[c]) countries[c] = {count:0,total:0};
-    countries[c].count++;
-    countries[c].total += Number(w.rating);
-  });
-  const cSorted = Object.entries(countries).sort((a,b)=>b[1].count-a[1].count);
-  const cMax = cSorted[0]?.[1].count || 1;
-
-  const ratingDist = [0,0,0,0,0];
-  list.forEach(w => {
-    const r = Math.round(Number(w.rating));
-    if(r>=1&&r<=5) ratingDist[r-1]++;
-  });
-  const rdMax = Math.max(...ratingDist) || 1;
-
-  el.innerHTML = `<div class="analytics-grid">
-    <div class="analytics-card">
-      <h3>Countries (${cSorted.length})</h3>
-      ${cSorted.map(([name,d])=>{
-        const avg=(d.total/d.count).toFixed(1);
-        const pct=(d.count/cMax*100);
-        return `<div class="bar-row">
-          <span class="bar-label">${name}</span>
-          <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:linear-gradient(90deg,#2dd4bf,#06b6d4)"></div></div>
-          <span class="bar-count">${d.count} (${avg}★)</span>
-        </div>`;
-      }).join('')}
-    </div>
-    <div class="analytics-card">
-      <h3>Rating Distribution</h3>
-      ${ratingDist.map((c,i)=>{
-        const pct=(c/rdMax*100);
-        return `<div class="bar-row">
-          <span class="bar-label">${i+1}★</span>
-          <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:linear-gradient(90deg,${i>=3?'#2dd4bf':i>=2?'#06b6d4':'#64748b'},${i>=3?'#06b6d4':i>=2?'#2dd4bf':'#94a3b8'})"></div></div>
-          <span class="bar-count">${c}</span>
-        </div>`;
-      }).join('')}
-    </div>
-    <div class="analytics-card">
-      <h3>Taste DNA</h3>
-      <div style="font-size:0.85rem;color:#94a3b8;line-height:1.8">
-        <div>🏆 Top country: <strong style="color:#2dd4bf">${cSorted[0]?.[0]||'-'}</strong> (${cSorted[0]?.[1].count||0} wines)</div>
-        <div>⭐ Average rating: <strong style="color:#2dd4bf">${list.length?(list.reduce((s,w)=>s+Number(w.rating),0)/list.length).toFixed(2):'-'}</strong></div>
-        <div>🍷 5-star wines: <strong style="color:#2dd4bf">${list.filter(w=>Number(w.rating)>=5).length}</strong> (${list.length?Math.round(list.filter(w=>Number(w.rating)>=5).length/list.length*100):0}%)</div>
-        <div>🌍 Countries explored: <strong style="color:#2dd4bf">${cSorted.length}</strong></div>
-        <div>📍 Regions explored: <strong style="color:#2dd4bf">${new Set(list.map(w=>w.region).filter(Boolean)).size}</strong></div>
+      <div class="scan-card" onclick="startBottleScan()">
+        <div class="scan-card-icon">🍾</div>
+        <div class="scan-card-text"><h3>Add a Bottle</h3><p>Snap the label to save it to your collection</p></div>
       </div>
     </div>
-  </div>`;
+    <div style="text-align:center;margin-top:24px;color:#334155;font-size:0.75rem">${wines.length} wines in your collection</div>`;
+  } else if(menuResults.length>0){renderScanResults(el);}
+  else{renderScanPreview(el);}
 }
 
-// === SCAN MENU ===
-let scanState = 'idle'; // idle, preview, scanning, results
-let scanImages = []; // array of data URLs
-let scanResults = [];
-let scanPairing = '';
-
-function renderScan(el) {
-  if(scanState === 'idle' || scanState === 'preview') {
-    const hasPhotos = scanImages.length > 0;
-    el.innerHTML = `<div class="scan-view">
-      <div class="scan-upload" onclick="document.getElementById('menu-photo').click()">
-        <input type="file" id="menu-photo" accept="image/*" capture="environment" multiple onchange="handleMenuPhotos(event)">
-        <div class="scan-icon">${hasPhotos?'➕':'📷'}</div>
-        <div class="scan-title">${hasPhotos?'Add More Pages':'Scan Wine Menu'}</div>
-        <div class="scan-hint">${hasPhotos?'Tap to add another page of the menu':'Take photos or upload images of the wine list'}</div>
-      </div>
-      ${hasPhotos?`
-        <div class="scan-thumbs">${scanImages.map((img,i) => `
-          <div class="scan-thumb">
-            <img src="${img}" alt="Page ${i+1}">
-            <div class="scan-thumb-badge">${i+1}</div>
-            <div class="scan-thumb-remove" onclick="removePhoto(${i})">✕</div>
-          </div>`).join('')}
-        </div>
-        <div class="form-group" style="margin-top:16px">
-          <label>🍽 What are you eating? (optional)</label>
-          <input type="text" id="scan-pairing" placeholder="e.g. steak, pasta, seafood, sushi..." value="${scanPairing}" oninput="scanPairing=this.value" style="width:100%;padding:12px;border-radius:10px;border:1px solid rgba(45,212,191,0.2);background:rgba(10,22,40,0.8);color:#e2e8f0;font-size:0.95rem;outline:none">
-        </div>
-        <div class="scan-actions">
-          <button class="btn btn-primary" onclick="analyzeMenu()">🔍 Analyze ${scanImages.length} ${scanImages.length===1?'Photo':'Photos'}</button>
-          <button class="btn btn-secondary" onclick="resetScan()">✕ Clear</button>
-        </div>`:''}
-    </div>`;
-  } else if(scanState === 'scanning') {
-    el.innerHTML = `<div class="scan-view">
-      <div class="scan-thumbs">${scanImages.map((img,i) => `
-        <div class="scan-thumb scanning"><img src="${img}" alt="Page ${i+1}"><div class="scan-thumb-badge">${i+1}</div></div>`).join('')}
-      </div>
-      <div class="scan-status"><span class="spinner"></span>Reading ${scanImages.length} menu ${scanImages.length===1?'photo':'photos'}...</div>
-    </div>`;
-  } else if(scanState === 'results') {
-    const found = scanResults.filter(r => r.match);
-    const notFound = scanResults.filter(r => !r.match);
-    el.innerHTML = `<div class="scan-view">
-      <div class="scan-actions">
-        <button class="btn btn-primary" onclick="resetScan()">📷 Scan Another Menu</button>
-      </div>
-      ${scanPairing?`<div class="menu-wines-header">🍽 Pairing with: <span>${scanPairing}</span></div>`:''}
-      ${found.length ? `<div class="menu-wines-header">🎯 <span>${found.length}</span> wines you've rated</div>
-      <div class="match-list">${found.map(r => `
-        <div class="match-card found">
-          <div class="match-info">
-            <div class="match-name">${r.menuName}</div>
-            <div class="match-detail">${r.match.region||''} ${r.match.grape?' · '+r.match.grape:''}</div>
-            ${r.match.notes?`<div class="match-detail" style="font-style:italic;color:#94a3b8">"${r.match.notes}"</div>`:''}
-            ${r.pairingNote?`<div class="match-detail" style="color:#2dd4bf">🍽 ${r.pairingNote}</div>`:''}
-          </div>
-          <div class="match-rating">
-            <div class="match-stars">${'★'.repeat(Math.floor(r.match.rating))}${'☆'.repeat(5-Math.floor(r.match.rating))}</div>
-            ${r.match.reorder?`<div class="match-reorder ${r.match.reorder}">${r.match.reorder==='yes'?'✓ Reorder':r.match.reorder==='no'?'✗ Skip':'~ Maybe'}</div>`:''}
-          </div>
-        </div>`).join('')}</div>`:''}
-      ${notFound.length ? `<div class="menu-wines-header">🆕 <span>${notFound.length}</span> new wines</div>
-      <div class="match-list">${notFound.map(r => `
-        <div class="match-card not-found">
-          <div class="match-info">
-            <div class="match-name">${r.menuName}</div>
-            ${r.pairingNote?`<div class="match-detail" style="color:#06b6d4">🍽 ${r.pairingNote}</div>`:''}
-            <div class="match-new">Not in your collection</div>
-          </div>
-        </div>`).join('')}</div>`:''}
-    </div>`;
-  }
+function renderScanPreview(el){
+  el.innerHTML=`<div class="photo-strip">
+    ${menuPhotos.map((p,i)=>`<div class="photo-thumb"><img src="${p}"><div class="photo-thumb-num">${i+1}</div><div class="photo-thumb-x" onclick="removeMenuPhoto(${i})">✕</div></div>`).join('')}
+    <div class="add-more-thumb" onclick="document.getElementById('menu-photo').click()">+</div>
+  </div>
+  <div class="pairing-section"><label>🍽 What are you eating?</label>
+    <input type="text" class="pairing-input" id="pairing-input" placeholder="steak, pasta, seafood, sushi...">
+  </div>
+  <button class="analyze-btn" onclick="analyzeMenu()">🔍 Analyze ${menuPhotos.length} ${menuPhotos.length===1?'Photo':'Photos'}</button>
+  <div class="clear-link" onclick="clearMenu()">Clear all</div>`;
 }
 
-function handleMenuPhotos(e) {
-  const files = Array.from(e.target.files);
-  if(!files.length) return;
-  let loaded = 0;
-  files.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      scanImages.push(ev.target.result);
-      loaded++;
-      if(loaded === files.length) {
-        scanState = 'preview';
-        render();
-      }
-    };
-    reader.readAsDataURL(file);
-  });
+function renderScanResults(el){
+  const found=menuResults.filter(r=>r.match),notFound=menuResults.filter(r=>!r.match);
+  const pairing=window._lastPairing||'';
+  el.innerHTML=`<button class="analyze-btn" style="background:rgba(15,25,45,0.8);color:#2dd4bf;border:1.5px solid rgba(45,212,191,0.2)" onclick="clearMenu()">📷 Scan Another Menu</button>
+    ${pairing?`<div style="text-align:center;color:#64748b;font-size:0.8rem;margin-top:8px">🍽 Pairing with: <span style="color:#2dd4bf">${pairing}</span></div>`:''}
+    ${found.length?`<div class="result-section"><div class="result-header">🎯 <span>${found.length}</span> wines you know</div>
+      ${found.map(r=>`<div class="result-card matched"><div class="result-left">
+        <div class="result-name">${r.menuName}</div>
+        <div class="result-sub">${r.match.region||''}${r.match.grape?' · '+r.match.grape:''}</div>
+        ${r.match.notes?`<div class="result-sub" style="font-style:italic">"${r.match.notes}"</div>`:''}
+        ${r.pairingNote?`<div class="result-pairing">🍽 ${r.pairingNote}</div>`:''}
+      </div><div class="result-right">
+        <div class="result-score">${Number(r.match.rating).toFixed(1)}</div>
+        ${r.match.reorder?`<div class="result-reorder ${r.match.reorder}">${r.match.reorder==='yes'?'✓ Reorder':r.match.reorder==='no'?'✗ Skip':'~ Maybe'}</div>`:''}
+      </div></div>`).join('')}</div>`:''}
+    ${notFound.length?`<div class="result-section"><div class="result-header">🆕 <span>${notFound.length}</span> new wines</div>
+      ${notFound.map(r=>`<div class="result-card"><div class="result-left">
+        <div class="result-name">${r.menuName}</div>
+        ${r.pairingNote?`<div class="result-pairing">🍽 ${r.pairingNote}</div>`:''}
+        <div class="result-new">Not in your collection</div>
+      </div></div>`).join('')}</div>`:''}`;
 }
 
-function removePhoto(idx) {
-  scanImages.splice(idx, 1);
-  if(scanImages.length === 0) scanState = 'idle';
-  render();
-}
-
-function resetScan() {
-  scanState = 'idle';
-  scanImages = [];
-  scanResults = [];
-  scanPairing = '';
-  render();
-}
-
-async function analyzeMenu() {
-  const apiKey = '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';
-  scanState = 'scanning';
-  render();
-  try {
-    // Build content array with all images
-    const content = [];
-    scanImages.forEach((img, i) => {
-      const base64 = img.split(',')[1];
-      const mediaType = img.split(';')[0].split(':')[1];
-      content.push({type:'image',source:{type:'base64',media_type:mediaType,data:base64}});
-    });
-    
-    let prompt = `Extract ALL wine names from ${scanImages.length > 1 ? 'these menu photos' : 'this menu photo'}. Return ONLY a JSON array of strings with the wine names exactly as written. Example: ["Ramón Bilbao Reserva 2018","Catena Malbec 2020"]. If you cannot read any wines, return []. No explanation, just the JSON array.`;
-    
-    content.push({type:'text',text:prompt});
-    
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 2000,
-        messages: [{ role: 'user', content }]
-      })
-    });
-    if(!response.ok) {
-      throw new Error('API error: ' + response.status);
-    }
-    const data = await response.json();
-    const text = data.content?.map(c=>c.text||'').join('') || '[]';
-    const cleaned = text.replace(/```json|```/g,'').trim();
-    let menuWines = [];
-    try { menuWines = JSON.parse(cleaned); } catch(e) { menuWines = []; }
-    
-    // Fuzzy match against our DB
-    scanResults = menuWines.map(menuName => {
-      const match = fuzzyMatch(menuName, wines);
-      return { menuName, match, pairingNote: null };
-    });
-    
-    // If pairing specified, get pairing recommendations
-    if(scanPairing.trim() && scanResults.length > 0) {
-      try {
-        const wineNames = scanResults.map(r => r.menuName);
-        const pairRes = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': apiKey,
-            'anthropic-version': '2023-06-01',
-            'anthropic-dangerous-direct-browser-access': 'true'
-          },
-          body: JSON.stringify({
-            model: 'claude-haiku-4-5-20251001',
-            max_tokens: 2000,
-            messages: [{
-              role: 'user',
-              content: `I'm eating: "${scanPairing}". Here are the wines on the menu: ${JSON.stringify(wineNames)}. For each wine, give a very short pairing note (5-10 words max) about how well it pairs with my food. Return ONLY a JSON object where keys are the exact wine names and values are the short pairing notes. Example: {"Wine A":"Perfect match, bold tannins complement red meat","Wine B":"Too light for this dish"}. No explanation, just JSON.`
-            }]
-          })
-        });
-        if(pairRes.ok) {
-          const pairData = await pairRes.json();
-          const pairText = pairData.content?.map(c=>c.text||'').join('') || '{}';
-          const pairCleaned = pairText.replace(/```json|```/g,'').trim();
-          try {
-            const pairings = JSON.parse(pairCleaned);
-            scanResults.forEach(r => {
-              if(pairings[r.menuName]) r.pairingNote = pairings[r.menuName];
-            });
-          } catch(e) {}
-        }
-      } catch(e) { console.error('Pairing error:', e); }
-    }
-    
-    scanState = 'results';
-  } catch(e) {
-    console.error('Scan error:', e);
-    alert('Error scanning menu. Check your connection.');
-    scanState = 'preview';
-  }
-  render();
-}
-
-function fuzzyMatch(query, wineList) {
-  const q = query.toLowerCase().replace(/[^a-záéíóúñü0-9\s]/gi,'').trim();
-  const qWords = q.split(/\s+/).filter(w => w.length > 2);
-  let bestMatch = null;
-  let bestScore = 0;
-  
-  for(const w of wineList) {
-    const name = (w.name||'').toLowerCase().replace(/[^a-záéíóúñü0-9\s]/gi,'').trim();
-    // Exact substring match
-    if(name.includes(q) || q.includes(name)) return w;
-    // Word overlap scoring
-    const nameWords = name.split(/\s+/).filter(w => w.length > 2);
-    let score = 0;
-    for(const qw of qWords) {
-      for(const nw of nameWords) {
-        if(nw === qw) score += 3;
-        else if(nw.includes(qw) || qw.includes(nw)) score += 2;
-        else if(levenshtein(nw,qw) <= 2) score += 1;
-      }
-    }
-    const normalizedScore = score / Math.max(qWords.length, nameWords.length, 1);
-    if(normalizedScore > bestScore && normalizedScore >= 1.5) {
-      bestScore = normalizedScore;
-      bestMatch = w;
-    }
-  }
-  return bestMatch;
-}
-
-function levenshtein(a,b) {
-  const m = a.length, n = b.length;
-  const d = Array.from({length:m+1},(_,i)=>i);
-  for(let j=1;j<=n;j++) {
-    let prev = d[0]; d[0] = j;
-    for(let i=1;i<=m;i++) {
-      const temp = d[i];
-      d[i] = a[i-1]===b[j-1] ? prev : 1+Math.min(prev,d[i],d[i-1]);
-      prev = temp;
-    }
-  }
-  return d[m];
-}
-
-// Tabs
-document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');
-  currentTab = t.dataset.tab;
-  document.getElementById('search').style.display = currentTab==='scan'?'none':'block';
-  document.getElementById('stats-bar').style.display = currentTab==='scan'?'none':'flex';
-  render();
-}));
-
-// Search
-document.getElementById('search').addEventListener('input', e => {
-  searchTerm = e.target.value;
-  render();
+document.getElementById('menu-photo').addEventListener('change',e=>{
+  Array.from(e.target.files).forEach(f=>{const r=new FileReader();r.onload=ev=>{menuPhotos.push(ev.target.result);renderScanHome();};r.readAsDataURL(f);});
+  e.target.value='';
 });
+function removeMenuPhoto(i){menuPhotos.splice(i,1);if(!menuPhotos.length)menuResults=[];renderScanHome();}
+function clearMenu(){menuPhotos=[];menuResults=[];window._lastPairing='';renderScanHome();}
 
-// Add Wine
-function openAddWine() {
-  document.getElementById('fab-menu').classList.remove('show');
-  document.getElementById('modal').classList.add('show');
-  formRating = 0; formReorder = ''; formOccasion = '';
-  document.querySelectorAll('#star-input span').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('selected'));
-  document.querySelectorAll('.modal input, .modal textarea').forEach(i=>i.value='');
-  const oldStatus = document.getElementById('bottle-scan-status');
-  if(oldStatus) oldStatus.remove();
-}
-function closeModal() { document.getElementById('modal').classList.remove('show'); }
-
-// Stars
-document.querySelectorAll('#star-input span').forEach(s => {
-  s.addEventListener('click', () => {
-    formRating = Number(s.dataset.v);
-    document.querySelectorAll('#star-input span').forEach((x,i) => {
-      x.classList.toggle('active', i < formRating);
-    });
-  });
-});
-
-// Pills
-document.querySelectorAll('#reorder-pills .pill').forEach(p => p.addEventListener('click', () => {
-  document.querySelectorAll('#reorder-pills .pill').forEach(x=>x.classList.remove('selected'));
-  p.classList.add('selected');
-  formReorder = p.dataset.v;
-}));
-document.querySelectorAll('#occasion-pills .pill').forEach(p => p.addEventListener('click', () => {
-  document.querySelectorAll('#occasion-pills .pill').forEach(x=>x.classList.remove('selected'));
-  p.classList.add('selected');
-  formOccasion = p.dataset.v;
-}));
-
-async function saveWine() {
-  const name = document.getElementById('f-name').value.trim();
-  if(!name || !formRating) { alert('Name and rating required'); return; }
-  const wine = {
-    name,
-    region: document.getElementById('f-region').value.trim() || null,
-    country: document.getElementById('f-country').value.trim() || null,
-    grape: document.getElementById('f-grape').value.trim() || null,
-    vintage: document.getElementById('f-vintage').value ? Number(document.getElementById('f-vintage').value) : null,
-    rating: formRating,
-    reorder: formReorder || null,
-    occasion: formOccasion || null,
-    notes: document.getElementById('f-notes').value.trim() || null,
-    source: 'manual'
-  };
-  try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/wines`, {
-      method:'POST', headers:{...headers,'Prefer':'return=representation'},
-      body: JSON.stringify(wine)
-    });
-    if(res.ok) {
-      const [added] = await res.json();
-      wines.unshift(added);
-      wines.sort((a,b)=>Number(b.rating)-Number(a.rating)||(a.name||'').localeCompare(b.name||''));
-      document.getElementById('wine-count').textContent = wines.length;
-      renderStats();
-      render();
-      closeModal();
-    } else { alert('Error saving: ' + (await res.text())); }
-  } catch(e) { alert('Network error'); }
-}
-
-// Close modal on overlay click
-document.getElementById('modal').addEventListener('click', e => {
-  if(e.target === document.getElementById('modal')) closeModal();
-});
-
-// FAB Menu
-function toggleFabMenu() {
-  const menu = document.getElementById('fab-menu');
-  menu.classList.toggle('show');
-}
-// Close fab menu when clicking elsewhere
-document.addEventListener('click', e => {
-  if(!e.target.closest('.fab') && !e.target.closest('.fab-menu')) {
-    document.getElementById('fab-menu').classList.remove('show');
-  }
-});
-
-// Bottle Scan
-function startBottleScan() {
-  document.getElementById('fab-menu').classList.remove('show');
-  document.getElementById('bottle-photo').click();
-}
-
-let bottleImage = null;
-
-async function handleBottlePhoto(e) {
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = async (ev) => {
-    bottleImage = ev.target.result;
-    // Open modal with scanning state
-    openAddWine();
-    const modal = document.querySelector('.modal');
-    // Show bottle preview + scanning indicator at top of form
-    const previewDiv = document.createElement('div');
-    previewDiv.id = 'bottle-scan-status';
-    previewDiv.innerHTML = `<div class="bottle-preview"><img src="${bottleImage}" alt="Bottle"></div>
-      <div class="bottle-scanning"><span class="spinner"></span>Reading label...</div>`;
-    modal.insertBefore(previewDiv, modal.children[1]);
-    
-    // Call Haiku to read the label
-    try {
-      const base64 = bottleImage.split(',')[1];
-      const mediaType = bottleImage.split(';')[0].split(':')[1];
-      const apiKey = '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';
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 500,
-          messages: [{
-            role: 'user',
-            content: [
-              {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
-              {type:'text',text:'Read this wine bottle label. Return ONLY a JSON object with these fields: {"name":"full wine name","region":"wine region","country":"country","grape":"grape variety if visible","vintage":2020}. Use null for fields you cannot determine. No explanation, just JSON.'}
-            ]
-          }]
-        })
-      });
-      if(!response.ok) throw new Error('API error');
-      const data = await response.json();
-      const text = data.content?.map(c=>c.text||'').join('') || '{}';
-      const cleaned = text.replace(/```json|```/g,'').trim();
-      let info = {};
-      try { info = JSON.parse(cleaned); } catch(e) {}
-      
-      // Pre-fill the form
-      if(info.name) document.getElementById('f-name').value = info.name;
-      if(info.region) document.getElementById('f-region').value = info.region;
-      if(info.country) document.getElementById('f-country').value = info.country;
-      if(info.grape) document.getElementById('f-grape').value = info.grape;
-      if(info.vintage) document.getElementById('f-vintage').value = info.vintage;
-      
-      // Update status
-      const statusEl = document.getElementById('bottle-scan-status');
-      if(statusEl) {
-        statusEl.innerHTML = `<div class="bottle-preview"><img src="${bottleImage}" alt="Bottle"></div>
-          <div style="text-align:center;color:#2dd4bf;font-size:0.85rem;margin-bottom:12px">✓ Label read — review & rate below</div>`;
-      }
-    } catch(err) {
-      console.error('Bottle scan error:', err);
-      const statusEl = document.getElementById('bottle-scan-status');
-      if(statusEl) {
-        statusEl.innerHTML = `<div class="bottle-preview"><img src="${bottleImage}" alt="Bottle"></div>
-          <div style="text-align:center;color:#f59e0b;font-size:0.85rem;margin-bottom:12px">Could not read label — enter manually</div>`;
-      }
+async function analyzeMenu(){
+  const pairing=document.getElementById('pairing-input')?.value||'';
+  window._lastPairing=pairing;
+  const el=document.getElementById('scan-content');
+  el.innerHTML=`<div class="scan-status"><span class="spinner"></span>Reading ${menuPhotos.length} menu ${menuPhotos.length===1?'photo':'photos'}...</div>`;
+  try{
+    const content=[];
+    menuPhotos.forEach(img=>{content.push({type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}});});
+    content.push({type:'text',text:`Extract ALL wine names from ${menuPhotos.length>1?'these menu photos':'this menu photo'}. Return ONLY a JSON array of strings with wine names exactly as written. Example: ["Ramón Bilbao Reserva 2018","Catena Malbec 2020"]. No explanation, just JSON array.`});
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content}]})});
+    if(!res.ok)throw new Error(res.status);
+    const data=await res.json();
+    let mw=[];try{mw=JSON.parse((data.content?.map(c=>c.text||'').join('')||'[]').replace(/```json|```/g,'').trim());}catch(e){}
+    menuResults=mw.map(name=>({menuName:name,match:fuzzyMatch(name,wines),pairingNote:null}));
+    if(pairing.trim()&&menuResults.length){
+      el.innerHTML=`<div class="scan-status"><span class="spinner"></span>Matching with ${pairing}...</div>`;
+      try{
+        const pr=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:`I'm eating: "${pairing}". Wines: ${JSON.stringify(mw)}. For each wine, give a very short pairing note (5-10 words). Return ONLY JSON object: {"Wine Name":"short note"}. No explanation.`}]})});
+        if(pr.ok){const pd=await pr.json();try{const p=JSON.parse((pd.content?.map(c=>c.text||'').join('')||'{}').replace(/```json|```/g,'').trim());menuResults.forEach(r=>{if(p[r.menuName])r.pairingNote=p[r.menuName];});}catch(e){}}
+      }catch(e){}
     }
-    bottleImage = null;
+    renderScanHome();
+  }catch(e){console.error(e);toast('Error scanning menu');renderScanHome();}
+}
+
+function startBottleScan(){document.getElementById('bottle-photo').click();}
+
+document.getElementById('bottle-photo').addEventListener('change',async e=>{
+  const file=e.target.files[0];if(!file)return;e.target.value='';
+  const reader=new FileReader();
+  reader.onload=async ev=>{
+    const img=ev.target.result;
+    switchScreen('bottle');
+    const el=document.getElementById('bottle-content');
+    el.innerHTML=`<div class="bottle-flow"><div class="bottle-preview"><img src="${img}"></div><div class="bottle-status"><span class="spinner"></span>Reading label...</div></div>`;
+    try{
+      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}},{type:'text',text:'Read this wine bottle label. Return ONLY JSON: {"name":"full wine name","region":"region","country":"country","grape":"grape or null","vintage":2020}. Use null for unknowns. No explanation.'}]}]})});
+      if(!res.ok)throw new Error(res.status);
+      const data=await res.json();
+      let info={};try{info=JSON.parse((data.content?.map(c=>c.text||'').join('')||'{}').replace(/```json|```/g,'').trim());}catch(e){}
+      renderBottleRate(el,img,info);
+    }catch(err){console.error(err);renderBottleRate(el,img,{});}
   };
   reader.readAsDataURL(file);
-  // Reset input so same file can be re-selected
-  e.target.value = '';
+});
+
+function renderBottleRate(el,img,info){
+  window._bi=info;window._br=0;window._bro='';
+  el.innerHTML=`<div class="bottle-flow">
+    <div class="bottle-preview"><img src="${img}"></div>
+    ${info.name?`<div class="bottle-result-name">${info.name}</div><div class="bottle-result-detail">${[info.region,info.country,info.grape,info.vintage].filter(Boolean).join(' · ')}</div>`
+    :`<div class="bottle-result-detail">Could not read label</div><input type="text" class="pairing-input" id="bn-input" placeholder="Type wine name..." style="margin:10px 0">`}
+    <div class="quick-rate">
+      <div class="quick-rate-label">Your rating</div>
+      <div class="quick-stars" id="b-stars"><span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span></div>
+      <div class="quick-rate-label">Reorder?</div>
+      <div class="quick-pills" id="b-reorder"><div class="qpill" data-v="yes">Yes</div><div class="qpill" data-v="maybe">Maybe</div><div class="qpill" data-v="no">No</div></div>
+    </div>
+    <button class="save-bottle-btn" id="save-btn" disabled onclick="saveBottle()">Save Wine</button>
+    <div class="clear-link" onclick="switchScreen('scan')">Cancel</div>
+  </div>`;
+  document.querySelectorAll('#b-stars span').forEach(s=>s.addEventListener('click',()=>{
+    window._br=Number(s.dataset.v);
+    document.querySelectorAll('#b-stars span').forEach((x,i)=>x.classList.toggle('active',i<window._br));
+    document.getElementById('save-btn').disabled=false;
+  }));
+  document.querySelectorAll('#b-reorder .qpill').forEach(p=>p.addEventListener('click',()=>{
+    document.querySelectorAll('#b-reorder .qpill').forEach(x=>x.classList.remove('active'));
+    p.classList.add('active');window._bro=p.dataset.v;
+  }));
 }
 
-loadWines();
+async function saveBottle(){
+  const info=window._bi||{};
+  const name=info.name||document.getElementById('bn-input')?.value?.trim();
+  if(!name){toast('Enter a wine name');return;}
+  const wine={name,region:info.region||null,country:info.country||null,grape:info.grape||null,vintage:info.vintage||null,rating:window._br,reorder:window._bro||null,source:'bottle_scan'};
+  try{
+    const res=await fetch(`${SB_URL}/rest/v1/wines`,{method:'POST',headers:{...hdrs,'Prefer':'return=representation'},body:JSON.stringify(wine)});
+    if(res.ok){const[added]=await res.json();wines.unshift(added);wines.sort((a,b)=>Number(b.rating)-Number(a.rating));toast(`✓ ${name} saved!`);switchScreen('scan');}
+    else{toast('Error saving wine');}
+  }catch(e){toast('Network error');}
+}
+
+function renderCollection(){
+  document.getElementById('coll-count').textContent=`${wines.length} wines`;
+  const q=collSearch.toLowerCase();
+  const f=q?wines.filter(w=>(w.name||'').toLowerCase().includes(q)||(w.region||'').toLowerCase().includes(q)||(w.country||'').toLowerCase().includes(q)||(w.grape||'').toLowerCase().includes(q)):wines;
+  const el=document.getElementById('coll-content');
+  if(collView==='wines')renderCollWines(el,f);
+  else if(collView==='regions')renderCollRegions(el,f);
+  else if(collView==='grapes')renderCollGrapes(el,f);
+  else renderCollInsights(el,f);
+}
+function renderCollWines(el,list){
+  el.innerHTML=`<div class="wine-list">${list.map(w=>{const r=Number(w.rating);return`<div class="wine-item${r>=5?' top':''}"><div class="wi-left"><div class="wi-name">${w.name}</div><div class="wi-meta">${w.region||''}${w.grape?' · '+w.grape:''}${w.vintage?' · '+w.vintage:''}</div></div><div class="wi-right"><div class="wi-score">${r.toFixed(1)}</div><div class="wi-badge">${r>=5?'★ Top':r>=4.5?'Excellent':r>=4?'Great':'Good'}</div></div></div>`;}).join('')}</div>`;
+}
+function renderCollRegions(el,list){
+  const m={};list.forEach(w=>{const r=w.region||'Unknown';if(!m[r])m[r]={n:0,t:0};m[r].n++;m[r].t+=Number(w.rating);});
+  const s=Object.entries(m).sort((a,b)=>b[1].n-a[1].n),mx=s[0]?.[1].n||1;
+  el.innerHTML=`<div class="a-card"><h3>Regions (${s.length})</h3>${s.slice(0,30).map(([n,d])=>`<div class="a-bar"><span class="a-label">${n}</span><div class="a-track"><div class="a-fill" style="width:${d.n/mx*100}%"></div></div><span class="a-val">${d.n} · ${(d.t/d.n).toFixed(1)}★</span></div>`).join('')}</div>`;
+}
+function renderCollGrapes(el,list){
+  const m={};list.forEach(w=>{const g=w.grape||'Unknown';if(!m[g])m[g]={n:0,t:0};m[g].n++;m[g].t+=Number(w.rating);});
+  const s=Object.entries(m).sort((a,b)=>b[1].n-a[1].n),mx=s[0]?.[1].n||1;
+  el.innerHTML=`<div class="a-card"><h3>Grapes (${s.length})</h3>${s.slice(0,25).map(([n,d])=>`<div class="a-bar"><span class="a-label">${n}</span><div class="a-track"><div class="a-fill" style="width:${d.n/mx*100}%"></div></div><span class="a-val">${d.n} · ${(d.t/d.n).toFixed(1)}★</span></div>`).join('')}</div>`;
+}
+function renderCollInsights(el,list){
+  const c={};list.forEach(w=>{const k=w.country||'Unknown';if(!c[k])c[k]=0;c[k]++;});
+  const tc=Object.entries(c).sort((a,b)=>b[1]-a[1])[0];
+  const avg=list.length?(list.reduce((s,w)=>s+Number(w.rating),0)/list.length).toFixed(2):'-';
+  const t5=list.filter(w=>Number(w.rating)>=5).length;
+  el.innerHTML=`<div class="a-card"><h3>Taste DNA</h3>
+    <div class="insight-row"><span class="insight-label">Total wines</span><span class="insight-val">${list.length}</span></div>
+    <div class="insight-row"><span class="insight-label">Average rating</span><span class="insight-val">${avg}</span></div>
+    <div class="insight-row"><span class="insight-label">5★ wines</span><span class="insight-val">${t5} (${list.length?Math.round(t5/list.length*100):0}%)</span></div>
+    <div class="insight-row"><span class="insight-label">Top country</span><span class="insight-val">${tc?tc[0]+' ('+tc[1]+')':'-'}</span></div>
+    <div class="insight-row"><span class="insight-label">Regions</span><span class="insight-val">${new Set(list.map(w=>w.region).filter(Boolean)).size}</span></div>
+    <div class="insight-row"><span class="insight-label">Countries</span><span class="insight-val">${Object.keys(c).length}</span></div>
+  </div>`;
+}
+document.querySelectorAll('.coll-tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.coll-tab').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');collView=t.dataset.view;renderCollection();
+}));
+document.getElementById('coll-search').addEventListener('input',e=>{collSearch=e.target.value;renderCollection();});
+
+function fuzzyMatch(query,wineList){
+  const q=query.toLowerCase().replace(/[^a-záéíóúñü0-9\s]/gi,'').trim();
+  const qw=q.split(/\s+/).filter(w=>w.length>2);
+  let best=null,bs=0;
+  for(const w of wineList){
+    const n=(w.name||'').toLowerCase().replace(/[^a-záéíóúñü0-9\s]/gi,'').trim();
+    if(n.includes(q)||q.includes(n))return w;
+    const nw=n.split(/\s+/).filter(w=>w.length>2);let sc=0;
+    for(const a of qw)for(const b of nw){if(b===a)sc+=3;else if(b.includes(a)||a.includes(b))sc+=2;else if(lev(a,b)<=2)sc+=1;}
+    const ns=sc/Math.max(qw.length,nw.length,1);
+    if(ns>bs&&ns>=1.5){bs=ns;best=w;}
+  }return best;
+}
+function lev(a,b){const m=a.length,n=b.length,d=Array.from({length:m+1},(_,i)=>i);for(let j=1;j<=n;j++){let p=d[0];d[0]=j;for(let i=1;i<=m;i++){const t=d[i];d[i]=a[i-1]===b[j-1]?p:1+Math.min(p,d[i],d[i-1]);p=t;}}return d[m];}
+
+loadWines().then(()=>renderScanHome());
 </script>
 </body>
 </html>
