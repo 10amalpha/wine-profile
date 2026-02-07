@@ -29,12 +29,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .screen.active{display:block}
 input[type="file"]{display:none}
 
-/* === HOME — full viewport centered === */
+/* === HOME — top-aligned, spacers distribute extra room === */
 #screen-scan .home-wrap{
-  min-height:100%;display:flex;flex-direction:column;justify-content:center;
-  padding:max(48px,env(safe-area-inset-top)) 24px max(90px,calc(env(safe-area-inset-bottom) + 70px));
-  gap:0
+  min-height:100%;display:flex;flex-direction:column;
+  padding:max(48px,env(safe-area-inset-top)) 24px max(90px,calc(env(safe-area-inset-bottom) + 70px))
 }
+.home-spacer{flex:1;min-height:12px;max-height:48px}
 
 /* Logo */
 .logo{text-align:center;margin-bottom:28px}
@@ -166,6 +166,7 @@ input[type="file"]{display:none}
 
 <div class="screen active" id="screen-scan">
   <div class="home-wrap">
+    <div class="home-spacer"></div>
     <div class="logo">
       <div class="logo-text">Hedonicum</div>
       <div class="logo-sub">Wine Intelligence</div>
@@ -261,6 +262,7 @@ function renderHome(){
       </div>
       <div class="tags">${[...topR,...topG3].map(t=>`<span class="tag">${t}</span>`).join('')}</div>`
       :`<div style="text-align:center;padding:32px 0;color:#3d4a5c;font-size:15px">Start building your taste profile</div>`}
+      <div class="home-spacer"></div>
       <div class="actions">
         <button class="act act-p" onclick="document.getElementById('menu-photo').click()">
           <div class="act-ic">📋</div><div class="act-tx"><h3>Scan Menu</h3><p>Snap the wine list, get your picks</p></div><div class="act-arr">›</div>
@@ -268,7 +270,8 @@ function renderHome(){
         <button class="act act-s" onclick="startBottle()">
           <div class="act-ic">📸</div><div class="act-tx"><h3>Add a Bottle</h3><p>Photograph to save & rate</p></div><div class="act-arr">›</div>
         </button>
-      </div>`;
+      </div>
+      <div class="home-spacer"></div>`;
   } else if(menuR.length>0){renderResults(el);}else{renderPreview(el);}
 }
 
