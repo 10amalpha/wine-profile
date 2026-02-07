@@ -57,6 +57,21 @@ input[type="file"]{display:none}
 
 /* ===== ACTION BUTTONS ===== */
 .actions{padding:12px 16px 0}
+
+/* Sections below actions */
+.section{padding:0 16px;margin-top:24px}
+.sec-h{font-size:12px;color:#4a5568;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #1a1f2e}
+.mini-w{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #111827}
+.mini-w:last-child{border:none}
+.mini-l{flex:1;min-width:0}
+.mini-nm{font-size:16px;font-weight:600;color:#e2e8f0;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini-m{font-size:13px;color:#3b4254}
+.mini-sc{font-size:22px;font-weight:800;color:#d4a96a;flex-shrink:0;margin-left:12px}
+.country-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.c-chip{display:flex;align-items:center;gap:10px;background:#111827;border:1px solid #1e2538;border-radius:14px;padding:14px 16px}
+.c-flag{font-size:22px;line-height:1}
+.c-nm{font-size:14px;color:#e2e8f0;font-weight:600;flex:1}
+.c-ct{font-size:14px;color:#d4a96a;font-weight:700}
 .act{display:flex;align-items:center;gap:16px;width:100%;padding:22px 22px;border-radius:18px;border:none;cursor:pointer;text-align:left;margin-bottom:12px;font-family:inherit;-webkit-user-select:none}
 .act:active{opacity:0.92;transform:scale(0.98)}
 
@@ -255,8 +270,24 @@ function renderHome(){
           <div class="act-tx"><h3>Add a Bottle</h3><p>Photograph to save &amp; rate</p></div>
           <div class="act-arr">›</div>
         </button>
-      </div>`;
+      </div>
+      ${n>0?`<div class="section">
+        <div class="sec-h">Your Top Wines</div>
+        ${wines.filter(w=>Number(w.rating)>=4.5).slice(0,5).map(w=>`<div class="mini-w">
+          <div class="mini-l"><div class="mini-nm">${w.name}</div><div class="mini-m">${(w.region||'').split(',')[0]}${w.grape?' · '+w.grape:''}</div></div>
+          <div class="mini-sc">${Number(w.rating).toFixed(1)}</div>
+        </div>`).join('')}
+      </div>
+      <div class="section">
+        <div class="sec-h">Countries Explored</div>
+        <div class="country-grid">${Object.entries(cm).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([c,cnt])=>`<div class="c-chip"><div class="c-flag">${countryFlag(c)}</div><div class="c-nm">${c}</div><div class="c-ct">${cnt}</div></div>`).join('')}</div>
+      </div>`:''}`;
   } else if(menuR.length>0){renderResults(el);}else{renderPreview(el);}
+}
+
+function countryFlag(c){
+  const m={'Spain':'🇪🇸','Italy':'🇮🇹','France':'🇫🇷','Argentina':'🇦🇷','Chile':'🇨🇱','Portugal':'🇵🇹','USA':'🇺🇸','United States':'🇺🇸','Germany':'🇩🇪','Australia':'🇦🇺','South Africa':'🇿🇦','Uruguay':'🇺🇾','New Zealand':'🇳🇿','Austria':'🇦🇹','Greece':'🇬🇷','Colombia':'🇨🇴','Lebanon':'🇱🇧','Georgia':'🇬🇪','Mexico':'🇲🇽','Israel':'🇮🇱','Croatia':'🇭🇷','Hungary':'🇭🇺','Slovenia':'🇸🇮'};
+  return m[c]||'🍷';
 }
 
 function renderPreview(el){
