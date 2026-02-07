@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wine Taste Profile</title>
+<title>Hedonicum</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#0a1628 0%,#0d1f3c 50%,#0a1628 100%);color:#e2e8f0;min-height:100vh}
@@ -76,12 +76,44 @@ header p{color:#64748b;font-size:0.9rem}
 .fab:hover{transform:scale(1.1)}
 .loading{text-align:center;padding:60px;color:#64748b}
 @media(max-width:600px){.wine-grid{grid-template-columns:1fr}.analytics-grid{grid-template-columns:1fr}.stats-bar{gap:8px}.stat{padding:8px 12px}}
+/* Scan Menu */
+.scan-tab{background:rgba(45,212,191,0.1);border-color:rgba(45,212,191,0.3)}
+.scan-view{max-width:600px;margin:0 auto}
+.scan-upload{border:2px dashed rgba(45,212,191,0.3);border-radius:16px;padding:40px 20px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(15,32,53,0.6)}
+.scan-upload:hover,.scan-upload:active{border-color:rgba(45,212,191,0.6);background:rgba(15,32,53,0.9)}
+.scan-upload input{display:none}
+.scan-icon{font-size:3rem;margin-bottom:12px}
+.scan-title{font-size:1rem;font-weight:600;color:#2dd4bf;margin-bottom:6px}
+.scan-hint{font-size:0.8rem;color:#64748b}
+.scan-preview{position:relative;margin:16px 0;border-radius:12px;overflow:hidden}
+.scan-preview img{width:100%;display:block;border-radius:12px}
+.scan-actions{display:flex;gap:10px;margin:16px 0}
+.scan-actions .btn{flex:1;text-align:center;padding:14px;font-size:0.95rem}
+.scan-status{text-align:center;padding:20px;color:#94a3b8;font-size:0.9rem}
+.scan-status .spinner{display:inline-block;width:20px;height:20px;border:2px solid rgba(45,212,191,0.3);border-top-color:#2dd4bf;border-radius:50%;animation:spin 0.8s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.match-list{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.match-card{background:rgba(15,32,53,0.8);border:1px solid rgba(45,212,191,0.15);border-radius:12px;padding:14px;display:flex;justify-content:space-between;align-items:center}
+.match-card.found{border-color:rgba(45,212,191,0.4)}
+.match-card.not-found{border-color:rgba(100,116,139,0.2);opacity:0.7}
+.match-info{flex:1}
+.match-name{font-size:0.9rem;font-weight:600;color:#e2e8f0;margin-bottom:4px}
+.match-detail{font-size:0.78rem;color:#64748b}
+.match-rating{text-align:right;min-width:80px}
+.match-stars{color:#2dd4bf;font-size:0.85rem}
+.match-reorder{font-size:0.7rem;margin-top:2px}
+.match-reorder.yes{color:#2dd4bf}
+.match-reorder.no{color:#ef4444}
+.match-reorder.maybe{color:#f59e0b}
+.match-new{font-size:0.75rem;color:#64748b;font-style:italic}
+.menu-wines-header{font-size:0.85rem;color:#94a3b8;margin:20px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(30,41,59,0.5)}
+.menu-wines-header span{color:#2dd4bf;font-weight:600}
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <h1>🍷 Wine Taste Profile</h1>
+    <h1>🍷 Hedonicum</h1>
     <p>@Holdmybirra — <span id="wine-count">0</span> wines rated</p>
   </header>
   <div class="stats-bar" id="stats-bar"></div>
@@ -90,6 +122,7 @@ header p{color:#64748b;font-size:0.9rem}
     <button class="tab" data-tab="regions">Regions</button>
     <button class="tab" data-tab="grapes">Grapes</button>
     <button class="tab" data-tab="insights">Insights</button>
+    <button class="tab scan-tab" data-tab="scan">📷 Scan Menu</button>
   </div>
   <input type="text" class="search-box" id="search" placeholder="Search wines, regions, grapes...">
   <div id="content"><div class="loading">Loading wines...</div></div>
@@ -203,6 +236,7 @@ function render() {
   if (currentTab === 'wines') renderWines(el, filtered);
   else if (currentTab === 'regions') renderRegions(el, filtered);
   else if (currentTab === 'grapes') renderGrapes(el, filtered);
+  else if (currentTab === 'scan') renderScan(el);
   else renderInsights(el, filtered);
 }
 
@@ -337,11 +371,199 @@ function renderInsights(el, list) {
   </div>`;
 }
 
+// === SCAN MENU ===
+let scanState = 'idle'; // idle, preview, scanning, results
+let scanImage = null;
+let scanResults = [];
+
+function renderScan(el) {
+  if(scanState === 'idle') {
+    el.innerHTML = `<div class="scan-view">
+      <div class="scan-upload" onclick="document.getElementById('menu-photo').click()">
+        <input type="file" id="menu-photo" accept="image/*" capture="environment" onchange="handleMenuPhoto(event)">
+        <div class="scan-icon">📷</div>
+        <div class="scan-title">Scan Wine Menu</div>
+        <div class="scan-hint">Take a photo or upload an image of the wine list</div>
+      </div>
+    </div>`;
+  } else if(scanState === 'preview') {
+    el.innerHTML = `<div class="scan-view">
+      <div class="scan-preview"><img src="${scanImage}" alt="Menu"></div>
+      <div class="scan-actions">
+        <button class="btn btn-primary" onclick="analyzeMenu()">🔍 Analyze Menu</button>
+        <button class="btn btn-secondary" onclick="resetScan()">↩ Retake</button>
+      </div>
+    </div>`;
+  } else if(scanState === 'scanning') {
+    el.innerHTML = `<div class="scan-view">
+      <div class="scan-preview"><img src="${scanImage}" alt="Menu" style="opacity:0.5"></div>
+      <div class="scan-status"><span class="spinner"></span>Reading wine menu...</div>
+    </div>`;
+  } else if(scanState === 'results') {
+    const found = scanResults.filter(r => r.match);
+    const notFound = scanResults.filter(r => !r.match);
+    el.innerHTML = `<div class="scan-view">
+      <div class="scan-actions">
+        <button class="btn btn-primary" onclick="resetScan()">📷 Scan Another</button>
+      </div>
+      ${found.length ? `<div class="menu-wines-header">🎯 <span>${found.length}</span> wines you've rated</div>
+      <div class="match-list">${found.map(r => `
+        <div class="match-card found">
+          <div class="match-info">
+            <div class="match-name">${r.menuName}</div>
+            <div class="match-detail">${r.match.region||''} ${r.match.grape?' · '+r.match.grape:''}</div>
+            ${r.match.notes?`<div class="match-detail" style="font-style:italic;color:#94a3b8">"${r.match.notes}"</div>`:''}
+          </div>
+          <div class="match-rating">
+            <div class="match-stars">${'★'.repeat(Math.floor(r.match.rating))}${'☆'.repeat(5-Math.floor(r.match.rating))}</div>
+            ${r.match.reorder?`<div class="match-reorder ${r.match.reorder}">${r.match.reorder==='yes'?'✓ Reorder':r.match.reorder==='no'?'✗ Skip':'~ Maybe'}</div>`:''}
+          </div>
+        </div>`).join('')}</div>`:''}
+      ${notFound.length ? `<div class="menu-wines-header">🆕 <span>${notFound.length}</span> new wines</div>
+      <div class="match-list">${notFound.map(r => `
+        <div class="match-card not-found">
+          <div class="match-info">
+            <div class="match-name">${r.menuName}</div>
+            <div class="match-new">Not in your collection</div>
+          </div>
+        </div>`).join('')}</div>`:''}
+    </div>`;
+  }
+}
+
+function handleMenuPhoto(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    scanImage = ev.target.result;
+    scanState = 'preview';
+    render();
+  };
+  reader.readAsDataURL(file);
+}
+
+function resetScan() {
+  scanState = 'idle';
+  scanImage = null;
+  scanResults = [];
+  render();
+}
+
+async function analyzeMenu() {
+  // Check for API key
+  let apiKey = localStorage.getItem('hedonicum_api_key') || '';
+  if(!apiKey) {
+    apiKey = prompt('Enter your Anthropic API key (stored locally, never sent elsewhere):');
+    if(!apiKey) return;
+    localStorage.setItem('hedonicum_api_key', apiKey);
+  }
+  scanState = 'scanning';
+  render();
+  try {
+    // Send image to Claude API for OCR
+    const base64 = scanImage.split(',')[1];
+    const mediaType = scanImage.split(';')[0].split(':')[1];
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        messages: [{
+          role: 'user',
+          content: [
+            {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
+            {type:'text',text:'Extract ALL wine names from this menu image. Return ONLY a JSON array of strings with the wine names exactly as written. Example: ["Ramón Bilbao Reserva 2018","Catena Malbec 2020"]. If you cannot read any wines, return []. No explanation, just the JSON array.'}
+          ]
+        }]
+      })
+    });
+    if(!response.ok) {
+      if(response.status === 401) { localStorage.removeItem('hedonicum_api_key'); throw new Error('401'); }
+      throw new Error('API error: ' + response.status);
+    }
+    const data = await response.json();
+    const text = data.content?.map(c=>c.text||'').join('') || '[]';
+    const cleaned = text.replace(/```json|```/g,'').trim();
+    let menuWines = [];
+    try { menuWines = JSON.parse(cleaned); } catch(e) { menuWines = []; }
+    
+    // Fuzzy match against our DB
+    scanResults = menuWines.map(menuName => {
+      const match = fuzzyMatch(menuName, wines);
+      return { menuName, match };
+    });
+    
+    scanState = 'results';
+  } catch(e) {
+    console.error('Scan error:', e);
+    if(e.message?.includes('401') || e.message?.includes('auth')) {
+      localStorage.removeItem('hedonicum_api_key');
+      alert('Invalid API key. Please try again.');
+    } else {
+      alert('Error scanning menu. Check your connection.');
+    }
+    scanState = 'preview';
+  }
+  render();
+}
+
+function fuzzyMatch(query, wineList) {
+  const q = query.toLowerCase().replace(/[^a-záéíóúñü0-9\s]/gi,'').trim();
+  const qWords = q.split(/\s+/).filter(w => w.length > 2);
+  let bestMatch = null;
+  let bestScore = 0;
+  
+  for(const w of wineList) {
+    const name = (w.name||'').toLowerCase().replace(/[^a-záéíóúñü0-9\s]/gi,'').trim();
+    // Exact substring match
+    if(name.includes(q) || q.includes(name)) return w;
+    // Word overlap scoring
+    const nameWords = name.split(/\s+/).filter(w => w.length > 2);
+    let score = 0;
+    for(const qw of qWords) {
+      for(const nw of nameWords) {
+        if(nw === qw) score += 3;
+        else if(nw.includes(qw) || qw.includes(nw)) score += 2;
+        else if(levenshtein(nw,qw) <= 2) score += 1;
+      }
+    }
+    const normalizedScore = score / Math.max(qWords.length, nameWords.length, 1);
+    if(normalizedScore > bestScore && normalizedScore >= 1.5) {
+      bestScore = normalizedScore;
+      bestMatch = w;
+    }
+  }
+  return bestMatch;
+}
+
+function levenshtein(a,b) {
+  const m = a.length, n = b.length;
+  const d = Array.from({length:m+1},(_,i)=>i);
+  for(let j=1;j<=n;j++) {
+    let prev = d[0]; d[0] = j;
+    for(let i=1;i<=m;i++) {
+      const temp = d[i];
+      d[i] = a[i-1]===b[j-1] ? prev : 1+Math.min(prev,d[i],d[i-1]);
+      prev = temp;
+    }
+  }
+  return d[m];
+}
+
 // Tabs
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
   t.classList.add('active');
   currentTab = t.dataset.tab;
+  document.getElementById('search').style.display = currentTab==='scan'?'none':'block';
+  document.getElementById('stats-bar').style.display = currentTab==='scan'?'none':'flex';
   render();
 }));
 
