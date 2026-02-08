@@ -36,25 +36,17 @@ if('serviceWorker' in navigator){
     var w = window.innerWidth;
     var dpr = window.devicePixelRatio || 1;
     if(w > 600 && dpr > 1.5){
-      var targetWidth = 430;
-      var scale = targetWidth / w;
+      // Phone in desktop mode: viewport is 980px
+      // We want content to render at ~420px logical width but FILL the screen
+      // So we set viewport width to 420 — browser will auto-scale to fill screen
       var vp = document.querySelector('meta[name="viewport"]');
       if(vp){
-        vp.setAttribute('content', 'width=' + targetWidth + ', initial-scale=' + scale.toFixed(4));
-      }
-      // Apply body constraints when body exists
-      if(document.body){
-        document.body.style.maxWidth = targetWidth + 'px';
-        document.body.style.margin = '0 auto';
-        document.body.style.overflowX = 'hidden';
+        vp.setAttribute('content', 'width=420, user-scalable=no');
       }
     }
   }
-  // Run now (for viewport meta fix)
   fixDesktopMode();
-  // Run again when DOM is ready (for body styles)
   document.addEventListener('DOMContentLoaded', fixDesktopMode);
-  window.addEventListener('resize', fixDesktopMode);
 })();
 </script>
 <style>
@@ -74,7 +66,7 @@ body{
 input,select,textarea{font-size:1rem!important;touch-action:manipulation;-webkit-text-size-adjust:100%}
 
 /* ===== NAV ===== */
-.nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#0a0e17;border-top:1px solid #1a1f2e;z-index:90;padding:0.75rem 0 0.875rem;padding-bottom:max(0.875rem,env(safe-area-inset-bottom));max-width:430px;margin:0 auto}
+.nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#0a0e17;border-top:1px solid #1a1f2e;z-index:90;padding:0.75rem 0 0.875rem;padding-bottom:max(0.875rem,env(safe-area-inset-bottom))}
 .nav-i{flex:1;display:flex;flex-direction:column;align-items:center;gap:0.3rem;cursor:pointer;border:none;background:none;color:#3b4254;font-size:0.7rem;font-weight:600;letter-spacing:0.3px}
 .nav-i.on{color:#d4a96a}
 .nav-i svg{width:1.75rem;height:1.75rem;fill:currentColor}
@@ -254,7 +246,7 @@ input[type="file"]{display:none}
 <div class="toast" id="toast"></div>
 
 <div class="screen on" id="s-scan">
-  <div class="hdr"><h1>Hedonicum</h1><p>Wine Intelligence</p><p id="dbg" style="font-size:10px;color:#3b4254;margin-top:2px;font-family:monospace">v8</p></div>
+  <div class="hdr"><h1>Hedonicum</h1><p>Wine Intelligence</p><p id="dbg" style="font-size:10px;color:#3b4254;margin-top:2px;font-family:monospace">v9</p></div>
   <div id="home"></div>
 </div>
 
@@ -567,7 +559,7 @@ loadWines().then(()=>renderHome());
 <script>
 document.addEventListener('DOMContentLoaded',function(){
   var d=document.getElementById('dbg');
-  if(d) d.textContent='v8 | w:'+window.innerWidth+' dpr:'+window.devicePixelRatio;
+  if(d) d.textContent='v9 | w:'+window.innerWidth+' dpr:'+window.devicePixelRatio;
 });
 </script>
 </body>
