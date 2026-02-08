@@ -15,30 +15,23 @@
 <!-- Android -->
 <meta name="mobile-web-app-capable" content="yes">
 <script>
-if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(()=>{});}
-
-// Prevent iOS Safari zoom on input focus
-// iOS zooms when input font-size < 16px OR when it thinks the field is too small
-// Solution: temporarily set viewport scale on focus and use scrollIntoView
-document.addEventListener('DOMContentLoaded', function(){
-  var inputs = document.querySelectorAll('input,textarea,select');
-  function preventZoom(){
-    var vp = document.querySelector('meta[name="viewport"]');
-    // Force max-scale=1 to prevent zoom
-    vp.setAttribute('content','width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover');
-  }
-  // Re-apply on every focus event (for dynamically created inputs)
-  document.addEventListener('focusin',function(e){
-    if(e.target.matches('input,textarea,select')){
-      preventZoom();
-      // Smooth scroll input into view after keyboard appears
-      setTimeout(function(){
-        e.target.scrollIntoView({behavior:'smooth',block:'center'});
-      },300);
-    }
+// NUCLEAR CACHE BUST: unregister old SWs, clear all caches, then register new SW
+if('serviceWorker' in navigator){
+  // Step 1: Unregister ALL service workers
+  navigator.serviceWorker.getRegistrations().then(function(regs){
+    return Promise.all(regs.map(function(r){return r.unregister();}));
+  }).then(function(){
+    // Step 2: Delete ALL caches
+    return caches.keys().then(function(keys){
+      return Promise.all(keys.map(function(k){return caches.delete(k);}));
+    });
+  }).then(function(){
+    // Step 3: Register fresh SW
+    navigator.serviceWorker.register('/sw.js?v=5').catch(function(){});
+  }).catch(function(){
+    navigator.serviceWorker.register('/sw.js?v=5').catch(function(){});
   });
-  preventZoom();
-});
+}
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -237,7 +230,7 @@ input[type="file"]{display:none}
 <div class="toast" id="toast"></div>
 
 <div class="screen on" id="s-scan">
-  <div class="hdr"><h1>Hedonicum</h1><p>Wine Intelligence</p></div>
+  <div class="hdr"><h1>Hedonicum</h1><p>Wine Intelligence</p><p style="font-size:10px;color:#1e2538;margin-top:2px">v5</p></div>
   <div id="home"></div>
 </div>
 
