@@ -230,7 +230,7 @@ input[type="file"]{display:none}
 <div class="toast" id="toast"></div>
 
 <div class="screen on" id="s-scan">
-  <div class="hdr"><h1>Hedonicum</h1><p>Wine Intelligence</p><p style="font-size:10px;color:#1e2538;margin-top:2px">v5</p></div>
+  <div class="hdr"><h1>Hedonicum</h1><p>Wine Intelligence</p><p id="dbg" style="font-size:11px;color:#d4a96a;margin-top:4px;font-family:monospace"></p></div>
   <div id="home"></div>
 </div>
 
@@ -539,6 +539,13 @@ function fuz(q,wl){const a=q.toLowerCase().replace(/[^a-záéíóúñü0-9\s]/gi
 function lev(a,b){const m=a.length,n=b.length,d=Array.from({length:m+1},(_,i)=>i);for(let j=1;j<=n;j++){let p=d[0];d[0]=j;for(let i=1;i<=m;i++){const t=d[i];d[i]=a[i-1]===b[j-1]?p:1+Math.min(p,d[i],d[i-1]);p=t;}}return d[m];}
 
 loadWines().then(()=>renderHome());
+</script>
+<script>
+// Debug: show device info
+document.addEventListener('DOMContentLoaded',function(){
+  var d=document.getElementById('dbg');
+  if(d) d.textContent='v6 | w:'+window.innerWidth+' h:'+window.innerHeight+' dpr:'+window.devicePixelRatio+' vvw:'+(window.visualViewport?window.visualViewport.width:'?')+' scale:'+(window.visualViewport?window.visualViewport.scale:'?');
+});
 </script>
 </body>
 </html>
