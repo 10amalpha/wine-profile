@@ -15,23 +15,47 @@
 <!-- Android -->
 <meta name="mobile-web-app-capable" content="yes">
 <script>
-// NUCLEAR CACHE BUST: unregister old SWs, clear all caches, then register new SW
+// NUCLEAR CACHE BUST
 if('serviceWorker' in navigator){
-  // Step 1: Unregister ALL service workers
   navigator.serviceWorker.getRegistrations().then(function(regs){
     return Promise.all(regs.map(function(r){return r.unregister();}));
   }).then(function(){
-    // Step 2: Delete ALL caches
     return caches.keys().then(function(keys){
       return Promise.all(keys.map(function(k){return caches.delete(k);}));
     });
   }).then(function(){
-    // Step 3: Register fresh SW
-    navigator.serviceWorker.register('/sw.js?v=5').catch(function(){});
+    navigator.serviceWorker.register('/sw.js?v=8').catch(function(){});
   }).catch(function(){
-    navigator.serviceWorker.register('/sw.js?v=5').catch(function(){});
+    navigator.serviceWorker.register('/sw.js?v=8').catch(function(){});
   });
 }
+
+// FORCE MOBILE LAYOUT: detect desktop-mode on phones and fix it
+(function(){
+  function fixDesktopMode(){
+    var w = window.innerWidth;
+    var dpr = window.devicePixelRatio || 1;
+    if(w > 600 && dpr > 1.5){
+      var targetWidth = 430;
+      var scale = targetWidth / w;
+      var vp = document.querySelector('meta[name="viewport"]');
+      if(vp){
+        vp.setAttribute('content', 'width=' + targetWidth + ', initial-scale=' + scale.toFixed(4));
+      }
+      // Apply body constraints when body exists
+      if(document.body){
+        document.body.style.maxWidth = targetWidth + 'px';
+        document.body.style.margin = '0 auto';
+        document.body.style.overflowX = 'hidden';
+      }
+    }
+  }
+  // Run now (for viewport meta fix)
+  fixDesktopMode();
+  // Run again when DOM is ready (for body styles)
+  document.addEventListener('DOMContentLoaded', fixDesktopMode);
+  window.addEventListener('resize', fixDesktopMode);
+})();
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -50,7 +74,7 @@ body{
 input,select,textarea{font-size:1rem!important;touch-action:manipulation;-webkit-text-size-adjust:100%}
 
 /* ===== NAV ===== */
-.nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#0a0e17;border-top:1px solid #1a1f2e;z-index:90;padding:0.75rem 0 0.875rem;padding-bottom:max(0.875rem,env(safe-area-inset-bottom))}
+.nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#0a0e17;border-top:1px solid #1a1f2e;z-index:90;padding:0.75rem 0 0.875rem;padding-bottom:max(0.875rem,env(safe-area-inset-bottom));max-width:430px;margin:0 auto}
 .nav-i{flex:1;display:flex;flex-direction:column;align-items:center;gap:0.3rem;cursor:pointer;border:none;background:none;color:#3b4254;font-size:0.7rem;font-weight:600;letter-spacing:0.3px}
 .nav-i.on{color:#d4a96a}
 .nav-i svg{width:1.75rem;height:1.75rem;fill:currentColor}
@@ -230,7 +254,7 @@ input[type="file"]{display:none}
 <div class="toast" id="toast"></div>
 
 <div class="screen on" id="s-scan">
-  <div class="hdr"><h1>Hedonicum</h1><p>Wine Intelligence</p><p id="dbg" style="font-size:11px;color:#d4a96a;margin-top:4px;font-family:monospace"></p></div>
+  <div class="hdr"><h1>Hedonicum</h1><p>Wine Intelligence</p><p id="dbg" style="font-size:10px;color:#3b4254;margin-top:2px;font-family:monospace">v8</p></div>
   <div id="home"></div>
 </div>
 
@@ -541,18 +565,9 @@ function lev(a,b){const m=a.length,n=b.length,d=Array.from({length:m+1},(_,i)=>i
 loadWines().then(()=>renderHome());
 </script>
 <script>
-// Debug: show device info and warn if desktop mode
 document.addEventListener('DOMContentLoaded',function(){
   var d=document.getElementById('dbg');
-  var w=window.innerWidth;
-  if(d){
-    d.textContent='v7 | w:'+w+' h:'+window.innerHeight+' dpr:'+window.devicePixelRatio;
-    if(w>500){
-      d.style.color='#ff6b6b';
-      d.style.fontSize='14px';
-      d.textContent+=' ⚠️ DESKTOP MODE ON - Turn off in browser menu';
-    }
-  }
+  if(d) d.textContent='v8 | w:'+window.innerWidth+' dpr:'+window.devicePixelRatio;
 });
 </script>
 </body>
