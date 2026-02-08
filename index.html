@@ -36,31 +36,39 @@ if('serviceWorker' in navigator){
     var w = window.innerWidth;
     var dpr = window.devicePixelRatio || 1;
     // Phone in desktop mode: w=980, dpr>2
-    // Real desktop/laptop: w>600, dpr<=2 (usually 1-2)
-    // Tablet: w>600, dpr~2 but screen is physically large
     if(w > 600 && dpr > 2){
+      // Try to fix viewport first
       var vp = document.querySelector('meta[name="viewport"]');
       if(vp) vp.setAttribute('content','width=device-width, initial-scale=1');
+      
+      // If viewport is STILL wide after 200ms, scale up the root font 
+      setTimeout(function(){
+        if(window.innerWidth > 600){
+          // Viewport fix didn't work (browser overrode it)
+          // Scale up root font so everything renders bigger at 980px
+          // 980px viewport on ~400px phone = 2.45x scale down
+          // So multiply font by ~2.3 to compensate
+          var scale = window.innerWidth / 420;
+          document.documentElement.style.fontSize = (16 * scale) + 'px';
+          document.documentElement.classList.add('desktop-mode');
+        }
+      }, 250);
     }
   }
-  // Run immediately, on load, and periodically (to override DuckDuckGo's late injection)
   fixViewport();
-  document.addEventListener('DOMContentLoaded', function(){
-    fixViewport();
-    // DuckDuckGo injects at documentEnd, so fight back with interval
-    var attempts = 0;
-    var interval = setInterval(function(){
-      fixViewport();
-      attempts++;
-      if(attempts > 20 || window.innerWidth < 600) clearInterval(interval);
-    }, 100);
-  });
+  document.addEventListener('DOMContentLoaded', fixViewport);
   window.addEventListener('load', fixViewport);
 })();
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{font-size:16px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+/* When browser forces desktop viewport on phone, scale up root font.
+   All rem-based sizes will automatically scale up. 
+   Only px-based values need explicit overrides below. */
+html.desktop-mode .nav{padding:1.75rem 0 2rem}
+html.desktop-mode .nav-i svg{width:3.5rem;height:3.5rem}
+html.desktop-mode input,html.desktop-mode select,html.desktop-mode textarea{font-size:inherit!important}
 body{
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   background:#0a0e17;color:#e2e8f0;
@@ -255,7 +263,7 @@ input[type="file"]{display:none}
 <div class="toast" id="toast"></div>
 
 <div class="screen on" id="s-scan">
-  <div class="hdr"><h1>Hedonicum</h1><p>Wine Intelligence</p><p id="dbg" style="font-size:10px;color:#3b4254;margin-top:2px;font-family:monospace">v10</p></div>
+  <div class="hdr"><h1>Hedonicum</h1><p>Wine Intelligence</p><p id="dbg" style="font-size:10px;color:#3b4254;margin-top:2px;font-family:monospace">v11</p></div>
   <div id="home"></div>
 </div>
 
@@ -281,8 +289,17 @@ input[type="file"]{display:none}
 <input type="file" id="f-bottle" accept="image/*" capture="environment">
 
 <script>
-const SB='https://bzpraigsuwgjgpnclcpd.supabase.co',SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cHJhaWdzdXdnamdwbmNsY3BkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1Mzk2NDEsImV4cCI6MjA4NTExNTY0MX0.tBtsac6Mq65BiG93MhYtn1KV8iOGpEpVdlD3tqShrzE',AK='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';
+const SB='https://bzpraigsuwgjgpnclcpd.supabase.co',SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6cHJhaWdzdXdnamdwbmNsY3BkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1Mzk2NDEsImV4cCI6MjA4NTExNTY0MX0.tBtsac6Mq65BiG93MhYtn1KV8iOGpEpVdlD3tqShrzE';
 const H={'apikey':SK,'Authorization':'Bearer '+SK,'Content-Type':'application/json'};
+// API proxy - calls serverless function instead of exposing key
+async function callAI(messages, max_tokens, system){
+  const res = await fetch('/api/analyze', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({messages, max_tokens: max_tokens||2000, system: system||''})
+  });
+  return res.json();
+}
 let wines=[],menuP=[],menuR=[],cV='wines',cS='';
 
 function go(s){
@@ -455,9 +472,8 @@ async function doAnalyze(){
     const resized=await Promise.all(menuP.map(p=>resizeImg(p)));
     const c=[];resized.forEach(img=>{c.push({type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}});});
     c.push({type:'text',text:`Extract ALL wines from ${menuP.length>1?'these photos':'this photo'}. For each wine return name and price. Return ONLY JSON array of objects: [{"name":"wine name","price":45},{"name":"wine2","price":null}]. Use null if no price visible. No explanation.`});
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:c}]})});
-    if(!res.ok){const err=await res.text();console.error('API error:',res.status,err);toast('API error: '+res.status);renderHome();return;}
-    const d=await res.json();let mw=[];try{mw=JSON.parse((d.content?.map(x=>x.text||'').join('')||'[]').replace(/```json|```/g,'').trim());}catch(e){console.error('Parse error:',d);}
+    const d=await callAI([{role:'user',content:c}], 2000);
+    if(d.error){console.error('API error:',d.error);toast('API error');renderHome();return;}let mw=[];try{mw=JSON.parse((d.content?.map(x=>x.text||'').join('')||'[]').replace(/```json|```/g,'').trim());}catch(e){console.error('Parse error:',d);}
     // Support both old format (string array) and new format (object array)
     if(mw.length&&typeof mw[0]==='string'){mw=mw.map(n=>({name:n,price:null}));}
     menuR=mw.map(w=>({mn:w.name,price:w.price,match:fuz(w.name,wines),pn:null}));
@@ -491,8 +507,8 @@ Respond ONLY with JSON (no markdown, no backticks):
 {"top_pick":{"name":"exact wine name from menu","why":"2 sentences: why this wine + food pairing logic"},"runner_up":{"name":"exact wine name","why":"1 sentence"},"try_something_new":{"name":"a wine from the NEW list they haven't tried","why":"1 sentence connecting to their taste preferences"},"skip":{"name":"wine to avoid","why":"1 sentence"},"sommelier_note":"1 bold sentence of overall advice"}`;
 
     try{
-      const sr=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1000,messages:[{role:'user',content:somPrompt}]})});
-      if(sr.ok){const sd=await sr.json();try{window._rec=JSON.parse((sd.content?.map(x=>x.text||'').join('')||'{}').replace(/```json|```/g,'').trim());}catch(e){window._rec=null;}}
+      const sd=await callAI([{role:'user',content:somPrompt}], 1000);
+      if(!sd.error){try{window._rec=JSON.parse((sd.content?.map(x=>x.text||'').join('')||'{}').replace(/```json|```/g,'').trim());}catch(e){window._rec=null;}}
     }catch(e){window._rec=null;}
 
     renderHome();
@@ -507,9 +523,8 @@ document.getElementById('f-bottle').addEventListener('change',async e=>{
     const raw=ev.target.result;const img=await resizeImg(raw);
     go('bottle');const el=document.getElementById('bottle');
     el.innerHTML=`<div class="bflow"><div class="bimg"><img src="${img}"></div><div class="bsts"><span class="spin"></span>Reading label...</div></div>`;
-    try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}},{type:'text',text:'Read wine label. ONLY JSON: {"name":"wine","region":"region","country":"country","grape":"grape or null","vintage":2020}. Nulls for unknowns.'}]}]})});
-    if(!res.ok){const err=await res.text();console.error('Bottle API:',res.status,err);toast('API error: '+res.status);}
-    const d=await res.json();let info={};try{info=JSON.parse((d.content?.map(x=>x.text||'').join('')||'{}').replace(/```json|```/g,'').trim());}catch(e){}
+    try{const d=await callAI([{role:'user',content:[{type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}},{type:'text',text:'Read wine label. ONLY JSON: {"name":"wine","region":"region","country":"country","grape":"grape or null","vintage":2020}. Nulls for unknowns.'}]}], 500);
+    let info={};try{info=JSON.parse((d.content?.map(x=>x.text||'').join('')||'{}').replace(/```json|```/g,'').trim());}catch(e){}
     showRate(el,img,info);}catch(e){console.error('Bottle error:',e);showRate(el,img,{});}
   };rd.readAsDataURL(f);
 });
@@ -568,7 +583,7 @@ loadWines().then(()=>renderHome());
 <script>
 document.addEventListener('DOMContentLoaded',function(){
   var d=document.getElementById('dbg');
-  if(d) d.textContent='v10 | w:'+window.innerWidth+' dpr:'+window.devicePixelRatio;
+  if(d) d.textContent='v11 | w:'+window.innerWidth+' dpr:'+window.devicePixelRatio+' fs:'+getComputedStyle(document.documentElement).fontSize;
 });
 </script>
 </body>
