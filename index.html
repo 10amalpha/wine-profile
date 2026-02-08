@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Hedonicum</title>
 <!-- PWA -->
 <link rel="manifest" href="/manifest.json">
@@ -24,8 +24,12 @@ body{
   background:#0a0e17;color:#e2e8f0;
   -webkit-font-smoothing:antialiased;
   padding-bottom:80px;
-  overflow-x:hidden
+  overflow-x:hidden;
+  width:100%;
+  max-width:100vw;
+  -webkit-text-size-adjust:100%
 }
+input,select,textarea{font-size:16px!important;touch-action:manipulation}
 
 /* ===== NAV ===== */
 .nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#0a0e17;border-top:1px solid #1a1f2e;z-index:90;padding:12px 0 14px;padding-bottom:max(14px,env(safe-area-inset-bottom))}
@@ -104,7 +108,7 @@ input[type="file"]{display:none}
 .flow{padding:24px 16px}
 
 .fld-l{font-size:11px;color:#4a5568;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:700;margin-top:20px}
-.fld-i{width:100%;padding:18px 20px;border-radius:16px;border:1px solid #1e2538;background:#111827;color:#e2e8f0;font-size:17px;outline:none;font-family:inherit}
+.fld-i{width:100%;padding:18px 20px;border-radius:16px;border:1px solid #1e2538;background:#111827;color:#e2e8f0;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none;appearance:none}
 .fld-i:focus{border-color:rgba(212,169,106,0.35)}
 .fld-i::placeholder{color:#2d3748}
 
@@ -173,7 +177,7 @@ input[type="file"]{display:none}
 .coll{padding:24px 16px}
 .coll h2{font-size:28px;font-weight:800;color:#fff;margin-bottom:4px}
 .coll-sub{font-size:14px;color:#4a5568;margin-bottom:18px}
-.cs{width:100%;padding:16px 20px;border-radius:16px;border:1px solid #1e2538;background:#111827;color:#e2e8f0;font-size:17px;outline:none;margin-bottom:16px;font-family:inherit}
+.cs{width:100%;padding:16px 20px;border-radius:16px;border:1px solid #1e2538;background:#111827;color:#e2e8f0;font-size:16px;outline:none;margin-bottom:16px;font-family:inherit;-webkit-appearance:none;appearance:none}
 .cs:focus{border-color:rgba(212,169,106,0.3)}
 .cs::placeholder{color:#2d3748}
 .ctabs{display:flex;gap:8px;margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -336,7 +340,7 @@ function renderResults(el){
     // Build price lookup
     const priceOf=n=>{const r=menuR.find(x=>x.mn===n);return r&&r.price?'$'+r.price:null;};
     recHTML=`<div class="rec-card">
-      ${rec.sommelier_note?`<div class="rec-note">"${rec.sommelier_note}"</div>`:''}
+      ${rec.sommelier_note?`<div class="rec-note">"${rec.sommelier_note.replace(/\*\*/g,'')}"</div>`:''}
       ${rec.top_pick?`<div class="rec-pick">
         <div class="rec-label">🏆 Order This</div>
         <div class="rec-wine">${rec.top_pick.name}${priceOf(rec.top_pick.name)?` <span class="rec-price">${priceOf(rec.top_pick.name)}</span>`:''}</div>
