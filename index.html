@@ -30,23 +30,32 @@ if('serviceWorker' in navigator){
   });
 }
 
-// FORCE MOBILE LAYOUT: detect desktop-mode on phones and fix it
+// FORCE MOBILE LAYOUT on browsers that override viewport (DuckDuckGo, desktop mode)
 (function(){
-  function fixDesktopMode(){
+  function fixViewport(){
     var w = window.innerWidth;
     var dpr = window.devicePixelRatio || 1;
-    if(w > 600 && dpr > 1.5){
-      // Phone in desktop mode: viewport is 980px
-      // We want content to render at ~420px logical width but FILL the screen
-      // So we set viewport width to 420 — browser will auto-scale to fill screen
+    // Phone in desktop mode: w=980, dpr>2
+    // Real desktop/laptop: w>600, dpr<=2 (usually 1-2)
+    // Tablet: w>600, dpr~2 but screen is physically large
+    if(w > 600 && dpr > 2){
       var vp = document.querySelector('meta[name="viewport"]');
-      if(vp){
-        vp.setAttribute('content', 'width=420, user-scalable=no');
-      }
+      if(vp) vp.setAttribute('content','width=device-width, initial-scale=1');
     }
   }
-  fixDesktopMode();
-  document.addEventListener('DOMContentLoaded', fixDesktopMode);
+  // Run immediately, on load, and periodically (to override DuckDuckGo's late injection)
+  fixViewport();
+  document.addEventListener('DOMContentLoaded', function(){
+    fixViewport();
+    // DuckDuckGo injects at documentEnd, so fight back with interval
+    var attempts = 0;
+    var interval = setInterval(function(){
+      fixViewport();
+      attempts++;
+      if(attempts > 20 || window.innerWidth < 600) clearInterval(interval);
+    }, 100);
+  });
+  window.addEventListener('load', fixViewport);
 })();
 </script>
 <style>
@@ -246,7 +255,7 @@ input[type="file"]{display:none}
 <div class="toast" id="toast"></div>
 
 <div class="screen on" id="s-scan">
-  <div class="hdr"><h1>Hedonicum</h1><p>Wine Intelligence</p><p id="dbg" style="font-size:10px;color:#3b4254;margin-top:2px;font-family:monospace">v9</p></div>
+  <div class="hdr"><h1>Hedonicum</h1><p>Wine Intelligence</p><p id="dbg" style="font-size:10px;color:#3b4254;margin-top:2px;font-family:monospace">v10</p></div>
   <div id="home"></div>
 </div>
 
@@ -559,7 +568,7 @@ loadWines().then(()=>renderHome());
 <script>
 document.addEventListener('DOMContentLoaded',function(){
   var d=document.getElementById('dbg');
-  if(d) d.textContent='v9 | w:'+window.innerWidth+' dpr:'+window.devicePixelRatio;
+  if(d) d.textContent='v10 | w:'+window.innerWidth+' dpr:'+window.devicePixelRatio;
 });
 </script>
 </body>
