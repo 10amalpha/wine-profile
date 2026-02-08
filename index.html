@@ -330,37 +330,59 @@ function renderResults(el){
   </div>`;
 }
 
-document.getElementById('f-menu').addEventListener('change',e=>{Array.from(e.target.files).forEach(f=>{const r=new FileReader();r.onload=v=>{menuP.push(v.target.result);renderHome();};r.readAsDataURL(f);});e.target.value='';});
+document.getElementById('f-menu').addEventListener('change',e=>{Array.from(e.target.files).forEach(f=>{const r=new FileReader();r.onload=async v=>{const resized=await resizeImg(v.target.result);menuP.push(resized);renderHome();};r.readAsDataURL(f);});e.target.value='';});
 function rmP(i){menuP.splice(i,1);if(!menuP.length)menuR=[];renderHome();}
 function clearM(){menuP=[];menuR=[];window._lp='';renderHome();}
+
+// Resize image to max 1200px before sending to API
+function resizeImg(dataUrl,maxW=1200){
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>{
+      let w=img.width,h=img.height;
+      if(w<=maxW){resolve(dataUrl);return;}
+      const r=maxW/w;w=maxW;h=Math.round(h*r);
+      const c=document.createElement('canvas');c.width=w;c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      resolve(c.toDataURL('image/jpeg',0.85));
+    };
+    img.onerror=()=>resolve(dataUrl);
+    img.src=dataUrl;
+  });
+}
 
 async function doAnalyze(){
   const pair=document.getElementById('pair')?.value||'';window._lp=pair;
   const el=document.getElementById('home');
   el.innerHTML=`<div class="sts"><span class="spin"></span>Reading menu...</div>`;
   try{
-    const c=[];menuP.forEach(img=>{c.push({type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}});});
+    // Resize all photos first
+    const resized=await Promise.all(menuP.map(p=>resizeImg(p)));
+    const c=[];resized.forEach(img=>{c.push({type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}});});
     c.push({type:'text',text:`Extract ALL wine names from ${menuP.length>1?'these photos':'this photo'}. Return ONLY JSON array. No explanation.`});
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:c}]})});
-    if(!res.ok)throw 0;const d=await res.json();let mw=[];try{mw=JSON.parse((d.content?.map(x=>x.text||'').join('')||'[]').replace(/```json|```/g,'').trim());}catch(e){}
+    if(!res.ok){const err=await res.text();console.error('API error:',res.status,err);toast('API error: '+res.status);renderHome();return;}
+    const d=await res.json();let mw=[];try{mw=JSON.parse((d.content?.map(x=>x.text||'').join('')||'[]').replace(/```json|```/g,'').trim());}catch(e){console.error('Parse error:',d);}
     menuR=mw.map(name=>({mn:name,match:fuz(name,wines),pn:null}));
     if(pair.trim()&&menuR.length){
       el.innerHTML=`<div class="sts"><span class="spin"></span>Pairing...</div>`;
       try{const pr=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:`Eating "${pair}". Wines: ${JSON.stringify(mw)}. 5-8 word pairing note each. ONLY JSON {"Wine":"note"}.`}]})});
       if(pr.ok){const pd=await pr.json();try{const p=JSON.parse((pd.content?.map(x=>x.text||'').join('')||'{}').replace(/```json|```/g,'').trim());menuR.forEach(r=>{if(p[r.mn])r.pn=p[r.mn];});}catch(e){}}}catch(e){}
     }renderHome();
-  }catch(e){toast('Error');renderHome();}
+  }catch(e){console.error('Analyze error:',e);toast('Error: '+e.message);renderHome();}
 }
 
 function startBottle(){document.getElementById('f-bottle').click();}
 document.getElementById('f-bottle').addEventListener('change',async e=>{
   const f=e.target.files[0];if(!f)return;e.target.value='';
   const rd=new FileReader();rd.onload=async ev=>{
-    const img=ev.target.result;go('bottle');const el=document.getElementById('bottle');
+    const raw=ev.target.result;const img=await resizeImg(raw);
+    go('bottle');const el=document.getElementById('bottle');
     el.innerHTML=`<div class="bflow"><div class="bimg"><img src="${img}"></div><div class="bsts"><span class="spin"></span>Reading label...</div></div>`;
     try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}},{type:'text',text:'Read wine label. ONLY JSON: {"name":"wine","region":"region","country":"country","grape":"grape or null","vintage":2020}. Nulls for unknowns.'}]}]})});
-    if(!res.ok)throw 0;const d=await res.json();let info={};try{info=JSON.parse((d.content?.map(x=>x.text||'').join('')||'{}').replace(/```json|```/g,'').trim());}catch(e){}
-    showRate(el,img,info);}catch(e){showRate(el,img,{});}
+    if(!res.ok){const err=await res.text();console.error('Bottle API:',res.status,err);toast('API error: '+res.status);}
+    const d=await res.json();let info={};try{info=JSON.parse((d.content?.map(x=>x.text||'').join('')||'{}').replace(/```json|```/g,'').trim());}catch(e){}
+    showRate(el,img,info);}catch(e){console.error('Bottle error:',e);showRate(el,img,{});}
   };rd.readAsDataURL(f);
 });
 
