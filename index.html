@@ -122,6 +122,12 @@ input[type="file"]{display:none}
 .tag{font-size:clamp(0.8rem,3vw,0.9375rem);color:#6b7a8d;background:#111827;border:1px solid #1e2538;padding:0.625rem 1.125rem;border-radius:1.625rem;font-weight:500}
 
 /* ===== ACTION BUTTONS ===== */
+/* TASTE BADGE */
+.taste-badge{display:flex;align-items:center;gap:0.625rem;padding:0.75rem 1rem;margin:0 0 0.75rem;background:rgba(212,169,106,0.06);border:1px solid rgba(212,169,106,0.15);border-radius:0.875rem}
+.taste-avatar{font-size:1.5rem}
+.taste-using{font-size:0.65rem;color:#3b4254;text-transform:uppercase;letter-spacing:1.5px;font-weight:600}
+.taste-who{font-size:0.95rem;color:#d4a96a;font-weight:700}
+
 .actions{padding:0.75rem 4vw 0}
 
 /* Sections below actions */
@@ -263,7 +269,7 @@ input[type="file"]{display:none}
 <div class="toast" id="toast"></div>
 
 <div class="screen on" id="s-scan">
-  <div class="hdr"><h1>Hedonicum</h1><p>Wine Intelligence</p><p id="dbg" style="font-size:10px;color:#3b4254;margin-top:2px;font-family:monospace">v11</p></div>
+  <div class="hdr"><h1>Hedonicum</h1><p>Wine Intelligence</p></div>
   <div id="home"></div>
 </div>
 
@@ -349,9 +355,16 @@ function renderHome(){
       <div class="tags">${[...topR,...topG3].map(t=>`<span class="tag">${t}</span>`).join('')}</div>`
       :`<div style="text-align:center;padding:32px 16px;color:#3b4254;font-size:15px">Scan your first bottle to start building your taste profile</div>`}
       <div class="actions">
+        <div class="taste-badge">
+          <div class="taste-avatar">🍷</div>
+          <div class="taste-info">
+            <div class="taste-using">Powered by</div>
+            <div class="taste-who">@Holdmybirra's palate</div>
+          </div>
+        </div>
         <button class="act act-1" onclick="document.getElementById('f-menu').click()">
           <div class="act-ic"><svg viewBox="0 0 24 24"><path d="M3 4v16h18V4H3zm16 14H5V8h14v10z"/><path d="M7 10h4v4H7z"/></svg></div>
-          <div class="act-tx"><h3>Scan Menu</h3><p>Snap the wine list, get picks</p></div>
+          <div class="act-tx"><h3>Scan Menu</h3><p>Get picks matched to this palate</p></div>
           <div class="act-arr">›</div>
         </button>
         <button class="act act-2" onclick="startBottle()">
@@ -402,7 +415,14 @@ function renderResults(el){
   if(rec){
     // Build price lookup
     const priceOf=n=>{const r=menuR.find(x=>x.mn===n);return r&&r.price?'$'+r.price:null;};
-    recHTML=`<div class="rec-card">
+    recHTML=`<div class="taste-badge" style="margin:0 0 1rem">
+      <div class="taste-avatar">🍷</div>
+      <div class="taste-info">
+        <div class="taste-using">Matched by</div>
+        <div class="taste-who">@Holdmybirra's palate</div>
+      </div>
+    </div>
+    <div class="rec-card">
       ${rec.sommelier_note?`<div class="rec-note">"${rec.sommelier_note.replace(/\*\*/g,'')}"</div>`:''}
       ${rec.top_pick?`<div class="rec-pick">
         <div class="rec-label">🏆 Order This</div>
@@ -579,12 +599,6 @@ function fuz(q,wl){const a=q.toLowerCase().replace(/[^a-záéíóúñü0-9\s]/gi
 function lev(a,b){const m=a.length,n=b.length,d=Array.from({length:m+1},(_,i)=>i);for(let j=1;j<=n;j++){let p=d[0];d[0]=j;for(let i=1;i<=m;i++){const t=d[i];d[i]=a[i-1]===b[j-1]?p:1+Math.min(p,d[i],d[i-1]);p=t;}}return d[m];}
 
 loadWines().then(()=>renderHome());
-</script>
-<script>
-document.addEventListener('DOMContentLoaded',function(){
-  var d=document.getElementById('dbg');
-  if(d) d.textContent='v11 | w:'+window.innerWidth+' dpr:'+window.devicePixelRatio+' fs:'+getComputedStyle(document.documentElement).fontSize;
-});
 </script>
 </body>
 </html>
