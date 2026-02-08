@@ -17,28 +17,27 @@
 <script>
 if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js').catch(()=>{});}
 
-// Prevent zoom on input focus (iOS Safari + Android Chrome)
+// Prevent iOS Safari zoom on input focus
+// iOS zooms when input font-size < 16px OR when it thinks the field is too small
+// Solution: temporarily set viewport scale on focus and use scrollIntoView
 document.addEventListener('DOMContentLoaded', function(){
-  // Method 1: Dynamically set viewport on focus/blur
-  var vp = document.querySelector('meta[name="viewport"]');
-  document.addEventListener('focusin', function(e){
-    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT'){
-      vp.setAttribute('content','width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no');
+  var inputs = document.querySelectorAll('input,textarea,select');
+  function preventZoom(){
+    var vp = document.querySelector('meta[name="viewport"]');
+    // Force max-scale=1 to prevent zoom
+    vp.setAttribute('content','width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover');
+  }
+  // Re-apply on every focus event (for dynamically created inputs)
+  document.addEventListener('focusin',function(e){
+    if(e.target.matches('input,textarea,select')){
+      preventZoom();
+      // Smooth scroll input into view after keyboard appears
+      setTimeout(function(){
+        e.target.scrollIntoView({behavior:'smooth',block:'center'});
+      },300);
     }
   });
-  document.addEventListener('focusout', function(){
-    vp.setAttribute('content','width=device-width,initial-scale=1.0,maximum-scale=5.0,user-scalable=yes');
-  });
-
-  // Method 2: Prevent touchstart double-tap zoom near inputs
-  var lastTouchEnd = 0;
-  document.addEventListener('touchend', function(e){
-    var now = Date.now();
-    if(now - lastTouchEnd <= 300){
-      e.preventDefault();
-    }
-    lastTouchEnd = now;
-  }, {passive:false});
+  preventZoom();
 });
 </script>
 <style>
@@ -129,6 +128,12 @@ input[type="file"]{display:none}
 
 /* ===== SCAN FLOW ===== */
 .flow{padding:clamp(1rem,4vw,1.5rem) 4vw}
+.preview-flow{min-height:calc(100dvh - 10rem);display:flex;flex-direction:column;justify-content:center}
+.preview-flow .photos{margin:0 0 clamp(1.5rem,5vw,2rem) 0}
+.preview-flow .photo,.preview-flow .photo-add{width:clamp(7rem,30vw,9rem);height:clamp(7rem,30vw,9rem);border-radius:clamp(1rem,4vw,1.25rem)}
+.preview-flow .fld-l{font-size:clamp(0.75rem,3vw,0.875rem);margin-top:clamp(1.25rem,4vw,1.5rem);margin-bottom:clamp(0.5rem,2vw,0.75rem)}
+.preview-flow .fld-i{padding:clamp(1rem,4vw,1.25rem) clamp(1.125rem,4.5vw,1.375rem);font-size:16px;border-radius:clamp(0.875rem,3.5vw,1.125rem)}
+.preview-flow .btn{margin-top:clamp(1.5rem,5vw,2rem);padding:clamp(1rem,4vw,1.375rem);font-size:clamp(1rem,4vw,1.125rem)}
 
 .fld-l{font-size:clamp(0.65rem,2.5vw,0.7rem);color:#4a5568;text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem;font-weight:700;margin-top:clamp(0.875rem,3.5vw,1.25rem)}
 .fld-i{width:100%;padding:clamp(0.875rem,3.5vw,1.125rem) clamp(1rem,4vw,1.25rem);border-radius:1rem;border:1px solid #1e2538;background:#111827;color:#e2e8f0;font-size:1rem;outline:none;font-family:inherit;-webkit-appearance:none;appearance:none;touch-action:manipulation;-webkit-text-size-adjust:100%;box-sizing:border-box}
@@ -340,14 +345,14 @@ function countryFlag(c){
 }
 
 function renderPreview(el){
-  el.innerHTML=`<div class="flow"><div class="photos">
+  el.innerHTML=`<div class="flow preview-flow"><div class="photos">
     ${menuP.map((p,i)=>`<div class="photo"><img src="${p}"><div class="photo-n">${i+1}</div><div class="photo-x" onclick="rmP(${i})">✕</div></div>`).join('')}
     <div class="photo-add" onclick="document.getElementById('f-menu').click()">+</div>
   </div>
   <div class="fld-l">🍽 What are you eating?</div>
-  <input type="text" class="fld-i" id="pair" placeholder="steak, pasta, seafood...">
+  <input type="text" class="fld-i" id="pair" placeholder="steak, pasta, seafood..." style="font-size:16px">
   <div class="fld-l">💰 Max budget per bottle?</div>
-  <input type="text" class="fld-i" id="budget" placeholder="e.g. 50, 75, no limit..." inputmode="numeric">
+  <input type="text" class="fld-i" id="budget" placeholder="e.g. 50, 75, no limit..." inputmode="numeric" style="font-size:16px">
   <button class="btn" onclick="doAnalyze()">Analyze ${menuP.length} ${menuP.length===1?'Photo':'Photos'}</button>
   <div class="lnk" onclick="clearM()">Clear</div></div>`;
 }
