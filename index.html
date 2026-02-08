@@ -128,6 +128,15 @@ input[type="file"]{display:none}
 @keyframes sp{to{transform:rotate(360deg)}}
 
 /* Results */
+.rec-card{margin-bottom:24px}
+.rec-note{font-size:18px;color:#d4a96a;font-weight:600;font-style:italic;text-align:center;padding:20px 16px;line-height:1.5;margin-bottom:16px}
+.rec-pick{background:#111827;border:1px solid #1e2538;border-radius:18px;padding:22px 22px;margin-bottom:12px}
+.rec-pick:first-of-type{border-color:rgba(212,169,106,0.4);background:rgba(212,169,106,0.06)}
+.rec-label{font-size:13px;font-weight:700;letter-spacing:0.5px;margin-bottom:8px;color:#d4a96a}
+.rec-new .rec-label{color:#6fcf97}
+.rec-skip .rec-label{color:#ff6b6b}
+.rec-wine{font-size:22px;font-weight:800;color:#fff;margin-bottom:8px;line-height:1.25}
+.rec-why{font-size:15px;color:#6b7a8d;line-height:1.6}
 .rsec{margin-top:24px}
 .rsec-h{font-size:11px;color:#4a5568;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #1a1f2e;font-weight:700}
 .rsec-h span{color:#d4a96a}
@@ -313,20 +322,50 @@ function renderPreview(el){
 }
 
 function renderResults(el){
-  const found=menuR.filter(r=>r.match),nf=menuR.filter(r=>!r.match),pair=window._lp||'';
+  const found=menuR.filter(r=>r.match),nf=menuR.filter(r=>!r.match),pair=window._lp||'',rec=window._rec;
+  
+  // Sort found wines by rating descending
+  found.sort((a,b)=>Number(b.match.rating)-Number(a.match.rating));
+  
+  let recHTML='';
+  if(rec){
+    recHTML=`<div class="rec-card">
+      ${rec.sommelier_note?`<div class="rec-note">"${rec.sommelier_note}"</div>`:''}
+      ${rec.top_pick?`<div class="rec-pick">
+        <div class="rec-label">🏆 Order This</div>
+        <div class="rec-wine">${rec.top_pick.name}</div>
+        <div class="rec-why">${rec.top_pick.why}</div>
+      </div>`:''}
+      ${rec.runner_up?`<div class="rec-pick rec-alt">
+        <div class="rec-label">👍 Also Great</div>
+        <div class="rec-wine">${rec.runner_up.name}</div>
+        <div class="rec-why">${rec.runner_up.why}</div>
+      </div>`:''}
+      ${rec.try_something_new?`<div class="rec-pick rec-new">
+        <div class="rec-label">🔍 Try Something New</div>
+        <div class="rec-wine">${rec.try_something_new.name}</div>
+        <div class="rec-why">${rec.try_something_new.why}</div>
+      </div>`:''}
+      ${rec.skip?`<div class="rec-pick rec-skip">
+        <div class="rec-label">⛔ Skip</div>
+        <div class="rec-wine">${rec.skip.name}</div>
+        <div class="rec-why">${rec.skip.why}</div>
+      </div>`:''}
+    </div>`;
+  }
+  
   el.innerHTML=`<div class="flow">
-    <button class="btn-o" onclick="clearM()">← Scan Another Menu</button>
-    ${pair?`<div style="text-align:center;color:#4a5568;font-size:14px;margin:10px 0">Pairing: <span style="color:#d4a96a;font-weight:700">${pair}</span></div>`:''}
+    ${pair?`<div style="text-align:center;color:#4a5568;font-size:15px;margin-bottom:16px">🍽 Eating <span style="color:#d4a96a;font-weight:700;font-size:18px">${pair}</span></div>`:''}
+    ${recHTML}
     ${found.length?`<div class="rsec"><div class="rsec-h"><span>${found.length}</span> wines you know</div>
-      ${found.map(r=>`<div class="rc hit"><div class="rc-l">
-        <div class="rc-nm">${r.mn}</div><div class="rc-sub">${r.match.region||''}${r.match.grape?' · '+r.match.grape:''}</div>
-        ${r.match.notes?`<div class="rc-sub" style="font-style:italic;color:#5a677a">"${r.match.notes}"</div>`:''}
-        ${r.pn?`<div class="rc-pair">🍽 ${r.pn}</div>`:''}
-      </div><div class="rc-r"><div class="rc-sc">${Number(r.match.rating).toFixed(1)}</div>
+      ${found.map(r=>{const rt=Number(r.match.rating);return`<div class="rc${rt>=4.5?' hit':''}"><div class="rc-l">
+        <div class="rc-nm">${r.mn}</div><div class="rc-sub">${r.match.region||''}${r.match.country?', '+r.match.country:''}${r.match.grape?' · '+r.match.grape:''}</div>
+      </div><div class="rc-r"><div class="rc-sc">${rt.toFixed(1)}</div>
         ${r.match.reorder?`<div class="rc-ro ${r.match.reorder}">${r.match.reorder==='yes'?'✓ Reorder':r.match.reorder==='no'?'✗ Skip':'~ Maybe'}</div>`:''}
-      </div></div>`).join('')}</div>`:''}
+      </div></div>`;}).join('')}</div>`:''}
     ${nf.length?`<div class="rsec"><div class="rsec-h"><span>${nf.length}</span> new to you</div>
-      ${nf.map(r=>`<div class="rc"><div class="rc-l"><div class="rc-nm">${r.mn}</div>${r.pn?`<div class="rc-pair">🍽 ${r.pn}</div>`:''}<div class="rc-nw">Not in cellar</div></div></div>`).join('')}</div>`:''}
+      ${nf.map(r=>`<div class="rc"><div class="rc-l"><div class="rc-nm">${r.mn}</div><div class="rc-nw">Not in cellar</div></div></div>`).join('')}</div>`:''}
+    <button class="btn-o" onclick="clearM()" style="margin-top:20px">← Scan Another Menu</button>
   </div>`;
 }
 
@@ -356,21 +395,49 @@ async function doAnalyze(){
   const el=document.getElementById('home');
   el.innerHTML=`<div class="sts"><span class="spin"></span>Reading menu...</div>`;
   try{
-    // Resize all photos first
     const resized=await Promise.all(menuP.map(p=>resizeImg(p)));
     const c=[];resized.forEach(img=>{c.push({type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}});});
-    c.push({type:'text',text:`Extract ALL wine names from ${menuP.length>1?'these photos':'this photo'}. Return ONLY JSON array. No explanation.`});
+    c.push({type:'text',text:`Extract ALL wine names from ${menuP.length>1?'these photos':'this photo'}. Return ONLY a JSON array of strings. No explanation.`});
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:c}]})});
     if(!res.ok){const err=await res.text();console.error('API error:',res.status,err);toast('API error: '+res.status);renderHome();return;}
     const d=await res.json();let mw=[];try{mw=JSON.parse((d.content?.map(x=>x.text||'').join('')||'[]').replace(/```json|```/g,'').trim());}catch(e){console.error('Parse error:',d);}
     menuR=mw.map(name=>({mn:name,match:fuz(name,wines),pn:null}));
-    if(pair.trim()&&menuR.length){
-      el.innerHTML=`<div class="sts"><span class="spin"></span>Pairing...</div>`;
-      try{const pr=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:`Eating "${pair}". Wines: ${JSON.stringify(mw)}. 5-8 word pairing note each. ONLY JSON {"Wine":"note"}.`}]})});
-      if(pr.ok){const pd=await pr.json();try{const p=JSON.parse((pd.content?.map(x=>x.text||'').join('')||'{}').replace(/```json|```/g,'').trim());menuR.forEach(r=>{if(p[r.mn])r.pn=p[r.mn];});}catch(e){}}}catch(e){}
-    }renderHome();
+
+    // Sommelier recommendation
+    el.innerHTML=`<div class="sts"><span class="spin"></span>Your sommelier is thinking...</div>`;
+    const found=menuR.filter(r=>r.match);
+    const knownInfo=found.map(r=>({name:r.mn,rating:r.match.rating,reorder:r.match.reorder||'unknown',region:r.match.region,grape:r.match.grape}));
+    const newWines=menuR.filter(r=>!r.match).map(r=>r.mn);
+    const topGrapes=Object.entries(wines.reduce((m,w)=>{if(w.grape){m[w.grape]=(m[w.grape]||0)+1}return m},{})).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([g,n])=>g+' ('+n+')').join(', ');
+    const topRegions=Object.entries(wines.reduce((m,w)=>{if(w.region){m[w.region]=(m[w.region]||0)+1}return m},{})).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([r,n])=>r+' ('+n+')').join(', ');
+    const avgR=(wines.reduce((s,w)=>s+Number(w.rating),0)/wines.length).toFixed(1);
+    const somPrompt=`You are a personal sommelier for a wine expert who has tasted ${wines.length} wines. Give direct, confident recommendations. No hedging.
+
+WINES ON THIS MENU THEY HAVE TRIED:
+${JSON.stringify(knownInfo)}
+
+WINES ON THIS MENU THEY HAVE NOT TRIED:
+${JSON.stringify(newWines)}
+
+${pair?'EATING: '+pair:'No food specified.'}
+
+THEIR TASTE PROFILE:
+- Favorite grapes: ${topGrapes}
+- Favorite regions: ${topRegions}
+- Average rating: ${avgR}
+
+Respond ONLY with JSON (no markdown, no backticks):
+{"top_pick":{"name":"exact wine name from menu","why":"2 sentences: why this wine + food pairing logic"},"runner_up":{"name":"exact wine name","why":"1 sentence"},"try_something_new":{"name":"a wine from the NEW list they haven't tried","why":"1 sentence connecting to their taste preferences"},"skip":{"name":"wine to avoid","why":"1 sentence"},"sommelier_note":"1 bold sentence of overall advice"}`;
+
+    try{
+      const sr=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1000,messages:[{role:'user',content:somPrompt}]})});
+      if(sr.ok){const sd=await sr.json();try{window._rec=JSON.parse((sd.content?.map(x=>x.text||'').join('')||'{}').replace(/```json|```/g,'').trim());}catch(e){window._rec=null;}}
+    }catch(e){window._rec=null;}
+
+    renderHome();
   }catch(e){console.error('Analyze error:',e);toast('Error: '+e.message);renderHome();}
 }
+
 
 function startBottle(){document.getElementById('f-bottle').click();}
 document.getElementById('f-bottle').addEventListener('change',async e=>{
