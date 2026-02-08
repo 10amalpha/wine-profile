@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hedonicum</title>
 <!-- PWA -->
 <link rel="manifest" href="/manifest.json">
@@ -541,10 +541,18 @@ function lev(a,b){const m=a.length,n=b.length,d=Array.from({length:m+1},(_,i)=>i
 loadWines().then(()=>renderHome());
 </script>
 <script>
-// Debug: show device info
+// Debug: show device info and warn if desktop mode
 document.addEventListener('DOMContentLoaded',function(){
   var d=document.getElementById('dbg');
-  if(d) d.textContent='v6 | w:'+window.innerWidth+' h:'+window.innerHeight+' dpr:'+window.devicePixelRatio+' vvw:'+(window.visualViewport?window.visualViewport.width:'?')+' scale:'+(window.visualViewport?window.visualViewport.scale:'?');
+  var w=window.innerWidth;
+  if(d){
+    d.textContent='v7 | w:'+w+' h:'+window.innerHeight+' dpr:'+window.devicePixelRatio;
+    if(w>500){
+      d.style.color='#ff6b6b';
+      d.style.fontSize='14px';
+      d.textContent+=' ⚠️ DESKTOP MODE ON - Turn off in browser menu';
+    }
+  }
 });
 </script>
 </body>
