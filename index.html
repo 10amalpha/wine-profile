@@ -136,6 +136,8 @@ input[type="file"]{display:none}
 .rec-new .rec-label{color:#6fcf97}
 .rec-skip .rec-label{color:#ff6b6b}
 .rec-wine{font-size:22px;font-weight:800;color:#fff;margin-bottom:8px;line-height:1.25}
+.rec-price{font-size:16px;font-weight:600;color:#6fcf97;margin-left:4px}
+.rc-price{font-size:14px;font-weight:600;color:#6fcf97;margin-left:6px}
 .rec-why{font-size:15px;color:#6b7a8d;line-height:1.6}
 .rsec{margin-top:24px}
 .rsec-h{font-size:11px;color:#4a5568;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #1a1f2e;font-weight:700}
@@ -317,54 +319,58 @@ function renderPreview(el){
   </div>
   <div class="fld-l">🍽 What are you eating?</div>
   <input type="text" class="fld-i" id="pair" placeholder="steak, pasta, seafood...">
+  <div class="fld-l">💰 Max budget per bottle?</div>
+  <input type="text" class="fld-i" id="budget" placeholder="e.g. 50, 75, no limit..." inputmode="numeric">
   <button class="btn" onclick="doAnalyze()">Analyze ${menuP.length} ${menuP.length===1?'Photo':'Photos'}</button>
   <div class="lnk" onclick="clearM()">Clear</div></div>`;
 }
 
 function renderResults(el){
-  const found=menuR.filter(r=>r.match),nf=menuR.filter(r=>!r.match),pair=window._lp||'',rec=window._rec;
+  const found=menuR.filter(r=>r.match),nf=menuR.filter(r=>!r.match),pair=window._lp||'',rec=window._rec,budget=window._budget||'';
   
   // Sort found wines by rating descending
   found.sort((a,b)=>Number(b.match.rating)-Number(a.match.rating));
   
   let recHTML='';
   if(rec){
+    // Build price lookup
+    const priceOf=n=>{const r=menuR.find(x=>x.mn===n);return r&&r.price?'$'+r.price:null;};
     recHTML=`<div class="rec-card">
       ${rec.sommelier_note?`<div class="rec-note">"${rec.sommelier_note}"</div>`:''}
       ${rec.top_pick?`<div class="rec-pick">
         <div class="rec-label">🏆 Order This</div>
-        <div class="rec-wine">${rec.top_pick.name}</div>
+        <div class="rec-wine">${rec.top_pick.name}${priceOf(rec.top_pick.name)?` <span class="rec-price">${priceOf(rec.top_pick.name)}</span>`:''}</div>
         <div class="rec-why">${rec.top_pick.why}</div>
       </div>`:''}
       ${rec.runner_up?`<div class="rec-pick rec-alt">
         <div class="rec-label">👍 Also Great</div>
-        <div class="rec-wine">${rec.runner_up.name}</div>
+        <div class="rec-wine">${rec.runner_up.name}${priceOf(rec.runner_up.name)?` <span class="rec-price">${priceOf(rec.runner_up.name)}</span>`:''}</div>
         <div class="rec-why">${rec.runner_up.why}</div>
       </div>`:''}
       ${rec.try_something_new?`<div class="rec-pick rec-new">
         <div class="rec-label">🔍 Try Something New</div>
-        <div class="rec-wine">${rec.try_something_new.name}</div>
+        <div class="rec-wine">${rec.try_something_new.name}${priceOf(rec.try_something_new.name)?` <span class="rec-price">${priceOf(rec.try_something_new.name)}</span>`:''}</div>
         <div class="rec-why">${rec.try_something_new.why}</div>
       </div>`:''}
       ${rec.skip?`<div class="rec-pick rec-skip">
         <div class="rec-label">⛔ Skip</div>
-        <div class="rec-wine">${rec.skip.name}</div>
+        <div class="rec-wine">${rec.skip.name}${priceOf(rec.skip.name)?` <span class="rec-price">${priceOf(rec.skip.name)}</span>`:''}</div>
         <div class="rec-why">${rec.skip.why}</div>
       </div>`:''}
     </div>`;
   }
   
   el.innerHTML=`<div class="flow">
-    ${pair?`<div style="text-align:center;color:#4a5568;font-size:15px;margin-bottom:16px">🍽 Eating <span style="color:#d4a96a;font-weight:700;font-size:18px">${pair}</span></div>`:''}
+    ${pair||budget?`<div style="text-align:center;color:#4a5568;font-size:15px;margin-bottom:16px">${pair?`🍽 <span style="color:#d4a96a;font-weight:700;font-size:18px">${pair}</span>`:''} ${budget?`&nbsp;💰 <span style="color:#6fcf97;font-weight:700">under $${budget.replace(/[^0-9]/g,'')}</span>`:''}</div>`:''}
     ${recHTML}
     ${found.length?`<div class="rsec"><div class="rsec-h"><span>${found.length}</span> wines you know</div>
       ${found.map(r=>{const rt=Number(r.match.rating);return`<div class="rc${rt>=4.5?' hit':''}"><div class="rc-l">
-        <div class="rc-nm">${r.mn}</div><div class="rc-sub">${r.match.region||''}${r.match.country?', '+r.match.country:''}${r.match.grape?' · '+r.match.grape:''}</div>
+        <div class="rc-nm">${r.mn}${r.price?` <span class="rc-price">$${r.price}</span>`:''}</div><div class="rc-sub">${r.match.region||''}${r.match.country?', '+r.match.country:''}${r.match.grape?' · '+r.match.grape:''}</div>
       </div><div class="rc-r"><div class="rc-sc">${rt.toFixed(1)}</div>
         ${r.match.reorder?`<div class="rc-ro ${r.match.reorder}">${r.match.reorder==='yes'?'✓ Reorder':r.match.reorder==='no'?'✗ Skip':'~ Maybe'}</div>`:''}
       </div></div>`;}).join('')}</div>`:''}
     ${nf.length?`<div class="rsec"><div class="rsec-h"><span>${nf.length}</span> new to you</div>
-      ${nf.map(r=>`<div class="rc"><div class="rc-l"><div class="rc-nm">${r.mn}</div><div class="rc-nw">Not in cellar</div></div></div>`).join('')}</div>`:''}
+      ${nf.map(r=>`<div class="rc"><div class="rc-l"><div class="rc-nm">${r.mn}${r.price?` <span class="rc-price">$${r.price}</span>`:''}</div><div class="rc-nw">Not in cellar</div></div></div>`).join('')}</div>`:''}
     <button class="btn-o" onclick="clearM()" style="margin-top:20px">← Scan Another Menu</button>
   </div>`;
 }
@@ -392,22 +398,25 @@ function resizeImg(dataUrl,maxW=1200){
 
 async function doAnalyze(){
   const pair=document.getElementById('pair')?.value||'';window._lp=pair;
+  const budget=document.getElementById('budget')?.value||'';window._budget=budget;
   const el=document.getElementById('home');
   el.innerHTML=`<div class="sts"><span class="spin"></span>Reading menu...</div>`;
   try{
     const resized=await Promise.all(menuP.map(p=>resizeImg(p)));
     const c=[];resized.forEach(img=>{c.push({type:'image',source:{type:'base64',media_type:img.split(';')[0].split(':')[1],data:img.split(',')[1]}});});
-    c.push({type:'text',text:`Extract ALL wine names from ${menuP.length>1?'these photos':'this photo'}. Return ONLY a JSON array of strings. No explanation.`});
+    c.push({type:'text',text:`Extract ALL wines from ${menuP.length>1?'these photos':'this photo'}. For each wine return name and price. Return ONLY JSON array of objects: [{"name":"wine name","price":45},{"name":"wine2","price":null}]. Use null if no price visible. No explanation.`});
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,messages:[{role:'user',content:c}]})});
     if(!res.ok){const err=await res.text();console.error('API error:',res.status,err);toast('API error: '+res.status);renderHome();return;}
     const d=await res.json();let mw=[];try{mw=JSON.parse((d.content?.map(x=>x.text||'').join('')||'[]').replace(/```json|```/g,'').trim());}catch(e){console.error('Parse error:',d);}
-    menuR=mw.map(name=>({mn:name,match:fuz(name,wines),pn:null}));
+    // Support both old format (string array) and new format (object array)
+    if(mw.length&&typeof mw[0]==='string'){mw=mw.map(n=>({name:n,price:null}));}
+    menuR=mw.map(w=>({mn:w.name,price:w.price,match:fuz(w.name,wines),pn:null}));
 
     // Sommelier recommendation
     el.innerHTML=`<div class="sts"><span class="spin"></span>Your sommelier is thinking...</div>`;
     const found=menuR.filter(r=>r.match);
-    const knownInfo=found.map(r=>({name:r.mn,rating:r.match.rating,reorder:r.match.reorder||'unknown',region:r.match.region,grape:r.match.grape}));
-    const newWines=menuR.filter(r=>!r.match).map(r=>r.mn);
+    const knownInfo=found.map(r=>({name:r.mn,price:r.price,rating:r.match.rating,reorder:r.match.reorder||'unknown',region:r.match.region,grape:r.match.grape}));
+    const newWines=menuR.filter(r=>!r.match).map(r=>({name:r.mn,price:r.price}));
     const topGrapes=Object.entries(wines.reduce((m,w)=>{if(w.grape){m[w.grape]=(m[w.grape]||0)+1}return m},{})).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([g,n])=>g+' ('+n+')').join(', ');
     const topRegions=Object.entries(wines.reduce((m,w)=>{if(w.region){m[w.region]=(m[w.region]||0)+1}return m},{})).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([r,n])=>r+' ('+n+')').join(', ');
     const avgR=(wines.reduce((s,w)=>s+Number(w.rating),0)/wines.length).toFixed(1);
@@ -420,6 +429,8 @@ WINES ON THIS MENU THEY HAVE NOT TRIED:
 ${JSON.stringify(newWines)}
 
 ${pair?'EATING: '+pair:'No food specified.'}
+
+${budget?'BUDGET: Max $'+budget.replace(/[^0-9]/g,'')+' per bottle. Respect this constraint strictly — never recommend above budget.':'No budget specified.'}
 
 THEIR TASTE PROFILE:
 - Favorite grapes: ${topGrapes}
