@@ -1,35 +1,38 @@
 module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
-  if (!ANTHROPIC_KEY) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set in Vercel env vars' });
+    if (req.method === 'OPTIONS') return res.status(200).end();
+    if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  try {
-    const { messages, max_tokens, system } = req.body;
-    
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_KEY,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: max_tokens || 2000,
-        system: system || '',
-        messages: messages
-      })
-    });
+    const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
+    if (!ANTHROPIC_KEY) return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set' });
 
-    const data = await response.json();
-    return res.status(response.ok ? 200 : response.status).json(data);
-  } catch (error) {
-    return res.status(500).json({ error: 'Proxy error: ' + error.message });
-  }
+    try {
+          const { messages, max_tokens, system, model, tools } = req.body;
+
+      const body = {
+              model: model || 'claude-haiku-4-5-20251001',
+              max_tokens: max_tokens || 2000,
+              system: system || '',
+              messages: messages
+      };
+          if (tools) body.tools = tools;
+
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+              method: 'POST',
+              headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': ANTHROPIC_KEY,
+                        'anthropic-version': '2023-06-01'
+              },
+              body: JSON.stringify(body)
+      });
+
+      const data = await response.json();
+          return res.status(response.ok ? 200 : response.status).json(data);
+    } catch (error) {
+          return res.status(500).json({ error: 'Proxy error: ' + error.message });
+    }
 };
